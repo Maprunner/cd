@@ -1,0 +1,95 @@
+/*
+ * prevent selection of objects everywhere
+ */
+body {
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+@font-face {
+  font-family: 'orienteering';
+  src:url('../fonts/orienteering.eot?cxef2e');
+  src:url('../fonts/orienteering.eot?cxef2e#iefix') format('embedded-opentype'),
+    url('../fonts/orienteering.ttf?cxef2e') format('truetype'),
+    url('../fonts/orienteering.woff?cxef2e') format('woff'),
+    url('../fonts/orienteering.svg?cxef2e#orienteering') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+i {
+  font-family: 'orienteering';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cd {
+  font-family: 'orienteering';
+  speak: none;
+  font-size: 10em;
+  color: purple;
+  border: 5px solid purple;
+}
+
+.icon-01-terrace:before {
+  content: "\e900";
+}
+.icon-02-spur:before {
+  content: "\e901";
+}
+.icon-03-reentrant:before {
+  content: "\e902";
+}
+.icon-04-earthbank:before {
+  content: "\e903";
+}
+.icon-05-quarry:before {
+  content: "\e904";
+}
+.icon-06-earthwall:before {
+  content: "\e905";
+}
+.icon-07-gully:before {
+  content: "\e906";
+}
+.icon-08-small-gully:before {
+  content: "\e907";
+}
+.icon-09-hill:before {
+  content: "\e908";
+}
+.icon-10-knoll:before {
+  content: "\e909";
+}
+.icon-11-saddle:before {
+  content: "\e90a";
+}
+.icon-12-depression:before {
+  content: "\e90b";
+}
+.icon-13-small-depression:before {
+  content: "\e90c";
+}
+.icon-14-pit:before {
+  content: "\e90d";
+}
+.icon-15-broken-ground:before {
+  content: "\e90e";
+}
+.icon-16-ant-hill:before {
+  content: "\e90f";
+}
+
