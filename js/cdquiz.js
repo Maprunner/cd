@@ -12,212 +12,9 @@ Array.prototype.shuffle = function() {
     return input;
 }
 
-var StartButton = React.createClass({
-  render: function() {
-    return (
-      <button type="button" disabled={this.props.running ? 'disabled': ''} className="btn btn-primary" onClick={this.props.onClick}>Start</button>
-    );
-  }
-});
-
-var Question = React.createClass({
-
-  render: function() {
-    var chr = String.fromCharCode(this.props.code);
-    return (
-      <div>
-        <span className='cd'>{chr}</span>
-        <h3>Question {this.props.number}</h3>
-      </div>
-    );
-  }
-});
-
-// bring up as modal when quiz completd??
-var ResultMessage = React.createClass({
-  render(){
-    return (
-      <h2>You scored {this.props.score} out of {this.props.from} in {this.props.time} seconds.</h2>
-    )
-  }
-});
-
-var Answer = React.createClass({
-
-  handleClick(){
-    this.props.onClick(this.props.answer);
-  },
-
-  render(){
-    return (
-      <div className="panel panel-primary" onClick={this.handleClick}>
-        <div className="panel-heading">
-          {this.props.answer}
-        </div>
-      </div>
-    )
-  }
-});
-
-var AnswerList = React.createClass({
-
-  render(){
-    var self = this;
-    var answers = this.props.answers.map(function(ans, idx){
-      return <Answer key={idx} answer={ans} onClick={self.props.onClick} />
-    });
-    if(!answers.length) {
-      return null;
-    }
-    return (
-      <div>
-        {answers}
-      </div>
-    )
-  }
-});
-
-var Score = React.createClass({
-  render(){
-    return (
-      <div><h2>Score: {this.props.score}/{this.props.from}</h2></div>
-    )
-  }
-});
-
-var Timer = React.createClass({
-  render(){
-    return (
-      <div><h2>Time: {this.props.elapsed}</h2></div>
-    )
-  }
-});
-
-var Quiz = React.createClass({
-  getInitialState(){
-    return {questions: this.createNewQuiz(),
-            currentQuestion: 0,
-            score: 0,
-            start: 0,
-            elapsed: 0,
-            running: false
-    };
-  },
-
-  componentDidMount: function() {
-    this.timer = setInterval(this.tick, 500);
-  },
-
-  componentWillUnmount: function() {
-   clearInterval(this.timer);
-  },
-
-  tick: function(){
-    if (this.state.running) {
-      this.setState({elapsed: new Date() - this.state.start});
-    }
-  },
-
-  startNewQuiz() {
-    //var start = new Date().getTime();
-    this.setState({questions: this.createNewQuiz(),
-                   running: true,
-                   start: new Date().getTime(),
-                   score: 0
-                  });
-  },
-
-  createNewQuiz() {
-    var i, shuffled, detail, questions, answers;
-    // set up list of wanted questions and shuffle them
-    shuffled = this.props.data.shuffle();
-    // extract list of possible answers
-    answers = [];
-    for (i = 0; i < shuffled.length; i = i + 1) {
-      answers.push({desc: shuffled[i].desc, id: shuffled[i].id});
-    }
-    // generate question for each entry in shuffled array
-    questions = [];
-    for (i = 0; i < shuffled.length; i = i + 1) {
-      detail= {};
-      detail.code = shuffled[i].code;
-      detail.answers = this.generateAnswers(shuffled[i].desc, shuffled[i].id, answers);
-      detail.correct= shuffled[i].desc;
-      questions.push(detail);
-    }
-    return questions;
-  },
-
-  generateAnswers(correct, id, possible) {
-    var list, i, ANSWERS;
-    // change to config parameter at some stage
-    ANSWERS = 3;
-    // add correct answer
-    list = [correct];
-    // shuffle possible answers
-    possible.shuffle();
-    // add as many incorrect answers as needed/available
-    i = 0;
-    while ((list.length < ANSWERS) && (i < possible.length)) {
-      // don't duplicate correct answer, and only use items in same group
-      if ((possible[i].desc !== correct)  && (parseInt((id/100), 10) === parseInt((possible[i].id/100), 10))) {
-        list.push(possible[i].desc);
-      }
-      i = i + 1;
-    }
-    return list.shuffle();
-  },
-
-  checkAnswer(answer) {
-    var q = this.state.questions[this.state.currentQuestion];
-    if (answer === q.correct) {
-      this.setState({score : this.state.score + 1});
-    }
-
-    this.setState({currentQuestion: this.state.currentQuestion + 1});
-    if (this.state.currentQuestion === this.state.questions.length) {
-      // finished
-      alert("Finished");
-    }
-  },
-
-  render(){
-    return (
-      <div>
-        <div className="row">
-          <h1>Maprunner IOF Control Description Quiz</h1>
-        </div>
-        <div className="row">
-          <StartButton running={this.state.running} onClick={this.startNewQuiz} />
-        </div>
-        {this.state.running ?
-        <div className="row">
-          <div className="row">
-            <div className="col-sm-2">
-              <Question number={this.state.currentQuestion + 1} code={this.state.questions[this.state.currentQuestion].code}/>
-            </div>
-            <div className="col-sm-4">
-              <br />
-              <AnswerList answers={this.state.questions[this.state.currentQuestion].answers} onClick={this.checkAnswer} />
-            </div>
-          </div>
-        </div>
-        : null}
-        <div className="row">
-          <div className="col-sm-4">
-            <Score score={this.state.score} from={this.state.currentQuestion}/>
-          </div>
-          <div className="col-sm-4">
-            <Timer elapsed={parseInt((this.state.elapsed/1000), 10)}/>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-});
-
-var data = [
+var StartPage = React.createClass({
+  getDefaultProps() {
+    var data = [
   {"id": 101, code:59648, "desc": "Terrace", "diff": 2},
   {"id": 102, code:59649, "desc": "Spur", "diff": 1},
   {"id": 103, code:59650, "desc": "Re-entrant", "diff": 1},
@@ -282,16 +79,413 @@ var data = [
   {"id": 516, code:59709, "desc": "Shooting platform", "diff": 2},
   {"id": 517, code:59710, "desc": "Cairn", "diff": 1},
   {"id": 518, code:59711, "desc": "Fodder rack", "diff": 1},
-  {"id": 519, code:59712, "desc": "Shooting platform", "diff": 1},
+  {"id": 519, code:59712, "desc": "Platform", "diff": 1},
   {"id": 520, code:59713, "desc": "Statue", "diff": 1},
   {"id": 523, code:59714, "desc": "Canopy", "diff": 2},
   {"id": 524, code:59715, "desc": "Stairway", "diff": 1},
   {"id": 598, code:59716, "desc": "Special item", "diff": 1},
   {"id": 599, code:59717, "desc": "Special item", "diff": 1}
+    ];
+    
+    return({data: data});
+  },
 
-];
+  getInitialState(){
+    var categories, questions;
+    categories =  [
+      {name: "Land forms", index: 1, use: true},
+      {name: "Rock", index: 2, use: true},
+      {name: "Water", index: 3, use: true},
+      {name: "Vegetation", index: 4, use: true},
+      {name: "Man-made", index: 5, use: true}
+    ];
+
+    questions = this.filterQuestions(categories);
+
+    return {
+      answersPerQuestion: 3,
+      questions: questions,
+      categories: categories
+    };
+  },
+
+  onAnswerClick(value) {
+    this.setState({answersPerQuestion: value});
+  },
+
+  onStartClick() {
+    this.props.onStart(this.createNewQuiz());
+  },
+
+  onSetCategory(category) {
+    var categories, newQuestions;
+    categories = this.state.categories;
+    categories.forEach(function (item) {
+      if (item.name === category) {
+        item.use = !item.use;
+      };
+    });
+    newQuestions = this.filterQuestions(categories);
+    this.setState({
+      categories: categories,
+      questions: newQuestions
+    });
+  },
+  
+  filterQuestions(categories) {
+    var questions, deleteCategories;
+    // create a list of index values for categories to be used
+    deleteCategories = _.chain(categories)
+      .where({"use": true})
+      .pluck("index")
+      .value();
+
+    questions = _.filter(this.props.data, function (q) {
+          //question id is three digits: first digit is category
+          return _.contains(deleteCategories, parseInt((q.id /100), 10));
+        });
+    return questions;
+  },
+
+  createNewQuiz() {
+    var i, shuffled, detail, questions, answers;
+    shuffled = this.state.questions.shuffle();
+    // extract list of possible answers
+    answers = [];
+    for (i = 0; i < shuffled.length; i = i + 1) {
+      answers.push({desc: shuffled[i].desc, id: shuffled[i].id});
+    }
+    // generate question for each entry in shuffled array
+    questions = [];
+    for (i = 0; i < shuffled.length; i = i + 1) {
+      detail= {};
+      detail.code = shuffled[i].code;
+      detail.answers = this.generateAnswers(shuffled[i].desc, shuffled[i].id, answers);
+      detail.correct= shuffled[i].desc;
+      questions.push(detail);
+    }
+    return questions;
+  },
+
+  generateAnswers(correct, id, possible) {
+    var list, i;
+    // add correct answer
+    list = [correct];
+    // shuffle possible answers
+    possible.shuffle();
+    // add as many incorrect answers as needed/available
+    i = 0;
+    while ((list.length < this.state.answersPerQuestion) && (i < possible.length)) {
+      // don't duplicate correct answer, and only use items in same group
+      if ((possible[i].desc !== correct)  && (parseInt((id/100), 10) === parseInt((possible[i].id/100), 10))) {
+        list.push(possible[i].desc);
+      }
+      i = i + 1;
+    }
+    return list.shuffle();
+  },
+
+  render(){
+    return (
+      <div>
+        <CategoryList onClick={this.onSetCategory} categories={this.state.categories} total={this.state.questions.length}/>
+        <AnswerOptionList possibleAnswers={[2, 3, 4, 5]} onClick={this.onAnswerClick} setting={this.state.answersPerQuestion}/>
+        <StartButton onClick={this.onStartClick} />
+      </div>
+    );
+  }
+});
+
+var AnswerOptionList = React.createClass({
+  render: function() {
+    var self = this;
+    var answers = this.props.possibleAnswers.map(function(ans, i){
+      return <AnswerOption key={i} value={ans} onClick={self.props.onClick} setting={self.props.setting}/>
+    });
+
+    return (
+      <div>
+        <span className="option-text">Answers per question</span>
+        <span className="btn-group btn-group-lg" role="group">
+          {answers}
+        </span>
+      </div>
+    )
+  }
+});
+
+var AnswerOption = React.createClass({
+  handleClick(){
+    this.props.onClick(this.props.value);
+  },
+
+  render(){
+    var classes = "btn btn-default";
+    if (this.props.setting === this.props.value) {
+      classes = classes + " active";
+    }
+    return (
+      <button type="button" className={classes} onClick={this.handleClick}>
+        {this.props.value}
+      </button>
+    )
+  }
+});
+
+var StartButton = React.createClass({
+  render: function() {
+    return (
+      <button className="btn btn-primary btn-lg" onClick={this.props.onClick}>
+        Start
+      </button>
+    );
+  }
+});
+
+var QuestionAsCD = React.createClass({
+  render: function() {
+    var chr = String.fromCharCode(this.props.code);
+    return (
+      <div className="question-cell">
+        <span className='cd'>{chr}</span>
+      </div>
+    );
+  }
+});
+
+var ResultMessage = React.createClass({
+  render: function() {
+    return (
+    <div ref="resultMessage" className="modal fade" role="dialog">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <button type="button" className="close" data-dismiss="modal">&times;</button>
+            <h4 className="modal-title">Congratulations</h4>
+          </div>
+          <div className="modal-body">
+            {this.props.children}
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    );
+  },
+
+  componentDidMount: function() {
+    //var node = React.findDOMNode(this.refs.resultMessage);
+    var node = ReactDOM.findDOMNode(this.refs.resultMessage);
+    $(node).modal('show');
+    // use event triggered when modal is hidden to reset visibility flag
+    $(node).on('hidden.bs.modal', this.props.onClose);
+  }
+
+});
+
+var Answer = React.createClass({
+  handleClick(){
+    this.props.onClick(this.props.answer);
+  },
+
+  render(){
+    return (
+      <button className="answer" onClick={this.handleClick}>
+        {this.props.number}) {this.props.answer}
+      </button>
+    )
+  }
+});
+
+var AnswerList = React.createClass({
+  render(){
+    var self = this;
+    var answers = this.props.answers.map(function(ans, i){
+      return <Answer key={i} number={i + 1} answer={ans} onClick={self.props.onClick} />
+    });
+    if(!answers.length) {
+      return null;
+    }
+    return (
+      <div>
+        {answers}
+      </div>
+    )
+  }
+});
+
+var CategoryList = React.createClass({
+  render() {
+    var self = this;
+    var categories = this.props.categories.map(function(cat, idx){
+      return <Category key={idx} category={cat.name} use={cat.use} onClick={self.props.onClick} />
+    });
+    return (
+      <div className="panel panel-primary category-list">
+        <div className="panel-heading">
+          <h4 className="panelTitle">Select options:</h4>
+        </div>
+        <div className="panel-body">
+          {categories}
+        </div>
+        <div className="panel-footer">
+          <h4>{this.props.total} questions selected</h4>
+        </div>
+      </div>
+    )
+  }
+});
+
+var Category = React.createClass({
+  handleClick() {
+    this.props.onClick(this.props.category);
+  },
+
+  render(){
+    return (
+      <div>
+        <span className="cd-checkbox" onClick={this.handleClick}>{this.props.use ? "X": ""}</span><span className="option-text">{this.props.category}</span>
+      </div>
+    )
+  }
+});
+
+var Score = React.createClass({
+  render(){
+    return (
+      <div className="panel panel-primary score">
+        <div className="panel-heading">
+          <h3 className="panel-title">Score</h3>
+        </div>
+        <div className="panel-body">
+          {this.props.score}/{this.props.from}
+        </div>
+      </div>
+    )
+  }
+});
+
+var Timer = React.createClass({
+  render(){
+    return (
+      <div className="panel panel-primary time">
+        <div className="panel-heading">
+          <h3 className="panel-title">Time</h3>
+        </div>
+        <div className="panel-body">
+          {this.props.elapsed}
+        </div>
+      </div>
+    )
+  }
+});
+
+var Quiz = React.createClass({
+  // possible states: selecting, running, displayingResult
+  getInitialState(){
+    return {
+      questions: {},
+      currentQuestionIdx: 0,
+      answered: 0,
+      score: 0,
+      start: 0,
+      elapsed: 0,
+      state: "selecting",
+      displayResultWindow: false
+    };
+  },
+
+  componentDidMount: function() {
+    this.timer = setInterval(this.tick, 500);
+  },
+
+  componentWillUnmount: function() {
+   clearInterval(this.timer);
+  },
+
+  tick: function(){
+    if (this.state.state === "running") {
+      this.setState({elapsed: new Date() - this.state.start});
+    }
+  },
+  
+  onResultWindowClose() {
+    this.setState({
+      state: "selecting"
+    });
+  },
+
+  startNewQuiz(questions) {
+    if (questions.length > 0) {
+      this.setState({
+        questions: questions,
+        currentQuestionIdx: 0,
+        state: "running",
+        start: new Date().getTime(),
+        elapsed: 0,
+        answered: 0,
+        score: 0
+      });
+    }
+  },
+
+  checkAnswer(answer) {
+    if (this.state.state !== "running") {
+      return;
+    }
+    this.setState({answered: this.state.answered + 1});
+    if (answer === this.state.questions[this.state.currentQuestionIdx].correct) {
+      this.setState({score : this.state.score + 1});
+    }
+
+    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+      this.setState({
+        state: "displayingResult",
+      });
+    } else {
+      this.setState({currentQuestionIdx: this.state.currentQuestionIdx + 1}); 
+    }
+  },
+
+  render(){
+    var message;
+
+    message = "You scored " + this.state.score + " out of " + this.state.answered + " in " + parseInt((this.state.elapsed/1000), 10) + " seconds.";
+
+    return (
+      <div>
+        <div className="header">
+          <div className="container">
+            Maprunner IOF Control Description Quiz
+          </div>
+        </div>
+        <div className="container">
+          {this.state.state === "selecting" ? 
+          <div>
+            <StartPage onStart={this.startNewQuiz} />
+          </div>
+          :
+          <div>
+            <div>
+              <QuestionAsCD number={this.state.currentQuestionIdx + 1} code={this.state.questions[this.state.currentQuestionIdx].code}/>
+              <Score score={this.state.score} from={this.state.currentQuestionIdx}/>
+              <Timer elapsed={parseInt((this.state.elapsed/1000), 10)}/>
+            </div>
+            <div>
+              <AnswerList answers={this.state.questions[this.state.currentQuestionIdx].answers} onClick={this.checkAnswer} />
+            </div>
+          </div>
+          }
+          {this.state.state === "displayingResult" ? <ResultMessage onClose={this.onResultWindowClose}>{message}</ResultMessage> : null}
+        </div>
+      </div>
+    );
+  }
+});
 
 ReactDOM.render(
-  <Quiz data={data}/>,
-  document.getElementById('quizbody')
+  <Quiz />,
+  document.getElementById('quiz')
 );

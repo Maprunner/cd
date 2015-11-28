@@ -9,6 +9,97 @@ body {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  display: block;
+}
+
+.header {
+  height: 50px;
+  font-size: 22px;
+  line-height: 2;
+  color: white;
+  width: 100%;
+  background-color: black;
+  margin-left: 5px;
+}
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 450px;
+}
+
+.category-list {
+  margin: 10px 0 20px 0;
+}
+
+.question-cell {
+  width: 120px;
+  font-size: 80px;
+  text-align: center;
+  border: 5px solid black;
+  color: black;
+  display: inline-block;
+  margin: 10px 65px 0 5px;
+}
+
+.cd-checkbox {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid;
+  display: inline-block;
+}
+
+.score {
+  width: 100px;
+  margin: 5px;
+  font-size: 30px;
+  text-align: center;
+  display: inline-block;
+}
+
+.time {
+  width: 100px;
+  margin: 5px;
+  font-size: 30px;
+  text-align: center;
+  display: inline-block;
+}
+
+.answer {
+  width: 400px;
+  margin: 5px;
+  font-size: 30px;
+  padding-left: 10px;
+  text-align: left;
+}
+
+.option-text {
+  display: inline-block;
+  font-size: 1.5em;
+  margin: 5px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.big-checkbox {
+  width: 30px;
+  height: 30px;
 }
 
 @font-face {
@@ -22,26 +113,9 @@ body {
   font-style: normal;
 }
 
-i {
-  font-family: 'orienteering';
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .cd {
   font-family: 'orienteering';
   speak: none;
-  font-size: 10em;
-  color: purple;
-  border: 5px solid purple;
 }
 
 .icon-01-terrace:before {
