@@ -88,6 +88,7 @@ export class StartPage extends React.Component {
       detail.code = shuffled[i].code;
       detail.answers = this.generateAnswers(shuffled[i].desc, shuffled[i].id, answers);
       detail.correct= shuffled[i].desc;
+      detail.gotIt = false;
       questions.push(detail);
     }
     return questions;
@@ -173,7 +174,7 @@ StartPage.defaultProps = {
 {'id': 403, code:59686, 'desc': 'Forest corner', 'diff': 2},
 {'id': 404, code:59687, 'desc': 'Clearing', 'diff': 1},
 {'id': 405, code:59688, 'desc': 'Thicket', 'diff': 1},
-{'id': 406, code:59689, 'desc': 'Linear thicket', 'diff': 2},
+{'id': 406, code:59689, 'desc': 'Hedge, linear thicket', 'diff': 2},
 {'id': 407, code:59690, 'desc': 'Vegetation boundary', 'diff': 1},
 {'id': 408, code:59691, 'desc': 'Copse', 'diff': 2},
 {'id': 409, code:59692, 'desc': 'Distinctive tree', 'diff': 1},

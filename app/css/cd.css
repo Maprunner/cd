@@ -82,6 +82,20 @@ body {
   width: 400px;
 }
 
+.answer-icon-list {
+  background-color: silver;
+  margin: 15px 15px 10px 5px;
+}
+
+.small-cd-icon {
+  color: white;
+  display: inline-block;
+  font-size: 30px;
+  margin: 5px;
+  text-align: center;
+  width: 40px;
+}
+
 .option-text {
   display: inline-block;
   font-size: 1.5em;
@@ -95,6 +109,14 @@ body {
 .big-checkbox {
   height: 30px;
   width: 30px;
+}
+
+.correct-color {
+  background-color: green;
+}
+
+.wrong-color {
+  background-color: red;
 }
 
 @font-face {
