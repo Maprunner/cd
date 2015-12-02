@@ -79,33 +79,45 @@ export class StartPage extends React.Component {
     // extract list of possible answers
     answers = [];
     for (i = 0; i < shuffled.length; i = i + 1) {
-      answers.push({desc: shuffled[i].desc, id: shuffled[i].id});
+      answers.push({
+        code: shuffled[i].code,
+        desc: shuffled[i].desc,
+        id: shuffled[i].id
+      });
     }
     // generate question for each entry in shuffled array
     questions = [];
     for (i = 0; i < shuffled.length; i = i + 1) {
-      detail= {};
-      detail.code = shuffled[i].code;
-      detail.answers = this.generateAnswers(shuffled[i].desc, shuffled[i].id, answers);
-      detail.correct= shuffled[i].desc;
+      detail = [];
+      detail.question = {
+        code: shuffled[i].code,
+        id: shuffled[i].id,
+        desc: shuffled[i].desc
+      };
+      detail.answers = this.generateAnswers(detail.question, answers);
       detail.gotIt = false;
       questions.push(detail);
     }
     return questions;
   }
 
-  generateAnswers(correct, id, possible) {
+  generateAnswers(question, possible) {
     var list, i;
     // add correct answer
-    list = [correct];
+    list = [question];
     // shuffle possible answers
     possible.shuffle();
     // add as many incorrect answers as needed/available
     i = 0;
     while ((list.length < this.state.answersPerQuestion) && (i < possible.length)) {
       // don't duplicate correct answer, and only use items in same group
-      if ((possible[i].desc !== correct)  && (parseInt((id/100), 10) === parseInt((possible[i].id/100), 10))) {
-        list.push(possible[i].desc);
+      if ((possible[i].desc !== question.desc)  &&
+          (parseInt((question.id/100), 10) === parseInt((possible[i].id/100), 10))) {
+        list.push({
+          desc: possible[i].desc,
+          code: possible[i].code,
+          id: possible[i].id
+        });
       }
       i = i + 1;
     }
@@ -125,7 +137,7 @@ export class StartPage extends React.Component {
           onClick={this.onAnswerClick}
           setting={this.state.answersPerQuestion}
         />
-      <StartButton onClick={this.onStartClick} />
+        <StartButton onClick={this.onStartClick} />
       </div>
     );
   }
@@ -295,9 +307,11 @@ export class AnswerOption extends React.Component {
 export class StartButton extends React.Component {
   render() {
     return (
-      <button className='btn btn-primary btn-lg' onClick={this.props.onClick}>
-        Start
-      </button>
+      <div className='start-button'>
+        <button className='btn btn-primary btn-lg' onClick={this.props.onClick}>
+          Start
+        </button>
+      </div>
     );
   }
 }

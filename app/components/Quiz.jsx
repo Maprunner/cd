@@ -3,8 +3,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {StartPage} from './StartPage.jsx'
+import {QuestionPage} from './QuestionPage.jsx'
+import {AnswersAsIcons} from './QuestionPage.jsx'
 
 var update = require('react-addons-update');
+
+export const SYMBOLS_TO_TEXT = 1;
+export const TEXT_TO_SYMBOLS = 2;
 
 export class Quiz extends React.Component {
   constructor(props) {
@@ -17,12 +22,13 @@ export class Quiz extends React.Component {
         score: 0,
         start: 0,
         elapsed: 0,
-        state: 'selecting'
+        state: 'selecting',
+        type: SYMBOLS_TO_TEXT
       };
   }
 
   componentDidMount() {
-    this.timer = setInterval(this.onTick, 500);
+    this.timer = setInterval(this.onTick, 1000);
   }
 
   componentWillUnmount() {
@@ -41,6 +47,14 @@ export class Quiz extends React.Component {
     });
   }
 
+  onSelectQuizType = (value) => {
+    if (this.state.state === 'selecting') {
+      this.setState({
+        type: value
+      });
+    }
+  }
+
   onStartNewQuiz = (questions) => {
     if (questions.length > 0) {
       this.setState({
@@ -56,20 +70,22 @@ export class Quiz extends React.Component {
   }
 
   onCheckAnswer = (answer) => {
-    var idx, score, gotIt;
+    var idx, score, gotIt, q;
     if (this.state.state !== 'running') {
       return;
     }
     idx = this.state.currentQuestionIdx;
     score = this.state.score;
     gotIt = false;
-    if (answer === this.state.questions[idx].correct) {
+    if (answer === this.state.questions[idx].question.desc) {
       score = score + 1,
       gotIt = true;
     }
     // http://stackoverflow.com/questions/30899454/dynamic-key-in-immutability-update-helper-for-array
+    q = this.state.questions[idx];
+    q.gotIt = gotIt;
     this.setState({
-      questions: update(this.state.questions, {[idx]: {gotIt: {$set: gotIt}}}),
+      questions: update(this.state.questions, {[idx]: {$set: q}}),
       answered: this.state.answered + 1,
       score: score
     })
@@ -85,16 +101,22 @@ export class Quiz extends React.Component {
   }
 
   render() {
-    var message, idx;
+    var message;
+
     message = 'You scored ' + this.state.score + ' out of ' +
       this.state.answered + ' in ' +
       parseInt((this.state.elapsed/1000), 10) + ' seconds.';
 
-    idx = this.state.currentQuestionIdx;
     return (
       <div>
         <div className='header'>
           <div className='container'>{'Maprunner IOF Control Description Quiz'}</div>
+        </div>
+        <div className='menu-bar'>
+          <MenuBar
+            type={this.state.type}
+            onSelect={this.onSelectQuizType}
+          />
         </div>
         <div className='container'>
           {this.state.state === 'selecting' ?
@@ -103,24 +125,15 @@ export class Quiz extends React.Component {
           </div>
           :
           <div>
-            <div>
-              <QuestionAsCD
-                number={this.state.currentQuestionIdx + 1}
-                code={this.state.questions[idx].code}
-              />
-              <Score
-                score={this.state.score}
-                from={idx}
-              />
-              <Timer elapsed={parseInt((this.state.elapsed/1000), 10)} />
-            </div>
-            <div>
-              <AnswerList
-                answers={this.state.questions[idx].answers}
-                onClick={this.onCheckAnswer}
-              />
-            </div>
-            <AnswersAsIcons questions={this.state.questions.slice(0, this.state.answered)} />
+            <QuestionPage
+              idx={this.state.currentQuestionIdx}
+              type={this.state.type}
+              questions={this.state.questions}
+              score={this.state.score}
+              answered={this.state.answered}
+              elapsed={parseInt((this.state.elapsed/1000), 10)}
+              onCheckAnswer={this.onCheckAnswer}
+            />
           </div>
           }
           {this.state.state === 'displayingResult' ?
@@ -139,82 +152,45 @@ export class Quiz extends React.Component {
   }
 }
 
-export class QuestionAsCD extends React.Component {
+export class MenuBar extends React.Component {
+  onSelectSymbolsToText = () => {
+    this.props.onSelect(SYMBOLS_TO_TEXT);
+  }
+
+  onSelectTextToSymbols = () => {
+    this.props.onSelect(TEXT_TO_SYMBOLS);
+  }
+
   render() {
-    var chr = String.fromCharCode(this.props.code);
+    var caption;
+    caption = (this.props.type === SYMBOLS_TO_TEXT ?
+      'Identify the text description for a given symbol' :
+      'Identify the symbol for a given text description'
+    );
     return (
-      <div className='question-cell'>
-        <span className='cd'>{chr}</span>
+      <div className='container'>
+        <div>
+        <ul className='nav nav-pills'>
+          <li className={this.props.type === SYMBOLS_TO_TEXT ? 'active' : null}
+            onClick={this.onSelectSymbolsToText}
+            title={caption}
+          >
+            <a href='#'>Symbols</a>
+          </li>
+          <li className={this.props.type === TEXT_TO_SYMBOLS ? 'active' : null}
+            onClick={this.onSelectTextToSymbols}
+            title={caption}
+          >
+            <a href='#'>Text</a>
+          </li>
+        </ul>
+      </div>
+      <div className='menu-text'>{caption}</div>
       </div>
     );
   }
 }
 
-export class SmallCDIcon extends React.Component {
-  render() {
-    var chr = String.fromCharCode(this.props.code);
-    return (
-      <div className='small-cd-icon cd'>
-        <span
-          className={this.props.gotIt ? 'correct-color' : 'wrong-color'}
-          title={this.props.desc}
-        >
-          {chr}
-        </span>
-      </div>
-    );
-  }
-}
-
-export class AnswersAsIcons extends React.Component {
-  render() {
-    var icons = this.props.questions.map(function(q, i) {
-      return(
-        <SmallCDIcon
-          key={i}
-          code={q.code}
-          gotIt={q.gotIt}
-          desc={q.correct}
-        />
-      );
-    });
-    return (
-      <div className='answer-icon-list'>
-        {icons}
-      </div>
-    )
-  }
-}
-
-export class Score extends React.Component {
-  render() {
-    return (
-      <div className='panel panel-primary score'>
-        <div className='panel-heading'>
-          <h3 className='panel-title'>Score</h3>
-        </div>
-        <div className='panel-body'>
-          {this.props.score}/{this.props.from}
-        </div>
-      </div>
-    )
-  }
-}
-
-export class Timer extends React.Component {
-  render() {
-    return (
-      <div className='panel panel-primary time'>
-        <div className='panel-heading'>
-          <h3 className='panel-title'>Time</h3>
-        </div>
-        <div className='panel-body'>
-          {this.props.elapsed}
-        </div>
-      </div>
-    )
-  }
-}
 
 export class ResultMessage extends React.Component {
   componentDidMount() {
@@ -252,45 +228,4 @@ export class ResultMessage extends React.Component {
     );
   }
 
-}
-
-export class Answer extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.answer);
-  }
-
-  render() {
-    return (
-      <button className='answer' onClick={this.onClick}>
-        {this.props.number}) {this.props.answer}
-      </button>
-    )
-  }
-}
-
-export class AnswerList extends React.Component {
-  render() {
-    var self = this;
-    if (!this.props.answers) {
-      return null;
-    }
-    var answers = this.props.answers.map(function(ans, i) {
-      return(
-        <Answer
-          key={i}
-          number={i + 1}
-          answer={ans}
-          onClick={self.props.onClick}
-        />
-      );
-    });
-    if(!answers.length) {
-      return null;
-    }
-    return (
-      <div>
-        {answers}
-      </div>
-    )
-  }
 }
