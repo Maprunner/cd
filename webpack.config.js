@@ -42,7 +42,7 @@ var common = {
         include: PATHS.app
       },
       {
-        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+        test: /\.woff($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
         loader: 'file-loader',
         include: PATHS.app
       }

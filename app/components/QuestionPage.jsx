@@ -1,13 +1,13 @@
 'use strict';
 
 import React from 'react';
-import {SYMBOLS_TO_TEXT} from './Quiz.jsx'
+import {MatchCards} from './MatchCards.jsx'
+import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS} from './Quiz.jsx'
 
 export class QuestionPage extends React.Component {
-  render() {
+  renderSymbolsToText() {
     return(
       <div>
-      {this.props.type === SYMBOLS_TO_TEXT ?
         <SymbolsToTextQuestionPage
           idx={this.props.idx}
           answered={this.props.answered}
@@ -16,7 +16,13 @@ export class QuestionPage extends React.Component {
           score={this.props.score}
           onCheckAnswer={this.props.onCheckAnswer}
         />
-      :
+      </div>
+    );
+  }
+
+  renderTextToSymbols() {
+    return(
+      <div>
         <TextToSymbolsQuestionPage
           idx={this.props.idx}
           answered={this.props.answered}
@@ -25,9 +31,35 @@ export class QuestionPage extends React.Component {
           score={this.props.score}
           onCheckAnswer={this.props.onCheckAnswer}
         />
-      }
-    </div>
-    )
+      </div>
+    );
+  }
+
+  renderMatchItems() {
+    return(
+      <div>
+        <MatchCards
+          questions={this.props.questions}
+          answered={this.props.answered}
+          elapsed={this.props.elapsed}
+          score={this.props.score}
+          onFinished={this.props.onCheckAnswer}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    switch(this.props.type) {
+      case SYMBOLS_TO_TEXT:
+        return this.renderSymbolsToText();
+      case TEXT_TO_SYMBOLS:
+        return this.renderTextToSymbols();
+      case MATCH_ITEMS:
+        return this.renderMatchItems();
+      default:
+        return null;
+    }
   }
 }
 

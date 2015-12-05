@@ -1,5 +1,6 @@
 'use strict';
 /*global $*/
+/*global _*/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {StartPage} from './StartPage.jsx'
@@ -10,6 +11,7 @@ var update = require('react-addons-update');
 
 export const SYMBOLS_TO_TEXT = 1;
 export const TEXT_TO_SYMBOLS = 2;
+export const MATCH_ITEMS = 3;
 
 export class Quiz extends React.Component {
   constructor(props) {
@@ -69,6 +71,20 @@ export class Quiz extends React.Component {
     }
   }
 
+  onMatchFinished = (validFinish, score, attempts) => {
+    if (validFinish) {
+      this.setState({
+        state: 'displayingResult',
+        score: score,
+        answered: attempts
+      });
+    } else {
+      this.setState({
+        state: 'selecting'
+      });
+    }
+  }
+
   onCheckAnswer = (answer) => {
     var idx, score, gotIt, q;
     if (this.state.state !== 'running') {
@@ -89,8 +105,6 @@ export class Quiz extends React.Component {
       answered: this.state.answered + 1,
       score: score
     })
-
-
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
       this.setState({
         state: 'displayingResult'
@@ -114,14 +128,17 @@ export class Quiz extends React.Component {
         </div>
         <div className='menu-bar'>
           <MenuBar
-            type={this.state.type}
+            active={this.state.type}
             onSelect={this.onSelectQuizType}
           />
         </div>
         <div className='container'>
           {this.state.state === 'selecting' ?
           <div>
-            <StartPage onStart={this.onStartNewQuiz} />
+            <StartPage
+              onStart={this.onStartNewQuiz}
+              type={this.state.type}
+            />
           </div>
           :
           <div>
@@ -132,7 +149,11 @@ export class Quiz extends React.Component {
               score={this.state.score}
               answered={this.state.answered}
               elapsed={parseInt((this.state.elapsed/1000), 10)}
-              onCheckAnswer={this.onCheckAnswer}
+              onCheckAnswer={this.state.type === MATCH_ITEMS ?
+                this.onMatchFinished
+                :
+                this.onCheckAnswer
+              }
             />
           </div>
           }
@@ -140,6 +161,7 @@ export class Quiz extends React.Component {
             <ResultMessage
               onClose={this.onResultWindowClose}
               questions={this.state.questions}
+              type={this.state.type}
             >
               {message}
             </ResultMessage>
@@ -152,37 +174,46 @@ export class Quiz extends React.Component {
   }
 }
 
-export class MenuBar extends React.Component {
-  onSelectSymbolsToText = () => {
-    this.props.onSelect(SYMBOLS_TO_TEXT);
-  }
-
-  onSelectTextToSymbols = () => {
-    this.props.onSelect(TEXT_TO_SYMBOLS);
+export class MenuButton extends React.Component {
+  onClick = () => {
+    this.props.onClick(this.props.btn.value);
   }
 
   render() {
-    var caption;
-    caption = (this.props.type === SYMBOLS_TO_TEXT ?
-      'Identify the text description for a given symbol' :
-      'Identify the symbol for a given text description'
+    return (
+      <li className={this.props.active === this.props.btn.value ? 'active' : null}
+        onClick={this.onClick}
+        title={this.props.btn.title}
+      >
+        <a href='#'>{this.props.btn.text}</a>
+      </li>
     );
+  }
+}
+
+export class MenuBar extends React.Component {
+  render() {
+    var menu, self, caption;
+    self = this;
+    menu = this.props.buttons.map(function(btn, i) {
+      return(
+        <MenuButton
+          key={i}
+          btn={btn}
+          active={self.props.active}
+          onClick={self.props.onSelect}
+        />
+      );
+    });
+    caption = _.chain(this.props.buttons)
+      .where({'value': this.props.active})
+      .pluck('caption')
+      .value();
     return (
       <div className='container'>
         <div>
         <ul className='nav nav-pills'>
-          <li className={this.props.type === SYMBOLS_TO_TEXT ? 'active' : null}
-            onClick={this.onSelectSymbolsToText}
-            title={caption}
-          >
-            <a href='#'>Symbols</a>
-          </li>
-          <li className={this.props.type === TEXT_TO_SYMBOLS ? 'active' : null}
-            onClick={this.onSelectTextToSymbols}
-            title={caption}
-          >
-            <a href='#'>Text</a>
-          </li>
+          {menu}
         </ul>
       </div>
       <div className='menu-text'>{caption}</div>
@@ -191,10 +222,26 @@ export class MenuBar extends React.Component {
   }
 }
 
+MenuBar.defaultProps = {
+  buttons: [
+    {text: 'Symbols',
+     value: SYMBOLS_TO_TEXT,
+     caption: 'Identify the text description for a given symbol'
+    },
+    {text: 'Text',
+     value: TEXT_TO_SYMBOLS ,
+     caption: 'Identify the symbol for a given text description'
+    },
+    {text: 'Match',
+     value: MATCH_ITEMS,
+     caption: 'Match symbols and text'
+    }
+  ]
+}
+
 
 export class ResultMessage extends React.Component {
   componentDidMount() {
-    //var node = React.findDOMNode(this.refs.resultMessage);
     var node = ReactDOM.findDOMNode(this.refs.resultMessage);
     $(node).modal('show');
     // use event triggered when modal is hidden to reset visibility flag
@@ -217,7 +264,11 @@ export class ResultMessage extends React.Component {
           </div>
           <div className='modal-body'>
             {this.props.children}
-            <AnswersAsIcons questions={this.props.questions} />
+            {this.props.type !== MATCH_ITEMS ?
+              <AnswersAsIcons questions={this.props.questions} />
+              :
+              null
+            }
           </div>
           <div className='modal-footer'>
             <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>

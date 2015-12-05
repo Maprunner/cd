@@ -1,6 +1,7 @@
 'use strict';
 /*global _*/
 import React from 'react';
+import {MATCH_ITEMS} from './Quiz.jsx'
 
 Array.prototype.shuffle = function() {
     var input = this;
@@ -40,7 +41,13 @@ export class StartPage extends React.Component {
   }
 
   onStartClick = () => {
-    this.props.onStart(this.createNewQuiz());
+    var questions;
+    if (this.props.type === MATCH_ITEMS) {
+      questions = this.createMatch();
+    } else {
+      questions = this.createQuiz();
+    }
+    this.props.onStart(questions);
   }
 
   onSetCategory = (category) => {
@@ -73,7 +80,48 @@ export class StartPage extends React.Component {
     return questions;
   }
 
-  createNewQuiz() {
+  createMatch() {
+    var i, shuffled, text, symbols, questions;
+    shuffled = this.state.questions.shuffle();
+    text = [];
+    symbols = [];
+    for (i = 0; i < shuffled.length; i = i + 1) {
+      // only use one 'special symbol' to avoid confusion
+      if (shuffled[i].code !== 59717) {
+        text.push({
+          type: 'text',
+          code: shuffled[i].code,
+          desc: shuffled[i].desc,
+          gotIt: false,
+          selected: false
+        });
+        symbols.push({
+          type: 'symbol',
+          code: shuffled[i].code,
+          desc: shuffled[i].desc,
+          gotIt: false,
+          selected: false
+        });
+      }
+    }
+    // move correct pairs apart
+    symbols.shuffle();
+    // merge symbol and text arrays
+    // by taking symbol and text alternately
+    // starting with an empty array
+    questions = _.reduce( symbols,
+      function(questions, symbol, idx) {
+        questions.push(symbol);
+        questions.push(text[idx])
+        return questions;
+      },
+      []
+    );
+    return questions;
+  }
+
+
+  createQuiz() {
     var i, shuffled, detail, questions, answers;
     shuffled = this.state.questions.shuffle();
     // extract list of possible answers
