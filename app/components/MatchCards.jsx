@@ -92,15 +92,27 @@ export class MatchCards extends React.Component {
         questions: this.props.questions,
         selectedIdx: null,
         matched: 0,
-        attempts: 0
+        attempts: 0,
+        elapsed: 0
       };
   }
+  
+    componentDidMount() {
+      this.matchTimer = setInterval(this.onTick, 1000);
+      var node = ReactDOM.findDOMNode(this.refs.matchGrid);
+      $(node).modal('show');
+      // use event triggered when modal is hidden to cancel match
+      $(node).on('hidden.bs.modal', this.props.onFinished.bind(this, false));
+    }
 
-  componentDidMount() {
-    var node = ReactDOM.findDOMNode(this.refs.matchGrid);
-    $(node).modal('show');
-    // use event triggered when modal is hidden to cancel match
-    $(node).on('hidden.bs.modal', this.props.onFinished.bind(this, false));
+  componentWillUnmount() {
+   clearInterval(this.matchTimer);
+  }
+
+  onTick = () => {
+    if (this.state.matched < (this.state.questions.length / 2)) {
+      this.setState({elapsed: this.state.elapsed + 1});
+    }
   }
 
   onCheckMatch = (idx) => {
@@ -167,7 +179,11 @@ export class MatchCards extends React.Component {
           <div className='modal-content'>
             <div className='modal-header'>
               <button type='button' className='close' data-dismiss='modal'>&times;</button>
-              <h4 className='modal-title'>Match</h4>
+              <h4 className='modal-title'>
+                {this.state.matched} matched.&nbsp;
+                {this.state.attempts - this.state.matched} mistakes.&nbsp;
+                {this.state.elapsed} seconds.
+              </h4>
             </div>
             <div className='modal-body'>
               {cards}

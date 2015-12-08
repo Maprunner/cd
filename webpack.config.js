@@ -45,6 +45,11 @@ var common = {
         test: /\.woff($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
         loader: 'file-loader',
         include: PATHS.app
+      },
+      {
+        test: /\.gif/,
+        loader: 'file-loader',
+        include: PATHS.app
       }
     ]
   },

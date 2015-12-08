@@ -1,13 +1,13 @@
 'use strict';
 /*global $*/
-/*global _*/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {StartPage} from './StartPage.jsx'
-import {QuestionPage} from './QuestionPage.jsx'
-import {AnswersAsIcons} from './QuestionPage.jsx'
+import {MenuBar} from './Menu.jsx'
+import {QuestionPage, AnswersAsIcons} from './QuestionPage.jsx'
 
 var update = require('react-addons-update');
+var logo = require('./img/cdquizlogo.gif');
 
 export const SYMBOLS_TO_TEXT = 1;
 export const TEXT_TO_SYMBOLS = 2;
@@ -124,7 +124,12 @@ export class Quiz extends React.Component {
     return (
       <div>
         <div className='header'>
-          <div className='container'>{'Maprunner IOF Control Description Quiz'}</div>
+          <div className='container'>
+            <img src={logo}></img>
+            <span className='title'>
+              {'Maprunner IOF Control Description Quiz'}
+            </span>
+          </div>
         </div>
         <div className='menu-bar'>
           <MenuBar
@@ -134,28 +139,24 @@ export class Quiz extends React.Component {
         </div>
         <div className='container'>
           {this.state.state === 'selecting' ?
-          <div>
             <StartPage
               onStart={this.onStartNewQuiz}
               type={this.state.type}
             />
-          </div>
           :
-          <div>
-            <QuestionPage
-              idx={this.state.currentQuestionIdx}
-              type={this.state.type}
-              questions={this.state.questions}
-              score={this.state.score}
-              answered={this.state.answered}
-              elapsed={parseInt((this.state.elapsed/1000), 10)}
-              onCheckAnswer={this.state.type === MATCH_ITEMS ?
-                this.onMatchFinished
-                :
-                this.onCheckAnswer
-              }
-            />
-          </div>
+          <QuestionPage
+            idx={this.state.currentQuestionIdx}
+            type={this.state.type}
+            questions={this.state.questions}
+            score={this.state.score}
+            answered={this.state.answered}
+            elapsed={parseInt((this.state.elapsed/1000), 10)}
+            onCheckAnswer={this.state.type === MATCH_ITEMS ?
+              this.onMatchFinished
+              :
+              this.onCheckAnswer
+            }
+          />
           }
           {this.state.state === 'displayingResult' ?
             <ResultMessage
@@ -169,76 +170,28 @@ export class Quiz extends React.Component {
             null
           }
         </div>
+        {this.state.state === 'selecting' ?
+          <div className='footer'>
+            <div className='container'>
+              <span>You can download a copy of the Maprunner IOF pictorial
+                control description guide from the
+                <a
+                  href='http://www.maprunner.co.uk/iof-control-descriptions/'
+                  target='_blank'
+                >
+                &nbsp;Maprunner&nbsp;
+                </a>
+                website.
+              </span>
+            </div>
+          </div>
+        :
+        null
+      }
       </div>
     );
   }
 }
-
-export class MenuButton extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.btn.value);
-  }
-
-  render() {
-    return (
-      <li className={this.props.active === this.props.btn.value ? 'active' : null}
-        onClick={this.onClick}
-        title={this.props.btn.title}
-      >
-        <a href='#'>{this.props.btn.text}</a>
-      </li>
-    );
-  }
-}
-
-export class MenuBar extends React.Component {
-  render() {
-    var menu, self, caption;
-    self = this;
-    menu = this.props.buttons.map(function(btn, i) {
-      return(
-        <MenuButton
-          key={i}
-          btn={btn}
-          active={self.props.active}
-          onClick={self.props.onSelect}
-        />
-      );
-    });
-    caption = _.chain(this.props.buttons)
-      .where({'value': this.props.active})
-      .pluck('caption')
-      .value();
-    return (
-      <div className='container'>
-        <div>
-        <ul className='nav nav-pills'>
-          {menu}
-        </ul>
-      </div>
-      <div className='menu-text'>{caption}</div>
-      </div>
-    );
-  }
-}
-
-MenuBar.defaultProps = {
-  buttons: [
-    {text: 'Symbols',
-     value: SYMBOLS_TO_TEXT,
-     caption: 'Identify the text description for a given symbol'
-    },
-    {text: 'Text',
-     value: TEXT_TO_SYMBOLS ,
-     caption: 'Identify the symbol for a given text description'
-    },
-    {text: 'Match',
-     value: MATCH_ITEMS,
-     caption: 'Match symbols and text'
-    }
-  ]
-}
-
 
 export class ResultMessage extends React.Component {
   componentDidMount() {
