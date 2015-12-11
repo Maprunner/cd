@@ -9,7 +9,9 @@
   ],
   "extends": "eslint:recommended",
   "rules": {
+    "no-console": 0,
     "new-cap": 1,
+    "no-unused-vars": 1,
     "strict": [1, "global"],
     "no-underscore-dangle": 1,
     "no-use-before-define": 1,

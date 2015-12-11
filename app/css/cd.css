@@ -17,12 +17,36 @@ body {
   width: 100%;
 }
 
+.match-modal .match-modal-dialog {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .header {
   background-color: black;
   color: white;
-  font-size: 22px;
+  font-size: 20px;
   height: 50px;
   line-height: 2;
+  width: 100%;
+}
+
+.title {
+  padding-left: 5px;
+}
+
+.footer {
+  background-color: silver;
+  font-size: 1.2em;
+  height: 100px;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.menu-bar {
+  background-color: silver;
+  padding: 5px 0;
   width: 100%;
 }
 
@@ -35,6 +59,43 @@ body {
 
 .category-list {
   margin: 10px 0 20px 0;
+}
+
+.description-text {
+  font-size: 35px;
+  margin: 5px;
+  text-align: left;
+  width: 100%;
+}
+
+.cd-card {
+  align-items: center;
+  border: 2px solid;
+  border-radius: 10px;
+  display: inline-flex;
+  height: 80px;
+  justify-content: center;
+  margin: 2px;
+  text-align: center;
+  vertical-align: middle;
+  width: 80px;
+}
+
+.cd-card-text {
+  font-size: 15px;
+}
+
+.cd-card-symbol {
+  font-size: 60px;
+}
+
+.card-got-it {
+  background-color: silver;
+}
+
+.card-selected {
+  background-color: green;
+  color: white;
 }
 
 .question-cell {
@@ -57,7 +118,6 @@ body {
   vertical-align: middle;
   width: 30px;
 }
-
 .score {
   display: inline-block;
   font-size: 30px;
@@ -96,10 +156,36 @@ body {
   width: 40px;
 }
 
+.big-cd-icon {
+  border: 3px solid;
+  color: black;
+  cursor: default;
+  display: inline-block;
+  font-size: 60px;
+  margin: 5px;
+  text-align: center;
+  width: 72px;
+}
+
+.menu-text {
+  display: inline-block;
+  font-size: 1.25em;
+  margin: 5px 0;
+}
+
+.start-button {
+  margin: 25px 0;
+  width: 100%;
+}
+
 .option-text {
   display: inline-block;
   font-size: 1.5em;
   margin: 5px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .text-right {

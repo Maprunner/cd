@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <noscript><h3>You have javascript disabled. Sorry but this site will not work correctly.</h3></noscript>
-    {% if (o.htmlWebpackPlugin.files.favicon) { %}
-    <link rel="shortcut icon" href="{%=o.htmlWebpackPlugin.files.favicon%}">
-    {% } %}
+    <link rel="shortcut icon" href="img/favicon.ico">
     {% for (var css in o.htmlWebpackPlugin.files.css) { %}
     <link href="{%=o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
     {% } %}
