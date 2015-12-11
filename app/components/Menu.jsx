@@ -1,6 +1,7 @@
 'use strict';
 /*global _*/
 import React from 'react';
+import {buttonDefs} from './data.jsx'
 
 export class MenuButton extends React.Component {
   onClick = () => {
@@ -45,7 +46,9 @@ export class MenuBar extends React.Component {
             {menu}
           </ul>
         </div>
-        <div className='menu-text'>{caption}</div>
+        <div className='menu-text'>
+          {caption}
+        </div>
       </div>
 </div>
     );
@@ -53,19 +56,5 @@ export class MenuBar extends React.Component {
 }
 
 MenuBar.defaultProps = {
-  // can't use TEXT_TO_SYMBOLS as values since they get ignored for some reason
-  buttons: [
-    {text: 'Symbols',
-     value: 1,
-     caption: 'Identify the text description for a given symbol'
-    },
-    {text: 'Text',
-     value: 2,
-     caption: 'Identify the symbol for a given text description'
-    },
-    {text: 'Match',
-     value: 3,
-     caption: 'Match symbols and text'
-   }
-  ]
+  buttons: buttonDefs
 }

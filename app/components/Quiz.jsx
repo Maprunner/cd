@@ -1,32 +1,37 @@
 'use strict';
-/*global $*/
+/*global _*/
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {StartPage} from './StartPage.jsx'
 import {MenuBar} from './Menu.jsx'
-import {QuestionPage, AnswersAsIcons} from './QuestionPage.jsx'
+import {QuestionPage} from './QuestionPage.jsx'
+import {Results, loadAllTimeResults, saveAllTimeResults, loadName, saveName} from './Results.jsx'
+import {Footer} from './Footer.jsx'
+import {ResultMessage} from './ResultMessage.jsx'
+import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs} from './data.jsx'
 
 var update = require('react-addons-update');
 var logo = require('./img/cdquizlogo.gif');
 
-export const SYMBOLS_TO_TEXT = 1;
-export const TEXT_TO_SYMBOLS = 2;
-export const MATCH_ITEMS = 3;
+export const NEW_RESULTS_COUNT = 10;
+export const ALL_TIME_RESULTS_COUNT = 10;
 
 export class Quiz extends React.Component {
   constructor(props) {
     super(props);
-    // possible states: selecting, running, displayingResult
     this.state = {
-        questions: {},
-        currentQuestionIdx: 0,
-        answered: 0,
-        score: 0,
-        start: 0,
-        elapsed: 0,
-        state: 'selecting',
-        type: SYMBOLS_TO_TEXT
-      };
+      questions: {},
+      currentQuestionIdx: 0,
+      answered: 0,
+      score: 0,
+      start: 0,
+      elapsed: 1,
+      quizRunning: false,
+      displayingResult: false,
+      type: SYMBOLS_TO_TEXT,
+      results: [],
+      name: loadName(),
+      allTimeResults: loadAllTimeResults()
+    };
   }
 
   componentDidMount() {
@@ -38,19 +43,26 @@ export class Quiz extends React.Component {
   }
 
   onTick = () => {
-    if (this.state.state === 'running') {
+    if (this.state.quizRunning) {
       this.setState({elapsed: new Date() - this.state.start});
     }
   }
 
   onResultWindowClose = () => {
     this.setState({
-      state: 'selecting'
+      displayingResult: false
+    });
+  }
+
+  onSetName = (name) => {
+    saveName(name);
+    this.setState({
+      name: name
     });
   }
 
   onSelectQuizType = (value) => {
-    if (this.state.state === 'selecting') {
+    if (!this.state.quizRunning) {
       this.setState({
         type: value
       });
@@ -62,7 +74,7 @@ export class Quiz extends React.Component {
       this.setState({
         questions: questions,
         currentQuestionIdx: 0,
-        state: 'running',
+        quizRunning: true,
         start: new Date().getTime(),
         elapsed: 0,
         answered: 0,
@@ -72,22 +84,34 @@ export class Quiz extends React.Component {
   }
 
   onMatchFinished = (validFinish, score, attempts) => {
+    var newResults;
     if (validFinish) {
+      newResults = this.addNewResult({
+        type: this.getTypeText(this.state.type),
+        name: this.state.name,
+        score: score,
+        from: attempts,
+        percent: (score * 100/attempts).toFixed(1),
+        time: parseInt((this.state.elapsed/1000), 10)
+      }),
       this.setState({
-        state: 'displayingResult',
+        results: newResults.new,
+        allTimeResults: newResults.allTime,
+        quizRunning: false,
+        displayingResult: true,
         score: score,
         answered: attempts
       });
     } else {
       this.setState({
-        state: 'selecting'
+        quizRunning: false
       });
     }
   }
 
   onCheckAnswer = (answer) => {
-    var idx, score, gotIt, q;
-    if (this.state.state !== 'running') {
+    var idx, score, gotIt, q, answered, newResults;
+    if (!this.state.quizRunning) {
       return;
     }
     idx = this.state.currentQuestionIdx;
@@ -100,26 +124,127 @@ export class Quiz extends React.Component {
     // http://stackoverflow.com/questions/30899454/dynamic-key-in-immutability-update-helper-for-array
     q = this.state.questions[idx];
     q.gotIt = gotIt;
+    answered = this.state.answered + 1
     this.setState({
       questions: update(this.state.questions, {[idx]: {$set: q}}),
-      answered: this.state.answered + 1,
+      answered: answered,
       score: score
     })
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+      newResults = this.addNewResult({
+        type: this.getTypeText(this.state.type),
+        name: this.state.name,
+        score: score,
+        from: answered,
+        percent: (score * 100/answered).toFixed(1),
+        time: parseInt((this.state.elapsed/1000), 10)
+      });
       this.setState({
-        state: 'displayingResult'
+        results: newResults.new,
+        allTimeResults: newResults.allTime,
+        quizRunning: false,
+        displayingResult: true
       });
     } else {
       this.setState({currentQuestionIdx: this.state.currentQuestionIdx + 1});
     }
   }
 
+  adjustResultArray(array, result, length) {
+    var newResults;
+    newResults = _.chain(array)
+      // add new result to array
+      .push(result)
+      // sort by score DESC percent DESC time ASC
+      .sortBy('time')
+      .reverse()
+      .sortBy(function(r) {return parseFloat(r.percent);})
+      .sortBy('score')
+      .reverse()
+      // truncate
+      .first(length)
+      .value();
+    return newResults;
+  }
+
+  addNewResult(result) {
+    var newResults, newAllTimeResults;
+    newResults = this.adjustResultArray(
+      this.state.results,
+      result,
+      NEW_RESULTS_COUNT
+    )
+    newAllTimeResults = this.adjustResultArray(
+      this.state.allTimeResults,
+      result,
+      ALL_TIME_RESULTS_COUNT
+    );
+    saveAllTimeResults(newAllTimeResults);
+    return({
+      new: newResults,
+      allTime: newAllTimeResults
+    });
+  }
+
+  getTypeText(type) {
+    return _.chain(buttonDefs)
+      .where({value: type})
+      .pluck('text')
+      .value();
+  }
+
+  saveResult(results) {
+    this.setState({
+      results: results
+    });
+  }
+
+  renderBody() {
+    if (this.state.type === VIEW_RESULTS) {
+      return(
+        <Results
+          results={this.state.results}
+          a={'a'}
+          allTimeResults={this.state.allTimeResults}
+        />
+      );
+    }
+    if (!this.state.quizRunning  && !this.state.displayingResult) {
+      return(
+        <StartPage
+          onStart={this.onStartNewQuiz}
+          onSetName={this.onSetName}
+          type={this.state.type}
+          name={this.state.name}
+        />
+      );
+    } else {
+      return(
+        <QuestionPage
+          idx={this.state.currentQuestionIdx}
+          type={this.state.type}
+          questions={this.state.questions}
+          score={this.state.score}
+          answered={this.state.answered}
+          elapsed={parseInt((this.state.elapsed/1000), 10)}
+          onCheckAnswer={this.state.type === MATCH_ITEMS ?
+            this.onMatchFinished
+            :
+            this.onCheckAnswer
+          }
+        />
+      );
+    }
+  }
+
   render() {
-    var message;
+    var message, body;
 
     message = 'You scored ' + this.state.score + ' out of ' +
       this.state.answered + ' in ' +
       parseInt((this.state.elapsed/1000), 10) + ' seconds.';
+
+    body = this.renderBody();
 
     return (
       <div>
@@ -138,31 +263,13 @@ export class Quiz extends React.Component {
           />
         </div>
         <div className='container'>
-          {this.state.state === 'selecting' ?
-            <StartPage
-              onStart={this.onStartNewQuiz}
-              type={this.state.type}
-            />
-          :
-          <QuestionPage
-            idx={this.state.currentQuestionIdx}
-            type={this.state.type}
-            questions={this.state.questions}
-            score={this.state.score}
-            answered={this.state.answered}
-            elapsed={parseInt((this.state.elapsed/1000), 10)}
-            onCheckAnswer={this.state.type === MATCH_ITEMS ?
-              this.onMatchFinished
-              :
-              this.onCheckAnswer
-            }
-          />
-          }
-          {this.state.state === 'displayingResult' ?
+          {body}
+          {this.state.displayingResult ?
             <ResultMessage
               onClose={this.onResultWindowClose}
               questions={this.state.questions}
               type={this.state.type}
+              name={this.state.name}
             >
               {message}
             </ResultMessage>
@@ -170,66 +277,10 @@ export class Quiz extends React.Component {
             null
           }
         </div>
-        {this.state.state === 'selecting' ?
-          <div className='footer'>
-            <div className='container'>
-              <span>You can download a copy of the Maprunner IOF pictorial
-                control description guide from the
-                <a
-                  href='http://www.maprunner.co.uk/iof-control-descriptions/'
-                  target='_blank'
-                >
-                &nbsp;Maprunner&nbsp;
-                </a>
-                website.
-              </span>
-            </div>
-          </div>
-        :
-        null
+        {!this.state.quizRunning  && !this.state.displayingResult ?
+          <Footer /> : null
       }
       </div>
     );
   }
-}
-
-export class ResultMessage extends React.Component {
-  componentDidMount() {
-    var node = ReactDOM.findDOMNode(this.refs.resultMessage);
-    $(node).modal('show');
-    // use event triggered when modal is hidden to reset visibility flag
-    $(node).on('hidden.bs.modal', this.props.onClose);
-  }
-
-  render() {
-    return (
-    <div
-      ref='resultMessage'
-      className='modal fade'
-      role='dialog'
-      data-backdrop='static'
-    >
-      <div className='modal-dialog'>
-        <div className='modal-content'>
-          <div className='modal-header'>
-            <button type='button' className='close' data-dismiss='modal'>&times;</button>
-            <h4 className='modal-title'>Congratulations</h4>
-          </div>
-          <div className='modal-body'>
-            {this.props.children}
-            {this.props.type !== MATCH_ITEMS ?
-              <AnswersAsIcons questions={this.props.questions} />
-              :
-              null
-            }
-          </div>
-          <div className='modal-footer'>
-            <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    );
-  }
-
 }
