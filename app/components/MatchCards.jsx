@@ -2,6 +2,7 @@
 /*global $*/
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {t} from './data.jsx';
 
 var update = require('react-addons-update');
 
@@ -50,7 +51,7 @@ export class FinishedCard extends React.Component {
   render() {
     return(
       <div className='cd-card card-got-it'>
-        <div>OK</div>
+        <div>{t('OK')}</div>
       </div>
     );
   }
@@ -96,7 +97,7 @@ export class MatchCards extends React.Component {
         elapsed: 0
       };
   }
-  
+
     componentDidMount() {
       this.matchTimer = setInterval(this.onTick, 1000);
       var node = ReactDOM.findDOMNode(this.refs.matchGrid);

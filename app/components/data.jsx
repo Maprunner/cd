@@ -108,3 +108,18 @@ export const buttonDefs = [
    caption: 'View results'
   }
 ];
+
+// translation function
+export function t(str) {
+  var dictionary = {};
+  if (dictionary.hasOwnProperty(str)) {
+    return dictionary[str];
+  }
+  return str;
+}
+
+export function translateData() {
+  return baseData.map(function(data) {
+    data.desc = t(data.desc);
+  })
+}

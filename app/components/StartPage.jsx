@@ -157,6 +157,10 @@ export class StartPage extends React.Component {
           name={this.props.name}
           onSetName={this.props.onSetName}
         />
+        <LanguageSelect
+          lang={this.props.language}
+          onSelectLanguage={this.props.onSelectLanguage}
+        />
         <CategoryList
           onClick={this.onSetCategory}
           categories={this.state.categories}
@@ -233,6 +237,21 @@ export class NameInput extends React.Component {
           value={this.props.name}
           onChange={this.onNameChange}
         />
+      </div>
+    );
+  }
+}
+
+export class LanguageSelect extends React.Component {
+  onSelectLanguage = (lang) => {
+    this.props.onSelectLanguage(lang);
+  }
+
+  render(){
+    return(
+      <div>
+        // some sort of list of available languages
+        {this.props.language}
       </div>
     );
   }

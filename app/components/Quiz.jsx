@@ -7,7 +7,7 @@ import {QuestionPage} from './QuestionPage.jsx'
 import {Results, loadAllTimeResults, saveAllTimeResults, loadName, saveName} from './Results.jsx'
 import {Footer} from './Footer.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
-import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs} from './data.jsx'
+import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs, translateData, t} from './data.jsx'
 
 var update = require('react-addons-update');
 var logo = require('./img/cdquizlogo.gif');
@@ -17,7 +17,15 @@ export const ALL_TIME_RESULTS_COUNT = 10;
 
 export class Quiz extends React.Component {
   constructor(props) {
+    var lang;
     super(props);
+    // TODO extract language from query if we got one
+    // something like ?lang=en
+    lang= 'en';
+    //if (queryset) {
+    //  lang = 'new';
+    //}
+    //this.translate(lang);
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
@@ -30,7 +38,8 @@ export class Quiz extends React.Component {
       type: SYMBOLS_TO_TEXT,
       results: [],
       name: loadName(),
-      allTimeResults: loadAllTimeResults()
+      allTimeResults: loadAllTimeResults(),
+      language: lang
     };
   }
 
@@ -42,6 +51,11 @@ export class Quiz extends React.Component {
    clearInterval(this.timer);
   }
 
+  translate(lang) {
+    // translate all fixed text
+    translateData(lang);
+  }
+
   onTick = () => {
     if (this.state.quizRunning) {
       this.setState({elapsed: new Date() - this.state.start});
@@ -51,6 +65,13 @@ export class Quiz extends React.Component {
   onResultWindowClose = () => {
     this.setState({
       displayingResult: false
+    });
+  }
+
+  onSelectLanguage = (lang) => {
+    this.translate(lang);
+    this.setState({
+      language: lang
     });
   }
 
@@ -204,6 +225,7 @@ export class Quiz extends React.Component {
       return(
         <Results
           results={this.state.results}
+          // TODO why is this here?
           a={'a'}
           allTimeResults={this.state.allTimeResults}
         />
@@ -214,6 +236,7 @@ export class Quiz extends React.Component {
         <StartPage
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
+          onSelectLanguage={this.onSelectLanguage}
           type={this.state.type}
           name={this.state.name}
         />
@@ -240,9 +263,11 @@ export class Quiz extends React.Component {
   render() {
     var message, body;
 
-    message = 'You scored ' + this.state.score + ' out of ' +
-      this.state.answered + ' in ' +
-      parseInt((this.state.elapsed/1000), 10) + ' seconds.';
+    message = t('You scored #1 out #2 in #3 seconds');
+    // TODO
+    // #1 = this.state.score
+    // #2 = this.state.answered
+    // #3 = parseInt((this.state.elapsed/1000), 10)
 
     body = this.renderBody();
 
@@ -252,7 +277,7 @@ export class Quiz extends React.Component {
           <div className='container'>
             <img src={logo}></img>
             <span className='title'>
-              {'Maprunner IOF Control Description Quiz'}
+              {'Maprunner' + t('IOF Control Description Quiz')}
             </span>
           </div>
         </div>

@@ -1,5 +1,6 @@
 'use strict';
 import React from 'react';
+import {t} from './data.jsx';
 
 export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
@@ -74,11 +75,11 @@ export class Results extends React.Component {
           <thead>
             <tr>
               <th className='text-center'>#</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th className='text-center'>Score</th>
+              <th>{t('Name')}</th>
+              <th>{t('Type')}</th>
+              <th className='text-center'>{t('Score')}</th>
               <th className='text-center'>%</th>
-              <th className='text-center'>Time</th>
+              <th className='text-center'>{t('Time')}</th>
             </tr>
           </thead>
           <tbody>{formattedResults}</tbody>
@@ -90,7 +91,7 @@ export class Results extends React.Component {
   render() {
     return(
       <div>
-        {this.renderResults(this.props.results, 'This session')}
+        {this.renderResults(this.props.results, t('This session'))}
         {this.renderResults(this.props.allTimeResults, 'All time')}
       </div>
     );
