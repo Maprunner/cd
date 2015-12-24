@@ -3,7 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {AnswersAsIcons} from './QuestionPage.jsx'
-import {MATCH_ITEMS, t} from './data.jsx'
+import {MATCH_ITEMS} from './data.jsx'
+import {t} from './Quiz.jsx'
 
 export class ResultMessage extends React.Component {
   componentDidMount() {
@@ -36,7 +37,7 @@ export class ResultMessage extends React.Component {
             }
           </div>
           <div className='modal-footer'>
-            <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
+            <button type='button' className='btn btn-default' data-dismiss='modal'>{t('OK')}</button>
           </div>
         </div>
       </div>

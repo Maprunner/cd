@@ -4,7 +4,8 @@ import React from 'react';
 import {MatchCards} from './MatchCards.jsx'
 import {TextToSymbolsQuestionPage} from './TextToSymbolsQuestionPage.jsx'
 import {SymbolsToTextQuestionPage} from './SymbolsToTextQuestionPage.jsx'
-import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS, t} from './data.jsx'
+import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS} from './data.jsx'
+import {t} from './Quiz.jsx'
 
 export class QuestionPage extends React.Component {
   renderSymbolsToText() {
@@ -123,7 +124,7 @@ export class Timer extends React.Component {
     return (
       <div className='panel panel-primary time'>
         <div className='panel-heading'>
-          <h3 className='panel-title'>Time</h3>
+          <h3 className='panel-title'>{t('Time')}</h3>
         </div>
         <div className='panel-body'>
           {this.props.elapsed}

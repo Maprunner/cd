@@ -2,7 +2,7 @@
 /*global $*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {t} from './data.jsx';
+import {t} from './Quiz.jsx';
 
 var update = require('react-addons-update');
 
@@ -20,7 +20,7 @@ export class TextCard extends React.Component {
         }
         onClick={this.onClick}
       >
-        {this.props.question.desc}
+        {t(this.props.question.desc)}
       </div>
     );
   }
@@ -158,6 +158,7 @@ export class MatchCards extends React.Component {
   }
 
   render() {
+    var status;
     var self = this;
     var cards = this.state.questions.map(function(q, i) {
       return(
@@ -169,6 +170,9 @@ export class MatchCards extends React.Component {
         />
       );
     });
+    status = this.state.matched + ' ' + t('matched') + '. ';
+    status = status + (this.state.attempts - this.state.matched) + ' ' + t('mistakes');
+    status = status + '. ' + this.state.elapsed + ' ' + t('seconds') + '.';
     return(
       <div
         ref='matchGrid'
@@ -181,9 +185,7 @@ export class MatchCards extends React.Component {
             <div className='modal-header'>
               <button type='button' className='close' data-dismiss='modal'>&times;</button>
               <h4 className='modal-title'>
-                {this.state.matched} matched.&nbsp;
-                {this.state.attempts - this.state.matched} mistakes.&nbsp;
-                {this.state.elapsed} seconds.
+                {status}
               </h4>
             </div>
             <div className='modal-body'>

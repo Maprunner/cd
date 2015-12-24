@@ -205,6 +205,10 @@ body {
   background-color: red;
 }
 
+.top-margin {
+  margin-top: 10px;
+}
+
 @font-face {
   font-family: "orienteering";
   font-style: normal;

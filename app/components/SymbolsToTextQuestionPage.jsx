@@ -2,6 +2,7 @@
 
 import React from 'react';
 import {AnswersAsIcons, Score, Timer} from './QuestionPage.jsx'
+import {t} from './Quiz.jsx'
 
 export class SymbolsToTextQuestionPage extends React.Component {
   render() {
@@ -48,7 +49,7 @@ export class AnswerAsText extends React.Component {
   render() {
     return (
       <button className='answer' onClick={this.onClick}>
-        {this.props.number}) {this.props.answer}
+        {this.props.number}) {t(this.props.answer)}
       </button>
     )
   }

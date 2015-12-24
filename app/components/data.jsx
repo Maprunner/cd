@@ -86,6 +86,8 @@ export const TEXT_TO_SYMBOLS = 1;
 export const MATCH_ITEMS = 2;
 export const VIEW_RESULTS = 3;
 
+export const availableLanguages = ['en', 'fr'];
+
 export const buttonDefs = [
   {text: 'Symbols',
    hash: 'symbols',
@@ -108,18 +110,3 @@ export const buttonDefs = [
    caption: 'View results'
   }
 ];
-
-// translation function
-export function t(str) {
-  var dictionary = {};
-  if (dictionary.hasOwnProperty(str)) {
-    return dictionary[str];
-  }
-  return str;
-}
-
-export function translateData() {
-  return baseData.map(function(data) {
-    data.desc = t(data.desc);
-  })
-}

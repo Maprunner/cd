@@ -1,6 +1,7 @@
 'use strict';
 /*global _*/
 import React from 'react';
+import {t} from './Quiz.jsx'
 import {buttonDefs} from './data.jsx'
 
 export class MenuButton extends React.Component {
@@ -14,7 +15,7 @@ export class MenuButton extends React.Component {
         onClick={this.onClick}
         title={this.props.btn.title}
       >
-        <a href='#'>{this.props.btn.text}</a>
+        <a href='#'>{t(this.props.btn.text)}</a>
       </li>
     );
   }
@@ -47,7 +48,7 @@ export class MenuBar extends React.Component {
           </ul>
         </div>
         <div className='menu-text'>
-          {caption}
+          {t(caption)}
         </div>
       </div>
 </div>
