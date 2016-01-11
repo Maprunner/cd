@@ -86,6 +86,8 @@ export const TEXT_TO_SYMBOLS = 1;
 export const MATCH_ITEMS = 2;
 export const VIEW_RESULTS = 3;
 
+export const availableLanguages = ['en', 'fr'];
+
 export const buttonDefs = [
   {text: 'Symbols',
    hash: 'symbols',

@@ -1,11 +1,15 @@
 'use strict';
 /*global _*/
+/*global $*/
+
 import React from 'react';
 import {StartPage} from './StartPage.jsx'
 import {MenuBar} from './Menu.jsx'
 import {QuestionPage} from './QuestionPage.jsx'
-import {Results, loadAllTimeResults, saveAllTimeResults, loadName, saveName} from './Results.jsx'
-import {Footer} from './Footer.jsx'
+import {Results,
+        loadAllTimeResults, saveAllTimeResults,
+        loadName, saveName,
+        loadLanguage, saveLanguage} from './Results.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
 import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs} from './data.jsx'
 
@@ -15,9 +19,29 @@ var logo = require('./img/cdquizlogo.gif');
 export const NEW_RESULTS_COUNT = 10;
 export const ALL_TIME_RESULTS_COUNT = 10;
 
+
+var dictionary = {};
+
+// translation function
+export function t(str) {
+  if (dictionary.hasOwnProperty(str)) {
+    return dictionary[str];
+  }
+  // default to hard-coded English
+  return str;
+}
+
+function setDictionary(dict) {
+  dictionary = dict;
+}
+
 export class Quiz extends React.Component {
   constructor(props) {
+    var lang;
     super(props);
+    // defaults to 'en' of none saved
+    // TODO: consider allowing language as query parameter
+    lang= loadLanguage();
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
@@ -30,11 +54,13 @@ export class Quiz extends React.Component {
       type: SYMBOLS_TO_TEXT,
       results: [],
       name: loadName(),
-      allTimeResults: loadAllTimeResults()
+      allTimeResults: loadAllTimeResults(),
+      language: lang
     };
   }
 
   componentDidMount() {
+    // timer runs continuously: count ticks when quiz is running
     this.timer = setInterval(this.onTick, 1000);
   }
 
@@ -51,6 +77,39 @@ export class Quiz extends React.Component {
   onResultWindowClose = () => {
     this.setState({
       displayingResult: false
+    });
+  }
+
+  onSelectLanguage = (lang) => {
+    var self;
+    // no file for English: empty array defaults to hard-coded text
+    if (lang === 'en') {
+      setDictionary({});
+      saveLanguage('en');
+      this.setState({
+        language: 'en'
+      });
+      return;
+    }
+    // load requested language file
+    self = this;
+    $.ajax({
+      url: 'app/lang/' + lang + '.json'
+    })
+    .done(function(lang) {
+      setDictionary(lang);
+      saveLanguage(lang.abbrev);
+      self.setState({
+        language: lang.abbrev
+      });
+    })
+    .fail(function() {
+      // fall back to English
+      setDictionary({});
+      saveLanguage('en');
+      this.setState({
+        language: 'en'
+      });
     });
   }
 
@@ -204,7 +263,6 @@ export class Quiz extends React.Component {
       return(
         <Results
           results={this.state.results}
-          a={'a'}
           allTimeResults={this.state.allTimeResults}
         />
       );
@@ -214,6 +272,8 @@ export class Quiz extends React.Component {
         <StartPage
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
+          onSelectLanguage={this.onSelectLanguage}
+          language={this.state.language}
           type={this.state.type}
           name={this.state.name}
         />
@@ -240,9 +300,10 @@ export class Quiz extends React.Component {
   render() {
     var message, body;
 
-    message = 'You scored ' + this.state.score + ' out of ' +
-      this.state.answered + ' in ' +
-      parseInt((this.state.elapsed/1000), 10) + ' seconds.';
+    message = t('You scored #1 out #2 in #3 seconds');
+    message = message.replace(/\#1/, this.state.score);
+    message = message.replace(/\#2/, this.state.answered);
+    message = message.replace(/\#3/, parseInt((this.state.elapsed/1000), 10));
 
     body = this.renderBody();
 
@@ -252,7 +313,7 @@ export class Quiz extends React.Component {
           <div className='container'>
             <img src={logo}></img>
             <span className='title'>
-              {'Maprunner IOF Control Description Quiz'}
+              {'Maprunner ' + t('IOF Control Description Quiz')}
             </span>
           </div>
         </div>
@@ -277,9 +338,6 @@ export class Quiz extends React.Component {
             null
           }
         </div>
-        {!this.state.quizRunning  && !this.state.displayingResult ?
-          <Footer /> : null
-      }
       </div>
     );
   }

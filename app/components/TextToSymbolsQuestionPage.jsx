@@ -2,6 +2,7 @@
 
 import React from 'react';
 import {AnswersAsIcons, Score, Timer} from './QuestionPage.jsx'
+import {t} from './Quiz.jsx'
 
 export class TextToSymbolsQuestionPage extends React.Component {
   render() {
@@ -33,7 +34,7 @@ export class QuestionAsText extends React.Component {
   render() {
     return (
       <div className='description-text'>
-        {this.props.description}
+        {t(this.props.description)}
       </div>
     );
   }

@@ -1,7 +1,8 @@
 'use strict';
 /*global _*/
 import React from 'react';
-import {MATCH_ITEMS, baseCategories, baseData} from './data.jsx';
+import {t} from './Quiz.jsx';
+import {MATCH_ITEMS, baseCategories, baseData, availableLanguages} from './data.jsx';
 
 export class StartPage extends React.Component {
   constructor(props) {
@@ -45,16 +46,16 @@ export class StartPage extends React.Component {
   }
 
   filterQuestions(categories) {
-    var questions, deleteCategories;
+    var questions, useCategories;
     // create a list of index values for categories to be used
-    deleteCategories = _.chain(categories)
+    useCategories = _.chain(categories)
       .where({'use': true})
       .pluck('index')
       .value();
 
     questions = _.filter(this.props.data, function (q) {
           //question id is three digits: first digit is category
-          return _.contains(deleteCategories, parseInt((q.id /100), 10));
+          return _.contains(useCategories, parseInt((q.id /100), 10));
         });
     return questions;
   }
@@ -171,6 +172,10 @@ export class StartPage extends React.Component {
           :
           null
         }
+        <LanguageList
+          language={this.props.language}
+          onSelectLanguage={this.props.onSelectLanguage}
+        />
         <StartButton onClick={this.onStartClick} />
       </div>
     );
@@ -197,13 +202,13 @@ export class CategoryList extends React.Component {
     return (
       <div className='panel panel-primary category-list'>
         <div className='panel-heading'>
-          <h4 className='panelTitle'>Select options:</h4>
+          <h4 className='panelTitle'>{t('Select options') + ':'}</h4>
         </div>
         <div className='panel-body'>
           {categories}
         </div>
         <div className='panel-footer'>
-          <h4>{this.props.total} questions selected</h4>
+          <h4>{this.props.total + ' ' + t('questions selected')}</h4>
         </div>
       </div>
     )
@@ -224,17 +229,65 @@ export class NameInput extends React.Component {
   render(){
     return(
       <div>
-        <label htmlFor='inputName' className='control-label'>Name:</label>
+        <span className='option-text'>{t('Name') + ':'}</span>
         <input
           type='text'
           className='form-control'
-          id='inputName'
           maxLength={'25'}
           value={this.props.name}
           onChange={this.onNameChange}
         />
       </div>
     );
+  }
+}
+
+export class LanguageList extends React.Component {
+  render() {
+    var self = this;
+    var languages = availableLanguages.map(function(lang, i){
+      return(
+        <Language
+          key={i}
+          value={lang}
+          onSelectLanguage={self.props.onSelectLanguage}
+          setting={self.props.language}
+        />
+      );
+    });
+
+    return(
+      <div className='top-margin'>
+        <span className='option-text'>{t('Language')}</span>
+        <div className='pull-right'>
+          <span className='btn-group btn-group-lg' role='group'>
+            {languages}
+          </span>
+        </div>
+      </div>
+    )
+  }
+}
+
+export class Language extends React.Component {
+  onSelectLanguage = () => {
+    this.props.onSelectLanguage(this.props.value);
+  }
+
+  render(){
+    var classes = 'btn btn-default';
+    if (this.props.setting === this.props.value) {
+      classes = classes + ' active';
+    }
+    return (
+      <button
+        type='button'
+        className={classes}
+        onClick={this.onSelectLanguage}
+      >
+        {this.props.value}
+      </button>
+    )
   }
 }
 
@@ -255,7 +308,7 @@ export class Category extends React.Component {
         <span
           className='option-text'
         >
-          {this.props.category}
+          {t(this.props.category)}
         </span>
       </div>
     )
@@ -278,10 +331,12 @@ export class AnswerOptionList extends React.Component {
 
     return(
       <div>
-        <span className='option-text'>Answers per question</span>
-        <span className='btn-group btn-group-lg' role='group'>
-          {answers}
-        </span>
+        <span className='option-text'>{t('Answers per question')}</span>
+        <div className='pull-right'>
+          <span className='btn-group btn-group-lg' role='group'>
+            {answers}
+          </span>
+        </div>
       </div>
     )
   }
@@ -292,7 +347,7 @@ export class AnswerOption extends React.Component {
     this.props.onClick(this.props.value);
   }
 
-  render(){
+  render() {
     var classes = 'btn btn-default';
     if (this.props.setting === this.props.value) {
       classes = classes + ' active';
@@ -310,7 +365,7 @@ export class StartButton extends React.Component {
     return (
       <div className='start-button'>
         <button className='btn btn-primary btn-lg' onClick={this.props.onClick}>
-          Start
+          {t('Start')}
         </button>
       </div>
     );
