@@ -39,9 +39,11 @@ export class Quiz extends React.Component {
   constructor(props) {
     var lang;
     super(props);
-    // defaults to 'en' of none saved
     // TODO: consider allowing language as query parameter
     lang= loadLanguage();
+    if (lang !== 'en') {
+      this.onSelectLanguage(lang);
+    }
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
@@ -55,7 +57,9 @@ export class Quiz extends React.Component {
       results: [],
       name: loadName(),
       allTimeResults: loadAllTimeResults(),
-      language: lang
+      // if we loaded a new language it will get set in the success callback
+      // so start off as English
+      language: 'en'
     };
   }
 
@@ -94,7 +98,8 @@ export class Quiz extends React.Component {
     // load requested language file
     self = this;
     $.ajax({
-      url: 'app/lang/' + lang + '.json'
+      url: 'app/lang/' + lang + '.json',
+      dataType: 'json'
     })
     .done(function(lang) {
       setDictionary(lang);
