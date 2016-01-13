@@ -21,7 +21,7 @@
   "Results": "Tulokset",
   "Identify the text description for a given symbol": "Valitse rastinmääritesymboliin liittyvä selite",
   "Identify the symbol for a given text description": "Valitse selitteeseen liittyvä rastinmääritesymboli",
-  "Match symbols and text": "Yhdistä symboli ja teksti",
+  "Match symbols and text": "Yhdistä symboli ja selite",
   "View results": "Näytä tulokset",
   "matched": "oikein",
   "mistakes": "väärin",
