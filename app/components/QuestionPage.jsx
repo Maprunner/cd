@@ -75,7 +75,7 @@ export class SmallCDIcon extends React.Component {
       <div className='small-cd-icon cd'>
         <span
           className={this.props.gotIt ? 'correct-color' : 'wrong-color'}
-          title={this.props.desc}
+          title={t(this.props.desc)}
         >
           {chr}
         </span>
