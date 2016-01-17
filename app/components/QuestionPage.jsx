@@ -92,7 +92,7 @@ export class AnswersAsIcons extends React.Component {
           key={i}
           code={q.question.code}
           gotIt={q.gotIt}
-          desc={q.question.desc}
+          desc={t(q.question.desc)}
         />
       );
     });
