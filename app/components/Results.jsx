@@ -1,6 +1,13 @@
 'use strict';
 import React from 'react';
 import {t} from './Quiz.jsx';
+import Table from 'material-ui/lib/table/table';
+import TableBody from 'material-ui/lib/table/table-body';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import Dialog from 'material-ui/lib/dialog';
 
 export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
@@ -55,54 +62,72 @@ export function saveLanguage(lang) {
 }
 
 export class Results extends React.Component {
+  handleClose = () => {
+    this.props.handleClose();
+  }
+
   renderResults(results, title) {
     var formattedResults;
     if (results.length === 0) {
       return(
         <div>
-          <h3>{title}</h3>
+          <strong>{title}</strong>
           {t('No results yet')}
         </div>
       );
     }
     formattedResults = results.map(function(result, idx) {
       return(
-        <tr key={idx}>
-          <td className='text-center'>{idx + 1}</td>
-          <td>{result.name}</td>
-          <td>{t(result.type)}</td>
-          <td className='text-center'>{result.score}/{result.from}</td>
-          <td className='text-center'>{result.percent}</td>
-          <td className='text-center'>{result.time}</td>
-        </tr>
+        <TableRow key={idx}>
+          <TableRowColumn className='text-center'>{idx + 1}</TableRowColumn>
+          <TableRowColumn>{result.name}</TableRowColumn>
+          <TableRowColumn>{t(result.type)}</TableRowColumn>
+          <TableRowColumn className='text-center'>{result.score}/{result.from}</TableRowColumn>
+          <TableRowColumn className='text-center'>{result.percent}</TableRowColumn>
+          <TableRowColumn className='text-center'>{result.time}</TableRowColumn>
+        </TableRow>
       );
     });
+
     return(
       <div>
-        <h3>{title}</h3>
-        <table className='table table-striped table-bordered table-condensed'>
-          <thead>
-            <tr>
-              <th className='text-center'>#</th>
-              <th>{t('Name')}</th>
-              <th>{t('Type')}</th>
-              <th className='text-center'>{t('Score')}</th>
-              <th className='text-center'>%</th>
-              <th className='text-center'>{t('Time')}</th>
-            </tr>
-          </thead>
-          <tbody>{formattedResults}</tbody>
-       </table>
+        <Table bodyStyle={{padding: 0}}>
+          <TableHeader
+            displaySelectAll={false}
+            adjustForCheckbox={false}
+          >
+            <TableRow>
+              <TableHeaderColumn className='text-center'>#</TableHeaderColumn>
+              <TableHeaderColumn>{t('Name')}</TableHeaderColumn>
+              <TableHeaderColumn>{t('Type')}</TableHeaderColumn>
+              <TableHeaderColumn className='text-center'>{t('Score')}</TableHeaderColumn>
+              <TableHeaderColumn className='text-center'>%</TableHeaderColumn>
+              <TableHeaderColumn className='text-center'>{t('Time')}</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody
+            displayRowCheckbox={false}
+            stripedRows={true}
+          >
+            {formattedResults}
+          </TableBody>
+        </Table>
       </div>
-    )
+    );
   }
 
   render() {
+
     return(
-      <div>
+      <Dialog
+        title={t('Results')}
+        modal={false}
+        open={this.props.open}
+        onRequestClose={this.handleClose}
+      >
         {this.renderResults(this.props.results, t('This session'))}
         {this.renderResults(this.props.allTimeResults, t('All time'))}
-      </div>
+      </Dialog>
     );
   }
 }

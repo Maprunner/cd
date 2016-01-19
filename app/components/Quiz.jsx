@@ -4,7 +4,6 @@
 
 import React from 'react';
 import {StartPage} from './StartPage.jsx'
-import {MenuBar} from './Menu.jsx'
 import {QuestionPage} from './QuestionPage.jsx'
 import {Results,
         loadAllTimeResults, saveAllTimeResults,
@@ -12,6 +11,12 @@ import {Results,
         loadLanguage, saveLanguage} from './Results.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
 import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs} from './data.jsx'
+import MyRawTheme from './theme.js';
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
+import AppBar from 'material-ui/lib/app-bar';
+import IconButton from 'material-ui/lib/icon-button';
+import RaisedButton from 'material-ui/lib/raised-button';
 
 var update = require('react-addons-update');
 var logo = require('./img/cdquizlogo.gif');
@@ -35,6 +40,7 @@ function setDictionary(dict) {
   dictionary = dict;
 }
 
+@ThemeDecorator(ThemeManager.getMuiTheme(MyRawTheme))
 export class Quiz extends React.Component {
   constructor(props) {
     var lang;
@@ -84,6 +90,18 @@ export class Quiz extends React.Component {
     });
   }
 
+  onShowResults = () => {
+    this.setState({
+      type: VIEW_RESULTS
+    });
+  }
+
+  onCloseResults = () => {
+    this.setState({
+      type: SYMBOLS_TO_TEXT
+    });
+  }
+
   onSelectLanguage = (lang) => {
     var self;
     // no file for English: empty array defaults to hard-coded text
@@ -112,7 +130,7 @@ export class Quiz extends React.Component {
       // fall back to English
       setDictionary({});
       saveLanguage('en');
-      this.setState({
+      self.setState({
         language: 'en'
       });
     });
@@ -125,18 +143,11 @@ export class Quiz extends React.Component {
     });
   }
 
-  onSelectQuizType = (value) => {
-    if (!this.state.quizRunning) {
-      this.setState({
-        type: value
-      });
-    }
-  }
-
-  onStartNewQuiz = (questions) => {
+  onStartNewQuiz = (questions, type) => {
     if (questions.length > 0) {
       this.setState({
         questions: questions,
+        type: type,
         currentQuestionIdx: 0,
         quizRunning: true,
         start: new Date().getTime(),
@@ -269,6 +280,8 @@ export class Quiz extends React.Component {
         <Results
           results={this.state.results}
           allTimeResults={this.state.allTimeResults}
+          handleClose={this.onCloseResults}
+          open={true}
         />
       );
     }
@@ -279,7 +292,6 @@ export class Quiz extends React.Component {
           onSetName={this.onSetName}
           onSelectLanguage={this.onSelectLanguage}
           language={this.state.language}
-          type={this.state.type}
           name={this.state.name}
         />
       );
@@ -314,21 +326,19 @@ export class Quiz extends React.Component {
 
     return (
       <div>
-        <div className='header'>
-          <div className='container'>
-            <img src={logo}></img>
-            <span className='title'>
-              {'Maprunner ' + t('IOF Control Description Quiz')}
-            </span>
-          </div>
-        </div>
-        <div className='menu-bar'>
-          <MenuBar
-            active={this.state.type}
-            onSelect={this.onSelectQuizType}
-          />
-        </div>
-        <div className='container'>
+        <AppBar
+          title={'Maprunner ' + t('IOF Control Description Quiz')}
+          iconElementLeft={
+            <IconButton>
+              <img src={logo}></img>
+            </IconButton>}
+          iconElementRight={
+            <RaisedButton
+              label={t('Results')}
+              onTouchTap={this.onShowResults}
+            />}
+        />
+        <div>
           {body}
           {this.state.displayingResult ?
             <ResultMessage
@@ -346,4 +356,7 @@ export class Quiz extends React.Component {
       </div>
     );
   }
+}
+
+Quiz.propTypes = {
 }

@@ -103,10 +103,5 @@ export const buttonDefs = [
    hash: 'match',
    value: 2,
    caption: 'Match symbols and text'
-  },
-  {text: 'Results',
-   hash: 'results',
-   value: 3,
-   caption: 'View results'
   }
 ];

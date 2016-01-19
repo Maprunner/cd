@@ -1,8 +1,15 @@
 'use strict';
 /*global _*/
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {MATCH_ITEMS, baseCategories, baseData, availableLanguages} from './data.jsx';
+import {MATCH_ITEMS, baseCategories, baseData} from './data.jsx';
+import {NameInput} from './NameInput.jsx';
+import {CategoryList} from './CategoryList.jsx';
+import {LanguageList} from './LanguageList.jsx';
+import {AnswerOptionList} from './AnswerOptionList.jsx';
+import {Types} from './Types.jsx'
+import Card from 'material-ui/lib/card/card';
+import CardTitle from 'material-ui/lib/card/card-title';
+import {t} from './Quiz.jsx'
 
 export class StartPage extends React.Component {
   constructor(props) {
@@ -20,14 +27,14 @@ export class StartPage extends React.Component {
     this.setState({answersPerQuestion: value});
   }
 
-  onStartClick = () => {
+  onStart = (type) => {
     var questions;
-    if (this.props.type === MATCH_ITEMS) {
+    if (type === MATCH_ITEMS) {
       questions = this.createMatch();
     } else {
       questions = this.createQuiz();
     }
-    this.props.onStart(questions);
+    this.props.onStart(questions, type);
   }
 
   onSetCategory = (category) => {
@@ -152,31 +159,45 @@ export class StartPage extends React.Component {
   }
 
   render(){
+    const style = {
+      float: 'right',
+      margin:16,
+      'paddingBottom': 16,
+      'paddingLeft': 16,
+      'paddingRight': 16,
+      width: '300'
+    };
+
     return (
-      <div>
-        <NameInput
-          name={this.props.name}
-          onSetName={this.props.onSetName}
+      <div className='body-container'>
+      <Types
+        onStart={this.onStart}
+      />
+      <Card
+        style={style}
+      >
+        <CardTitle
+          title={t('Select options')}
         />
         <CategoryList
           onClick={this.onSetCategory}
           categories={this.state.categories}
           total={this.state.questions.length}
         />
-        {this.props.type !== MATCH_ITEMS ?
-          <AnswerOptionList
-            possibleAnswers={[2, 3, 4, 5]}
-            onClick={this.onAnswerClick}
-            setting={this.state.answersPerQuestion}
-          />
-          :
-          null
-        }
+        <NameInput
+          name={this.props.name}
+          onSetName={this.props.onSetName}
+        />
+        <AnswerOptionList
+          possibleAnswers={[1, 2, 3, 4, 5]}
+          onChange={this.onAnswerClick}
+          setting={this.state.answersPerQuestion}
+        />
         <LanguageList
           language={this.props.language}
           onSelectLanguage={this.props.onSelectLanguage}
         />
-        <StartButton onClick={this.onStartClick} />
+      </Card>
       </div>
     );
   }
@@ -186,188 +207,10 @@ StartPage.defaultProps = {
   data: baseData
 }
 
-export class CategoryList extends React.Component {
-  render() {
-    var self = this;
-    var categories = this.props.categories.map(function(cat, idx){
-      return (
-        <Category
-          key={idx}
-          category={cat.name}
-          use={cat.use}
-          onClick={self.props.onClick}
-        />
-      );
-    })
-    return (
-      <div className='panel panel-primary category-list'>
-        <div className='panel-heading'>
-          <h4 className='panelTitle'>{t('Select options') + ':'}</h4>
-        </div>
-        <div className='panel-body'>
-          {categories}
-        </div>
-        <div className='panel-footer'>
-          <h4>{this.props.total + ' ' + t('questions selected')}</h4>
-        </div>
-      </div>
-    )
-  }
-}
-
-export class NameInput extends React.Component {
-  onNameChange = (event) => {
-    var name = event.target.value;
-    // limit valid characters to 0 or more of quite a wide range
-    const validChars = /^[ A-Za-z0-9!£\$%\^&\*()\-\+=:;@#\?\.,\[\]\{\}\/]*$/;
-    if (name.match(validChars) === null) {
-      name = this.props.name;
-    }
-    this.props.onSetName(name);
-  }
-
-  render(){
-    return(
-      <div>
-        <span className='option-text'>{t('Name') + ':'}</span>
-        <input
-          type='text'
-          className='form-control'
-          maxLength={'25'}
-          value={this.props.name}
-          onChange={this.onNameChange}
-        />
-      </div>
-    );
-  }
-}
-
-export class LanguageList extends React.Component {
-  render() {
-    var self = this;
-    var languages = availableLanguages.map(function(lang, i){
-      return(
-        <Language
-          key={i}
-          value={lang}
-          onSelectLanguage={self.props.onSelectLanguage}
-          setting={self.props.language}
-        />
-      );
-    });
-
-    return(
-      <div className='top-margin'>
-        <span className='option-text'>{t('Language')}</span>
-        <div className='pull-right'>
-          <span className='btn-group btn-group-lg' role='group'>
-            {languages}
-          </span>
-        </div>
-      </div>
-    )
-  }
-}
-
-export class Language extends React.Component {
-  onSelectLanguage = () => {
-    this.props.onSelectLanguage(this.props.value);
-  }
-
-  render(){
-    var classes = 'btn btn-default';
-    if (this.props.setting === this.props.value) {
-      classes = classes + ' active';
-    }
-    return (
-      <button
-        type='button'
-        className={classes}
-        onClick={this.onSelectLanguage}
-      >
-        {this.props.value}
-      </button>
-    )
-  }
-}
-
-export class Category extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.category);
-  }
-
-  render(){
-    return(
-      <div>
-        <span
-          className='cd-checkbox'
-          onClick={this.onClick}
-        >
-          {this.props.use ? 'X': ''}
-        </span>
-        <span
-          className='option-text'
-        >
-          {t(this.props.category)}
-        </span>
-      </div>
-    )
-  }
-}
-
-export class AnswerOptionList extends React.Component {
-  render() {
-    var self = this;
-    var answers = this.props.possibleAnswers.map(function(ans, i){
-      return(
-        <AnswerOption
-          key={i}
-          value={ans}
-          onClick={self.props.onClick}
-          setting={self.props.setting}
-        />
-      );
-    });
-
-    return(
-      <div>
-        <span className='option-text'>{t('Answers per question')}</span>
-        <div className='pull-right'>
-          <span className='btn-group btn-group-lg' role='group'>
-            {answers}
-          </span>
-        </div>
-      </div>
-    )
-  }
-}
-
-export class AnswerOption extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.value);
-  }
-
-  render() {
-    var classes = 'btn btn-default';
-    if (this.props.setting === this.props.value) {
-      classes = classes + ' active';
-    }
-    return (
-      <button type='button' className={classes} onClick={this.onClick}>
-        {this.props.value}
-      </button>
-    )
-  }
-}
-
-export class StartButton extends React.Component {
-  render() {
-    return (
-      <div className='start-button'>
-        <button className='btn btn-primary btn-lg' onClick={this.props.onClick}>
-          {t('Start')}
-        </button>
-      </div>
-    );
-  }
+StartPage.propTypes = {
+    onStart: React.PropTypes.func,
+    onSetName: React.PropTypes.func,
+    onSelectLanguage: React.PropTypes.func,
+    language: React.PropTypes.string,
+    name: React.PropTypes.string
 }
