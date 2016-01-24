@@ -17,7 +17,7 @@ export const baseData =  [
 {'id': 114, code:59661, 'desc': 'Pit', 'diff': 1},
 {'id': 115, code:59662, 'desc': 'Broken ground', 'diff': 2},
 {'id': 116, code:59663, 'desc': 'Ant hill', 'diff': 2},
-{'id': 201, code:59664, 'desc': 'Cliff', 'diff': 1},
+{'id': 201, code:59664, 'desc': 'Cliff, crag', 'diff': 1},
 {'id': 202, code:59665, 'desc': 'Rock pillar', 'diff': 2},
 {'id': 203, code:59666, 'desc': 'Cave', 'diff': 2},
 {'id': 204, code:59667, 'desc': 'Boulder', 'diff': 1},
@@ -84,11 +84,11 @@ export const baseCategories =  [
 export const SYMBOLS_TO_TEXT = 0;
 export const TEXT_TO_SYMBOLS = 1;
 export const MATCH_ITEMS = 2;
-export const VIEW_RESULTS = 3;
+export const NO_TYPE = 9999;
 
 export const availableLanguages = ['en', 'fr', 'fi'];
 
-export const buttonDefs = [
+export const quizDefs = [
   {text: 'Symbols',
    hash: 'symbols',
    value: 0,
@@ -103,10 +103,5 @@ export const buttonDefs = [
    hash: 'match',
    value: 2,
    caption: 'Match symbols and text'
-  },
-  {text: 'Results',
-   hash: 'results',
-   value: 3,
-   caption: 'View results'
   }
 ];
