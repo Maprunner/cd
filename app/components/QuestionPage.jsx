@@ -5,12 +5,15 @@ import {MatchCards} from './MatchCards.jsx'
 import {TextToSymbolsQuestionPage} from './TextToSymbolsQuestionPage.jsx'
 import {SymbolsToTextQuestionPage} from './SymbolsToTextQuestionPage.jsx'
 import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS} from './data.jsx'
-import {t} from './Quiz.jsx'
+import {t} from './Quiz.jsx';
+import Card from 'material-ui/lib/card/card';
+import CardText from 'material-ui/lib/card/card-text';
+import theme from './theme.js'
 
 export class QuestionPage extends React.Component {
   renderSymbolsToText() {
     return(
-      <div>
+      <div className='body-container'>
         <SymbolsToTextQuestionPage
           idx={this.props.idx}
           answered={this.props.answered}
@@ -18,6 +21,8 @@ export class QuestionPage extends React.Component {
           questions={this.props.questions}
           score={this.props.score}
           onCheckAnswer={this.props.onCheckAnswer}
+          title={this.props.title}
+          caption={this.props.caption}
         />
       </div>
     );
@@ -25,7 +30,7 @@ export class QuestionPage extends React.Component {
 
   renderTextToSymbols() {
     return(
-      <div>
+      <div className='body-container'>
         <TextToSymbolsQuestionPage
           idx={this.props.idx}
           answered={this.props.answered}
@@ -33,6 +38,8 @@ export class QuestionPage extends React.Component {
           questions={this.props.questions}
           score={this.props.score}
           onCheckAnswer={this.props.onCheckAnswer}
+          title={this.props.title}
+          caption={this.props.caption}
         />
       </div>
     );
@@ -46,6 +53,7 @@ export class QuestionPage extends React.Component {
           answered={this.props.answered}
           elapsed={this.props.elapsed}
           score={this.props.score}
+          open={true}
           onFinished={this.props.onCheckAnswer}
         />
       </div>
@@ -66,40 +74,28 @@ export class QuestionPage extends React.Component {
   }
 }
 
-
-
-export class SmallCDIcon extends React.Component {
+export class InfoCard extends React.Component {
   render() {
-    var chr = String.fromCharCode(this.props.code);
     return (
-      <div className='small-cd-icon cd'>
-        <span
-          className={this.props.gotIt ? 'correct-color' : 'wrong-color'}
-          title={t(this.props.desc)}
+      <Card
+        style={{width: '120', margin: '16px 0 16px 8px'}}
+      >
+        <CardText
+          style={
+            {background: theme.palette.primary1Color,
+             color: theme.palette.alternateTextColor,
+             fontSize: '18px'}}
         >
-          {chr}
-        </span>
-      </div>
-    );
-  }
-}
+          {this.props.header}
+        </CardText>
+        <CardText
+          style={
+            {fontSize: '24px'}}
+        >
 
-export class AnswersAsIcons extends React.Component {
-  render() {
-    var icons = this.props.questions.map(function(q, i) {
-      return(
-        <SmallCDIcon
-          key={i}
-          code={q.question.code}
-          gotIt={q.gotIt}
-          desc={q.question.desc}
-        />
-      );
-    });
-    return (
-      <div className='answer-icon-list'>
-        {icons}
-      </div>
+          {this.props.body}
+        </CardText>
+      </Card>
     )
   }
 }
@@ -107,14 +103,10 @@ export class AnswersAsIcons extends React.Component {
 export class Score extends React.Component {
   render() {
     return (
-      <div className='panel panel-primary score'>
-        <div className='panel-heading'>
-          <h3 className='panel-title'>{t('Score')}</h3>
-        </div>
-        <div className='panel-body'>
-          {this.props.score}/{this.props.from}
-        </div>
-      </div>
+      <InfoCard
+        header={t('Score')}
+        body={this.props.score + '/' + this.props.from}
+      />
     )
   }
 }
@@ -122,14 +114,10 @@ export class Score extends React.Component {
 export class Timer extends React.Component {
   render() {
     return (
-      <div className='panel panel-primary time'>
-        <div className='panel-heading'>
-          <h3 className='panel-title'>{t('Time')}</h3>
-        </div>
-        <div className='panel-body'>
-          {this.props.elapsed}
-        </div>
-      </div>
+      <InfoCard
+        header={t('Time')}
+        body={this.props.elapsed}
+      />
     )
   }
 }

@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import {t} from './Quiz.jsx'
-import {buttonDefs} from './data.jsx'
+import {quizDefs} from './data.jsx'
 import Card from 'material-ui/lib/card/card';
 import CardActions from 'material-ui/lib/card/card-actions';
 import CardTitle from 'material-ui/lib/card/card-title';
@@ -17,12 +17,11 @@ export class Types extends React.Component {
     self = this;
     const style = {
       width: '250',
-      //float: 'right',
       maxWidth: 'none',
       margin:16
     };
 
-    types = this.props.buttons.map(function(btn, i) {
+    types = this.props.quizDefs.map(function(btn, i) {
       return(
         <Card
           key={i}
@@ -52,7 +51,7 @@ export class Types extends React.Component {
 }
 
 Types.defaultProps = {
-  buttons: buttonDefs
+  quizDefs: quizDefs
 }
 
 Types.propTypes = {

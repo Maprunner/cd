@@ -1,47 +1,38 @@
 'use strict';
-/*global $*/
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {AnswersAsIcons} from './QuestionPage.jsx'
+import {AnswerIconGrid} from './AnswerIconGrid.jsx'
+import Dialog from 'material-ui/lib/dialog';
+import RaisedButton from 'material-ui/lib/raised-button';
 import {MATCH_ITEMS} from './data.jsx'
 import {t} from './Quiz.jsx'
 
 export class ResultMessage extends React.Component {
-  componentDidMount() {
-    var node = ReactDOM.findDOMNode(this.refs.resultMessage);
-    $(node).modal('show');
-    // use event triggered when modal is hidden to reset visibility flag
-    $(node).on('hidden.bs.modal', this.props.onClose);
+  handleClose = () => {
+    this.props.handleClose();
   }
 
   render() {
+    const actions = [
+      <RaisedButton
+        key={1}
+        label='OK'
+        secondary={true}
+        onTouchTap={this.handleClose}
+      />
+    ];
     return (
-    <div
-      ref='resultMessage'
-      className='modal fade'
-      role='dialog'
-      data-backdrop='static'
-    >
-      <div className='modal-dialog'>
-        <div className='modal-content'>
-          <div className='modal-header'>
-            <button type='button' className='close' data-dismiss='modal'>&times;</button>
-            <h4 className='modal-title'>{t('Congratulations') + ' '  + this.props.name}</h4>
-          </div>
-          <div className='modal-body'>
-            {this.props.children}
-            {this.props.type !== MATCH_ITEMS ?
-              <AnswersAsIcons questions={this.props.questions} />
-              :
-              null
-            }
-          </div>
-          <div className='modal-footer'>
-            <button type='button' className='btn btn-default' data-dismiss='modal'>{t('OK')}</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Dialog
+        title={t('Congratulations') + ' '  + this.props.name}
+        modal={false}
+        open={this.props.open}
+        actions={actions}
+        autoScrollBodyContent={true}
+        onRequestClose={this.handleClose}
+      >
+        {this.props.children}
+        {this.props.type !== MATCH_ITEMS ?
+          <AnswerIconGrid questions={this.props.questions} /> : null}
+      </Dialog>
     );
   }
 }

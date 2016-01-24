@@ -10,14 +10,13 @@ import {Results,
         loadName, saveName,
         loadLanguage, saveLanguage} from './Results.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
-import {SYMBOLS_TO_TEXT, MATCH_ITEMS, VIEW_RESULTS, buttonDefs} from './data.jsx'
-import MyRawTheme from './theme.js';
+import {MATCH_ITEMS, NO_TYPE, quizDefs} from './data.jsx'
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
 import AppBar from 'material-ui/lib/app-bar';
 import IconButton from 'material-ui/lib/icon-button';
 import RaisedButton from 'material-ui/lib/raised-button';
-
+import MyRawTheme from './theme.js';
 var update = require('react-addons-update');
 var logo = require('./img/cdquizlogo.gif');
 
@@ -58,8 +57,10 @@ export class Quiz extends React.Component {
       start: 0,
       elapsed: 1,
       quizRunning: false,
-      displayingResult: false,
-      type: SYMBOLS_TO_TEXT,
+      displayResultsTable: false,
+      displayNewResult: false,
+      newResultType: NO_TYPE,
+      type: NO_TYPE,
       results: [],
       name: loadName(),
       allTimeResults: loadAllTimeResults(),
@@ -84,21 +85,21 @@ export class Quiz extends React.Component {
     }
   }
 
-  onResultWindowClose = () => {
+  onCloseNewResult = () => {
     this.setState({
-      displayingResult: false
+      displayNewResult: false
     });
   }
 
-  onShowResults = () => {
+  onShowResultsTable = () => {
     this.setState({
-      type: VIEW_RESULTS
+      displayResultsTable: true
     });
   }
 
-  onCloseResults = () => {
+  onCloseResultsTable = () => {
     this.setState({
-      type: SYMBOLS_TO_TEXT
+      displayResultsTable: false
     });
   }
 
@@ -159,33 +160,22 @@ export class Quiz extends React.Component {
   }
 
   onMatchFinished = (validFinish, score, attempts) => {
-    var newResults;
     if (validFinish) {
-      newResults = this.addNewResult({
-        type: this.getTypeText(this.state.type),
-        name: this.state.name,
-        score: score,
-        from: attempts,
-        percent: (score * 100/attempts).toFixed(1),
-        time: parseInt((this.state.elapsed/1000), 10)
-      }),
       this.setState({
-        results: newResults.new,
-        allTimeResults: newResults.allTime,
-        quizRunning: false,
-        displayingResult: true,
-        score: score,
-        answered: attempts
-      });
+        answered: attempts,
+        score: score
+      })
+      this.saveResult(score, attempts);
     } else {
       this.setState({
-        quizRunning: false
+        quizRunning: false,
+      type: NO_TYPE
       });
     }
   }
 
   onCheckAnswer = (answer) => {
-    var idx, score, gotIt, q, answered, newResults;
+    var idx, score, gotIt, q, answered;
     if (!this.state.quizRunning) {
       return;
     }
@@ -206,23 +196,29 @@ export class Quiz extends React.Component {
       score: score
     })
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-      newResults = this.addNewResult({
-        type: this.getTypeText(this.state.type),
-        name: this.state.name,
-        score: score,
-        from: answered,
-        percent: (score * 100/answered).toFixed(1),
-        time: parseInt((this.state.elapsed/1000), 10)
-      });
-      this.setState({
-        results: newResults.new,
-        allTimeResults: newResults.allTime,
-        quizRunning: false,
-        displayingResult: true
-      });
+      this.saveResult(score, answered);
     } else {
       this.setState({currentQuestionIdx: this.state.currentQuestionIdx + 1});
     }
+  }
+
+  saveResult(score, from) {
+    let newResults = this.addNewResult({
+      type: this.getTypeText(this.state.type),
+      name: this.state.name,
+      score: score,
+      from: from,
+      percent: (score * 100/from).toFixed(1),
+      time: parseInt((this.state.elapsed/1000), 10)
+    });
+    this.setState({
+      results: newResults.new,
+      allTimeResults: newResults.allTime,
+      quizRunning: false,
+      displayNewResult: true,
+      newResultType: this.state.type,
+      type: NO_TYPE
+    });
   }
 
   adjustResultArray(array, result, length) {
@@ -262,30 +258,31 @@ export class Quiz extends React.Component {
   }
 
   getTypeText(type) {
-    return _.chain(buttonDefs)
+    return _.chain(quizDefs)
       .where({value: type})
       .pluck('text')
       .value();
   }
 
-  saveResult(results) {
-    this.setState({
-      results: results
-    });
+  getCaptionText(type) {
+    return _.chain(quizDefs)
+      .where({value: type})
+      .pluck('caption')
+      .value();
   }
 
   renderBody() {
-    if (this.state.type === VIEW_RESULTS) {
+    if (this.state.displayResultsTable) {
       return(
         <Results
           results={this.state.results}
           allTimeResults={this.state.allTimeResults}
-          handleClose={this.onCloseResults}
+          handleClose={this.onCloseResultsTable}
           open={true}
         />
       );
     }
-    if (!this.state.quizRunning  && !this.state.displayingResult) {
+    if (!this.state.quizRunning) {
       return(
         <StartPage
           onStart={this.onStartNewQuiz}
@@ -300,6 +297,8 @@ export class Quiz extends React.Component {
         <QuestionPage
           idx={this.state.currentQuestionIdx}
           type={this.state.type}
+          title={this.getTypeText(this.state.type)}
+          caption={this.getCaptionText(this.state.type)}
           questions={this.state.questions}
           score={this.state.score}
           answered={this.state.answered}
@@ -314,15 +313,32 @@ export class Quiz extends React.Component {
     }
   }
 
-  render() {
-    var message, body;
-
-    message = t('You scored #1 out #2 in #3 seconds');
+  renderNewResult() {
+    let message = t('You scored #1 out #2 in #3 seconds');
     message = message.replace(/\#1/, this.state.score);
     message = message.replace(/\#2/, this.state.answered);
     message = message.replace(/\#3/, parseInt((this.state.elapsed/1000), 10));
+    return (
+      <ResultMessage
+        handleClose={this.onCloseNewResult}
+        open={true}
+        type={this.state.newResultType}
+        name={this.state.name}
+        questions={this.state.questions}
+      >
+        {message}
+      </ResultMessage>
+    );
+  }
 
-    body = this.renderBody();
+  render() {
+    const btnStyle = {
+      marginTop: 5,
+      marginRight: 16
+    };
+
+    let body = this.renderBody();
+    let message = this.state.displayNewResult ? this.renderNewResult() : null;
 
     return (
       <div>
@@ -335,23 +351,13 @@ export class Quiz extends React.Component {
           iconElementRight={
             <RaisedButton
               label={t('Results')}
-              onTouchTap={this.onShowResults}
+              style={btnStyle}
+              onTouchTap={this.onShowResultsTable}
             />}
         />
         <div>
           {body}
-          {this.state.displayingResult ?
-            <ResultMessage
-              onClose={this.onResultWindowClose}
-              questions={this.state.questions}
-              type={this.state.type}
-              name={this.state.name}
-            >
-              {message}
-            </ResultMessage>
-            :
-            null
-          }
+          {message}
         </div>
       </div>
     );

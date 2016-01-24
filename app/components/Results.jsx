@@ -8,7 +8,7 @@ import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import Dialog from 'material-ui/lib/dialog';
-
+import RaisedButton from 'material-ui/lib/raised-button';
 export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
 export const CD_QUIZ_LANGUAGE_ITEM = 'cdquiz-language';
@@ -71,7 +71,7 @@ export class Results extends React.Component {
     if (results.length === 0) {
       return(
         <div>
-          <strong>{title}</strong>
+          <h4>{title}</h4>
           {t('No results yet')}
         </div>
       );
@@ -91,6 +91,7 @@ export class Results extends React.Component {
 
     return(
       <div>
+        <h4>{title}</h4>
         <Table bodyStyle={{padding: 0}}>
           <TableHeader
             displaySelectAll={false}
@@ -117,12 +118,21 @@ export class Results extends React.Component {
   }
 
   render() {
-
+    const actions = [
+      <RaisedButton
+        key={1}
+        label='OK'
+        secondary={true}
+        onTouchTap={this.handleClose}
+      />
+    ];
     return(
       <Dialog
         title={t('Results')}
         modal={false}
         open={this.props.open}
+        actions={actions}
+        autoScrollBodyContent={true}
         onRequestClose={this.handleClose}
       >
         {this.renderResults(this.props.results, t('This session'))}

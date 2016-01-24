@@ -1,88 +1,11 @@
 'use strict';
-/*global $*/
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {MatchCard} from './MatchCard.jsx';
 import {t} from './Quiz.jsx';
+import Dialog from 'material-ui/lib/dialog';
+import RaisedButton from 'material-ui/lib/raised-button';
 
 var update = require('react-addons-update');
-
-export class TextCard extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.idx);
-  }
-
-  render() {
-    return(
-      <div className={this.props.question.selected ?
-        'cd-card cd-card-text card-selected'
-        :
-        'cd-card cd-card-text'
-        }
-        onClick={this.onClick}
-      >
-        {t(this.props.question.desc)}
-      </div>
-    );
-  }
-}
-
-export class SymbolCard extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.idx);
-  }
-
-  render() {
-    var chr = String.fromCharCode(this.props.question.code);
-    return(
-      <div className={this.props.question.selected ?
-        'cd-card cd-card-symbol cd card-selected'
-        :
-        'cd-card cd-card-symbol cd'
-        }
-        onClick={this.onClick}
-      >
-        <div>{chr}</div>
-      </div>
-    );
-  }
-}
-
-export class FinishedCard extends React.Component {
-  render() {
-    return(
-      <div className='cd-card card-got-it'>
-        <div>{t('OK')}</div>
-      </div>
-    );
-  }
-}
-
-export class Card extends React.Component {
-  render() {
-    if (this.props.question.gotIt) {
-      return(
-        <FinishedCard />
-      );
-    }
-    if (this.props.question.type === 'text') {
-      return(
-        <TextCard
-          question={this.props.question}
-          idx={this.props.idx}
-          onClick={this.props.onClick}
-        />
-      );
-    } else {
-      return(
-        <SymbolCard
-          question={this.props.question}
-          idx={this.props.idx}
-          onClick={this.props.onClick}
-        />
-      );
-    }
-  }
-}
 
 export class MatchCards extends React.Component {
   constructor(props) {
@@ -100,10 +23,6 @@ export class MatchCards extends React.Component {
 
     componentDidMount() {
       this.matchTimer = setInterval(this.onTick, 1000);
-      var node = ReactDOM.findDOMNode(this.refs.matchGrid);
-      $(node).modal('show');
-      // use event triggered when modal is hidden to cancel match
-      $(node).on('hidden.bs.modal', this.props.onFinished.bind(this, false));
     }
 
   componentWillUnmount() {
@@ -157,12 +76,15 @@ export class MatchCards extends React.Component {
     }
   }
 
+  handleClose = () => {
+    this.props.onFinished(false);
+  }
+
   render() {
-    var status;
-    var self = this;
-    var cards = this.state.questions.map(function(q, i) {
+    let self = this;
+    let cards = this.state.questions.map(function(q, i) {
       return(
-        <Card
+        <MatchCard
           idx={i}
           key={i}
           question={q}
@@ -170,33 +92,29 @@ export class MatchCards extends React.Component {
         />
       );
     });
-    status = this.state.matched + ' ' + t('matched') + '. ';
+    let status = this.state.matched + ' ' + t('matched') + '. ';
     status = status + (this.state.attempts - this.state.matched) + ' ' + t('mistakes');
     status = status + '. ' + this.state.elapsed + ' ' + t('seconds') + '.';
+    const actions = [
+      <RaisedButton
+        key={1}
+        label={t('Close')}
+        secondary={true}
+        onTouchTap={this.handleClose}
+      />
+    ];
     return(
-      <div
-        ref='matchGrid'
-        className='modal match-modal fade'
-        role='dialog'
-        data-backdrop='static'
+      <Dialog
+        title={status}
+        modal={true}
+        open={this.props.open}
+        actions={actions}
+        autoScrollBodyContent={true}
+        contentStyle={{width: '95%', maxWidth: 'none'}}
+        onRequestClose={this.handleClose}
       >
-        <div className='modal-dialog match-modal-dialog'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <button type='button' className='close' data-dismiss='modal'>&times;</button>
-              <h4 className='modal-title'>
-                {status}
-              </h4>
-            </div>
-            <div className='modal-body'>
-              {cards}
-            </div>
-            <div className='modal-footer'>
-              <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
+        {cards}
+      </Dialog>
     );
   }
 }
