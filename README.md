@@ -1,14 +1,17 @@
 # Maprunner IOF Control Description Quiz
 
 ## What is this?
-A way of finding out if you understand:
 
-* [International Orienteering Federation Control Description 2004 specification.] 
+You can [try the quiz here.] (http://www.maprunner.co.uk/cd)
+
+If you need some help then all of the answers are here:
+
+* [International Orienteering Federation Control Description 2004 specification.]
 (http://orienteering.org/wp-content/uploads/2010/12/IOF-Control-Descriptions-2004.pdf)
 * [Maprunner IOF pictorial control description guide.] (http://www.maprunner.co.uk/?page_id=79)
 
 ## Latest news
-The [latest version] (http://www.maprunner.co.uk/cd) now includes Finnish and French translations which can be selected from the start-up screen. I did the French translation, so it might be a bit strange until I get somebody to check it properly. Thanks to [kiiski] (https://github.com/kiiski) for the Finnish translation.
+The [latest version] (http://www.maprunner.co.uk/cd) now includes Finnish, French, Italian and Japanese translations which can be selected from the start-up screen. I did the French translation, so it might be a bit strange until I get somebody to check it properly.
 
 To add a new language you need to create a translation file, based on the [xx.json] (https://github.com/Maprunner/cd/blob/master/app/lang/xx.json) file in the cd/app/lang directory. Then email it to me or create a pull request, and I will build it in.
 
