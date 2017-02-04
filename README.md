@@ -11,7 +11,7 @@ If you need some help then all of the answers are here:
 * [Maprunner IOF pictorial control description guide.] (http://www.maprunner.co.uk/?page_id=79)
 
 ## Latest news
-The [latest version] (http://www.maprunner.co.uk/cd) now includes Finnish, French, Italian and Japanese translations which can be selected from the start-up screen. I did the French translation, so it might be a bit strange until I get somebody to check it properly.
+The [latest version] (http://www.maprunner.co.uk/cd) now includes Finnish, French, Polish and Japanese translations which can be selected from the start-up screen. I did the French translation, so it might be a bit strange until I get somebody to check it properly.
 
 To add a new language you need to create a translation file, based on the [xx.json] (https://github.com/Maprunner/cd/blob/master/app/lang/xx.json) file in the cd/app/lang directory. Then email it to me or create a pull request, and I will build it in.
 
@@ -22,6 +22,8 @@ To run on a local server: # npm start
 The application is then at localhost:8080 and includes hot module replacement.
 
 To build for release to the internet: # npm run build
+
+To add a new language, update the availableLanguages array in data.jsx.
 
 ## Technology
 This was mainly an excuse to try React, but various other things turned out to be needed as well:
