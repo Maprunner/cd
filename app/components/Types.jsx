@@ -2,10 +2,8 @@
 import React from 'react';
 import {t} from './Quiz.jsx'
 import {quizDefs} from './data.jsx'
-import Card from 'material-ui/lib/card/card';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardTitle from 'material-ui/lib/card/card-title';
-import RaisedButton from 'material-ui/lib/raised-button';
+import {Card, CardActions, CardTitle} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export class Types extends React.Component {
   onStart = (event) => {

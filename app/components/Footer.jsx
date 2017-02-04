@@ -10,7 +10,7 @@ export class Footer extends React.Component {
           <span>You can download a copy of the Maprunner IOF pictorial
             control description guide from the
             <a
-              href='http://www.maprunner.co.uk/iof-control-descriptions/'
+              href='https://www.maprunner.co.uk/iof-control-descriptions/'
               target='_blank'
             >
             &nbsp;Maprunner&nbsp;

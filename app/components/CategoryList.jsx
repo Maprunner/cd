@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import {t} from './Quiz.jsx';
-import Toggle from 'material-ui/lib/toggle';
+import Toggle from 'material-ui/Toggle';
 
 export class CategoryList extends React.Component {
   render() {

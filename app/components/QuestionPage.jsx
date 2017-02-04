@@ -6,9 +6,8 @@ import {TextToSymbolsQuestionPage} from './TextToSymbolsQuestionPage.jsx'
 import {SymbolsToTextQuestionPage} from './SymbolsToTextQuestionPage.jsx'
 import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS} from './data.jsx'
 import {t} from './Quiz.jsx';
-import Card from 'material-ui/lib/card/card';
-import CardText from 'material-ui/lib/card/card-text';
-import theme from './theme.js'
+import Card from 'material-ui/Card/Card';
+import CardText from 'material-ui/Card/CardText';
 
 export class QuestionPage extends React.Component {
   renderSymbolsToText() {
@@ -82,9 +81,7 @@ export class InfoCard extends React.Component {
       >
         <CardText
           style={
-            {background: theme.palette.primary1Color,
-             color: theme.palette.alternateTextColor,
-             fontSize: '18px'}}
+            {fontSize: '18px'}}
         >
           {this.props.header}
         </CardText>

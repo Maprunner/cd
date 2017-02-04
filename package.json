@@ -25,11 +25,10 @@
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.8.5",
     "html-webpack-plugin": "^1.7.0",
-    "material-ui": "^0.14.2",
+    "material-ui": "^0.16.7",
     "postcss-loader": "^0.8.0",
-    "react-addons-perf": "^0.14.7",
-    "react-addons-update": "^0.14.3",
-    "react-tap-event-plugin": "^0.2.1",
+    "react-addons-perf": "^15.4.2",
+    "react-addons-update": "^15.4.2",
     "react-transform-hmr": "^1.0.1",
     "style-loader": "^0.13.0",
     "stylelint": "^2.3.4",
@@ -40,7 +39,8 @@
     "webpack-merge": "^0.3.2"
   },
   "dependencies": {
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "react-tap-event-plugin": "^2.0.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

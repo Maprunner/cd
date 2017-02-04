@@ -1,8 +1,8 @@
 'use strict';
 import React from 'react';
 import {AnswerIconGrid} from './AnswerIconGrid.jsx'
-import Dialog from 'material-ui/lib/dialog';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 import {MATCH_ITEMS} from './data.jsx'
 import {t} from './Quiz.jsx'
 

@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import {t} from './Quiz.jsx'
-import RaisedButton from 'material-ui/lib/raised-button';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export class AnswerAsText extends React.Component {
   onClick = () => {

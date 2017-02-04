@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import {t} from './Quiz.jsx';
-import TextField from 'material-ui/lib/text-field';
+import TextField from 'material-ui/TextField';
 
 export class NameInput extends React.Component {
   onNameChange = (event) => {

@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
+import Card from 'material-ui/Card/Card';
+import CardTitle from 'material-ui/Card/CardTitle';
 import {Score, Timer} from './QuestionPage.jsx'
 import {AnswerIconGrid} from './AnswerIconGrid.jsx'
 import {AnswerListAsText} from './AnswerListAsText.jsx'

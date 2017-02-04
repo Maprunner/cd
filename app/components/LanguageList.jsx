@@ -1,8 +1,8 @@
 'use strict';
 import React from 'react';
 import {availableLanguages} from './data.jsx';
-import DropDownMenu from 'material-ui/lib/DropDownMenu';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import {t} from './Quiz.jsx';
 
 export class LanguageList extends React.Component {

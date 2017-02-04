@@ -11,12 +11,9 @@ import {Results,
         loadLanguage, saveLanguage} from './Results.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
 import {MATCH_ITEMS, NO_TYPE, quizDefs} from './data.jsx'
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
-import ThemeDecorator from 'material-ui/lib/styles/theme-decorator';
-import AppBar from 'material-ui/lib/app-bar';
-import IconButton from 'material-ui/lib/icon-button';
-import RaisedButton from 'material-ui/lib/raised-button';
-import MyRawTheme from './theme.js';
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
 var update = require('react-addons-update');
 var logo = require('./img/cdquizlogo.gif');
 
@@ -39,7 +36,6 @@ function setDictionary(dict) {
   dictionary = dict;
 }
 
-@ThemeDecorator(ThemeManager.getMuiTheme(MyRawTheme))
 export class Quiz extends React.Component {
   constructor(props) {
     var lang;

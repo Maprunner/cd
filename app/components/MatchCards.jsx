@@ -2,8 +2,8 @@
 import React from 'react';
 import {MatchCard} from './MatchCard.jsx';
 import {t} from './Quiz.jsx';
-import Dialog from 'material-ui/lib/dialog';
-import RaisedButton from 'material-ui/lib/raised-button';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 
 var update = require('react-addons-update');
 

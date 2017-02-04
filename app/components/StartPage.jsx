@@ -7,8 +7,8 @@ import {CategoryList} from './CategoryList.jsx';
 import {LanguageList} from './LanguageList.jsx';
 import {AnswerOptionList} from './AnswerOptionList.jsx';
 import {Types} from './Types.jsx'
-import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
+import Card from 'material-ui/Card/Card';
+import CardTitle from 'material-ui/Card/CardTitle';
 import {t} from './Quiz.jsx'
 
 export class StartPage extends React.Component {
