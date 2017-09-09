@@ -86,7 +86,7 @@ export const TEXT_TO_SYMBOLS = 1;
 export const MATCH_ITEMS = 2;
 export const NO_TYPE = 9999;
 
-export const availableLanguages = ['en', 'fr', 'fi', 'pl', 'ja'];
+export const availableLanguages = ['en', 'fr', 'fi', 'pl', 'ja', 'cz'];
 
 export const quizDefs = [
   {text: 'Symbols',
