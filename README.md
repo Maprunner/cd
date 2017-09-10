@@ -2,7 +2,7 @@
 
 ## What is this?
 
-You can [try the quiz here.] (http://www.maprunner.co.uk/cd)
+You can [try the quiz here.](http://www.maprunner.co.uk/cd)
 
 If you need some help then all of the answers are here:
 
