@@ -1,46 +1,23 @@
 {
-  "name": "cd",
-  "version": "1.0.0",
-  "description": "Maprunner Control Description Quiz",
-  "repository": "https://github.com/Maprunner/cd",
-  "main": "index.js",
-  "scripts": {
-    "lint": "eslint . --ext .js --ext .jsx",
-    "stats": "webpack --profile --json > stats.json",
-    "build": "webpack",
-    "start": "webpack-dev-server"
-  },
-  "author": "Simon Errington",
-  "license": "MIT",
-  "devDependencies": {
-    "babel-core": "^5.8.34",
-    "babel-eslint": "^4.1.6",
-    "babel-loader": "^5.4.0",
-    "babel-plugin-react-transform": "^1.1.1",
-    "clean-webpack-plugin": "^0.1.4",
-    "css-loader": "^0.23.0",
-    "eslint": "^1.10.2",
-    "eslint-loader": "^1.1.1",
-    "eslint-plugin-react": "^3.11.1",
-    "extract-text-webpack-plugin": "^0.9.1",
-    "file-loader": "^0.8.5",
-    "html-webpack-plugin": "^1.7.0",
-    "material-ui": "^0.16.7",
-    "postcss-loader": "^0.8.0",
-    "react-addons-perf": "^15.4.2",
-    "react-addons-update": "^15.4.2",
-    "react-transform-hmr": "^1.0.1",
-    "style-loader": "^0.13.0",
-    "stylelint": "^2.3.4",
-    "stylelint-config-suitcss": "^1.0.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.14.0",
-    "webpack-merge": "^0.3.2"
-  },
+  "name": "cd2",
+  "version": "0.2.0",
+  "private": true,
+  "homepage" : "https://www.maprunner.co.uk/cd",
   "dependencies": {
-    "react-tap-event-plugin": "^2.0.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-scripts": "1.0.14"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "material-ui": "^0.19.4",
+    "react-addons-update": "^15.6.2",
+    "react-tap-event-plugin": "^3.0.2",
+    "underscore": "^1.8.3"
   }
 }
