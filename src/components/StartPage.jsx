@@ -6,8 +6,7 @@ import {CategoryList} from './CategoryList.jsx';
 import {LanguageList} from './LanguageList.jsx';
 import {AnswerOptionList} from './AnswerOptionList.jsx';
 import {Types} from './Types.jsx'
-import Card from 'material-ui/Card/Card';
-import CardTitle from 'material-ui/Card/CardTitle';
+import {Panel, Form, FormGroup} from 'react-bootstrap';
 import {t} from './Quiz.jsx';
 import _ from 'underscore';
 
@@ -159,45 +158,52 @@ export class StartPage extends React.Component {
   }
 
   render(){
-    const style = {
-      float: 'right',
-      margin:16,
-      'paddingBottom': 16,
-      'paddingLeft': 16,
-      'paddingRight': 16,
-      width: '300'
-    };
+    //const style = {
+    //  float: 'right',
+    //  margin:16,
+    //  'paddingBottom': 16,
+    //  'paddingLeft': 16,
+    //  'paddingRight': 16,
+    //  width: '300'
+    //};
 
     return (
-      <div className='body-container'>
-      <Types
-        onStart={this.onStart}
-      />
-      <Card
-        style={style}
-      >
-        <CardTitle
-          title={t('Select options')}
+      <div>
+        <Types
+          onStart={this.onStart}
         />
-        <CategoryList
-          onClick={this.onSetCategory}
-          categories={this.state.categories}
-          total={this.state.questions.length}
-        />
-        <NameInput
-          name={this.props.name}
-          onSetName={this.props.onSetName}
-        />
-        <AnswerOptionList
-          possibleAnswers={[1, 2, 3, 4, 5]}
-          onChange={this.onAnswerClick}
-          setting={this.state.answersPerQuestion}
-        />
-        <LanguageList
-          language={this.props.language}
-          onSelectLanguage={this.props.onSelectLanguage}
-        />
-      </Card>
+        <Panel
+          header={t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
+          bsStyle="primary"
+        >
+        <Form>
+          <FormGroup
+            controlId="frm-options"
+          >
+            <div className="row">
+            <CategoryList
+              onClick={this.onSetCategory}
+              categories={this.state.categories}
+            />
+            </div>
+            <div className="row">
+            <NameInput
+              name={this.props.name}
+              onSetName={this.props.onSetName}
+            />
+            <AnswerOptionList
+              possibleAnswers={[1, 2, 3, 4, 5]}
+              onChange={this.onAnswerClick}
+              setting={this.state.answersPerQuestion}
+              />
+            <LanguageList
+              language={this.props.language}
+              onSelectLanguage={this.props.onSelectLanguage}
+              />
+            </div>
+          </FormGroup>
+        </Form>
+        </Panel>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {t} from './Quiz.jsx';
-import Toggle from 'material-ui/Toggle';
+import {Checkbox, FormGroup} from 'react-bootstrap';
 
 export class CategoryList extends React.Component {
   render() {
@@ -17,30 +17,29 @@ export class CategoryList extends React.Component {
     })
     return (
       <div>
-        <div>
+        <FormGroup controlId="chkCategorySelect">
           {categories}
-        </div>
-        <strong>{this.props.total + ' ' + t('questions selected')}</strong>
+        </FormGroup>
       </div>
     )
   }
 }
 
 export class Category extends React.Component {
-  onClick = () => {
+  onClick = (event) => {
     this.props.onClick(this.props.category);
   }
 
   render(){
     return(
-      <Toggle
-        value={this.props.category}
-        defaultToggled={this.props.use}
-        onToggle={this.onClick}
-        label={t(this.props.category)}
-        style={{marginBottom:8}}
-      />
-
+      <Checkbox
+        //value={this.props.category}
+        defaultChecked={this.props.use}
+        onClick={this.onClick}
+        className="col-md-2 reset-top-margin"
+      >
+        {t(this.props.category)}
+      </Checkbox>
     )
   }
 }

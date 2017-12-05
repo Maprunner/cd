@@ -1,11 +1,13 @@
 {
-  "name": "cd2",
-  "version": "0.2.0",
+  "name": "cd",
+  "version": "0.3.0",
   "private": true,
-  "homepage" : "https://www.maprunner.co.uk/cd",
+  "homepage": "https://www.maprunner.co.uk/cd",
   "dependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "bootstrap": "^3.3.7",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.31.5",
+    "react-dom": "^16.2.0",
     "react-scripts": "1.0.14"
   },
   "scripts": {
@@ -15,9 +17,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "material-ui": "^0.19.4",
     "react-addons-update": "^15.6.2",
-    "react-tap-event-plugin": "^3.0.2",
     "underscore": "^1.8.3"
   }
 }

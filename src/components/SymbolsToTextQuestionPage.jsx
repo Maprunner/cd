@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Card from 'material-ui/Card/Card';
-import CardTitle from 'material-ui/Card/CardTitle';
-import {Score, Timer} from './QuestionPage.jsx'
+import {Panel} from 'react-bootstrap';
+import {Score} from './Score.jsx'
+import {Timer} from './Timer.jsx'
 import {AnswerIconGrid} from './AnswerIconGrid.jsx'
 import {AnswerListAsText} from './AnswerListAsText.jsx'
 import {t} from './Quiz.jsx'
@@ -11,36 +11,39 @@ export class SymbolsToTextQuestionPage extends React.Component {
   render() {
     let chr = String.fromCharCode(this.props.questions[this.props.idx].question.code);
     return(
-      <div>
-        <div className='question-container'>
-          <Card
-            style={{width: 250, margin:'16px 0 16px 0'}}
-          >
-            <CardTitle
-              title={t(this.props.title)}
-              subtitle={t(this.props.caption)}
-            />
-          </Card>
-          <Score
-            score={this.props.score}
-            from={this.props.idx}
-          />
-          <Timer elapsed={this.props.elapsed} />
+      <div className='question-container'>
+        <div className='row'>
+          <div className='col-md-8'>
+            <Panel header={t(this.props.title)}  bsStyle='primary'>
+              {t(this.props.caption)}
+            </Panel>
+          </div>
+          <div className='col-md-2'>
+            <Score score={this.props.score} from={this.props.idx} />
+          </div>
+          <div className='col-md-2'>
+            <Timer elapsed={this.props.elapsed} />
+          </div>
         </div>
-        <Card
-          style={{maxWidth: 650, margin:'8px 0 16px 0'}}
-        >
-          <div className='question-cell'>
-            <span className='cd'>{chr}</span>
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='question-cell'>
+              <span className='cd'>{chr}</span>
+            </div>
           </div>
-          <div>
-            <AnswerListAsText
-              answers={this.props.questions[this.props.idx].answers}
-              onClick={this.props.onCheckAnswer}
-            />
-          </div>
-          <AnswerIconGrid questions={this.props.questions.slice(0, this.props.answered)} />
-        </Card>
+        </div>
+        <div className='row'>
+          <AnswerListAsText
+            answers={this.props.questions[this.props.idx].answers}
+            onClick={this.props.onCheckAnswer}
+          />
+        </div>
+        <div className='row'>
+          <AnswerIconGrid
+            answers={this.props.questions.slice(0, this.props.answered)} 
+            questions={this.props.questions.length}
+          />
+        </div>
       </div>
     );
   }

@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {t} from './Quiz.jsx'
 import {quizDefs} from './data.jsx'
-import {Card, CardActions, CardTitle} from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
+import {Button, Panel} from 'react-bootstrap';
 
 export class Types extends React.Component {
   onStart = (event) => {
@@ -13,35 +12,30 @@ export class Types extends React.Component {
   render() {
     var types, self;
     self = this;
-    const style = {
-      width: '250',
-      maxWidth: 'none',
-      margin:16
-    };
 
     types = this.props.quizDefs.map(function(btn, i) {
       return(
-        <Card
-          key={i}
-          style={style}
-        >
-          <CardTitle
-            title={t(btn.text)}
-            subtitle={t(btn.caption)}
-          />
-          <CardActions>
-            <RaisedButton
-              label={t('Start')}
+        <div className="col-md-4" key={i}>
+          <Panel
+            header={t(btn.text)}
+            bsStyle="primary"
+          >
+
+            {t(btn.caption)}
+            <Button
               value={btn.value}
-              secondary={true}
-              onTouchTap={self.onStart}
-            />
-          </CardActions>
-        </Card>
+              onClick={self.onStart}
+              bsStyle="primary"
+              className="center-block top-margin"
+            >
+              {t('Start')}
+            </Button>
+          </Panel>
+        </div>
       );
     });
     return (
-      <div>
+      <div className="row">
         {types}
       </div>
     );

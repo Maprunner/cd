@@ -1,6 +1,6 @@
 import React from 'react';
+import {Button} from 'react-bootstrap';
 import {t} from './Quiz.jsx'
-import RaisedButton from 'material-ui/RaisedButton';
 
 export class AnswerAsText extends React.Component {
   onClick = () => {
@@ -9,13 +9,13 @@ export class AnswerAsText extends React.Component {
 
   render() {
     return(
-      <RaisedButton
-        onTouchTap={this.onClick}
-        style={{margin: '8px', textTransform: 'none', padding: '0 4px',
-        minWidth: '200px'}}
+      <Button
+        bsSize='large'
+        onClick={this.onClick}
+        block
       >
-        {this.props.number  + ') ' + t(this.props.answer)}
-      </RaisedButton>
+        {t(this.props.answer)}
+      </Button>
     );
   }
 }
@@ -40,7 +40,7 @@ export class AnswerListAsText extends React.Component {
       return null;
     }
     return (
-      <div className='answer-container'>
+      <div>
         {answers}
       </div>
     )
