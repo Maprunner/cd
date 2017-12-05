@@ -1,38 +1,34 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-
-export class SmallCDIcon extends React.Component {
-  render() {
-    var chr = String.fromCharCode(this.props.code);
-    return (
-      <div className='small-cd-icon cd'>
-        <span
-          className={this.props.gotIt ? 'correct' : 'wrong'}
-          title={t(this.props.desc)}
-        >
-          {chr}
-        </span>
-      </div>
-    );
-  }
-}
+import {SmallCDIcon} from './SmallCDIcon.jsx'
 
 export class AnswerIconGrid extends React.Component {
   render() {
-    var icons = this.props.questions.map(function(q, i) {
+    var j;
+    let answered = this.props.answers.map(function(q, i) {
       return(
         <SmallCDIcon
-          key={i}
-          code={q.question.code}
-          gotIt={q.gotIt}
+           key={i}
+           code={q.question.code}
+           gotIt={q.gotIt}
           desc={q.question.desc}
         />
-      );
+      )
     });
+    let unanswered = [];
+    for (j = this.props.answers.length; j < this.props.questions; j = j + 1) {
+      unanswered.push(
+        <SmallCDIcon
+          key={j}
+          code={0}
+          gotIt={false}
+          desc={''}
+        />
+      );
+    }
     return (
-      <div className='answer-icon-container'>
-        {icons}
+      <div className='answer-icon-grid'>
+        {answered.concat(unanswered)}
       </div>
-    )
+    );
   }
 }

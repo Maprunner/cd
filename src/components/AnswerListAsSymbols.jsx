@@ -35,7 +35,7 @@ export class AnswerListAsSymbols extends React.Component {
       return null;
     }
     return (
-      <div className='answer-container'>
+      <div>
         {answers}
       </div>
     )

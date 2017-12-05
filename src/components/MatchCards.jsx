@@ -1,9 +1,7 @@
 import React from 'react';
 import {MatchCard} from './MatchCard.jsx';
 import {t} from './Quiz.jsx';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-
+import {Button, Modal} from 'react-bootstrap';
 var update = require('react-addons-update');
 
 export class MatchCards extends React.Component {
@@ -94,26 +92,22 @@ export class MatchCards extends React.Component {
     let status = this.state.matched + ' ' + t('matched') + '. ';
     status = status + (this.state.attempts - this.state.matched) + ' ' + t('mistakes');
     status = status + '. ' + this.state.elapsed + ' ' + t('seconds') + '.';
-    const actions = [
-      <RaisedButton
-        key={1}
-        label={t('Close')}
-        secondary={true}
-        onTouchTap={this.handleClose}
-      />
-    ];
     return(
-      <Dialog
-        title={status}
-        modal={true}
-        open={this.props.open}
-        actions={actions}
-        autoScrollBodyContent={true}
-        contentStyle={{width: '95%', maxWidth: 'none'}}
-        onRequestClose={this.handleClose}
+      <Modal
+        show={this.props.open}
+        onHide={this.handleClose}
+        dialogClassName="match-cards"
       >
-        {cards}
-      </Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>{status}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {cards} 
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.handleClose}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 }

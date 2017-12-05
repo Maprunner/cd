@@ -1,30 +1,34 @@
 import React from 'react';
 import {t, availableLanguages} from './Quiz.jsx';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import {FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
 export class LanguageList extends React.Component {
-  handleChange = (event, index, value) => {
-    this.props.onSelectLanguage(value);
+  handleChange = (event) => {
+    this.props.onSelectLanguage(event.target.value);
   }
 
   render() {
     let languages = availableLanguages.map(function(lang, i){
       return(
-        <MenuItem value={lang} primaryText={lang} key={i}/>
+        <option value={lang} key={i}>{lang}</option>
       );
     });
 
     return(
-      <div className="dropdown-container">
-        <p>{t('Language')}</p>
-        <DropDownMenu
-          value={this.props.language}
-          onChange={this.handleChange}
-        >
-          {languages}
-        </DropDownMenu>
-      </div>
+
+    <FormGroup
+      controlId="frmLanguageSelect"
+      className="col-md-4"
+    >
+      <ControlLabel>{t('Language')}</ControlLabel>
+      <FormControl
+        onChange={this.handleChange}
+        componentClass="select"
+        value={this.props.language}
+      >
+        {languages}
+      </FormControl>
+    </FormGroup>
     )
   }
 }

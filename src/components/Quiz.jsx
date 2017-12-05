@@ -8,9 +8,7 @@ import {Results,
         loadLanguage, saveLanguage} from './Results.jsx'
 import {ResultMessage} from './ResultMessage.jsx'
 import {MATCH_ITEMS, NO_TYPE, quizDefs} from './data.jsx'
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import cz from '../lang/cz.js';
 import fi from '../lang/fi.js';
 import fr from '../lang/fr.js';
@@ -153,7 +151,7 @@ export class Quiz extends React.Component {
     } else {
       this.setState({
         quizRunning: false,
-      type: NO_TYPE
+        type: NO_TYPE
       });
     }
   }
@@ -319,30 +317,28 @@ export class Quiz extends React.Component {
   }
 
   render() {
-    const btnStyle = {
-      marginTop: 5,
-      marginRight: 16
-    };
 
     let body = this.renderBody();
     let message = this.state.displayNewResult ? this.renderNewResult() : null;
 
     return (
       <div>
-        <AppBar
-          title={'Maprunner ' + t('IOF Control Description Quiz')}
-          iconElementLeft={
-            <IconButton>
-              <img src={logo} alt=''></img>
-            </IconButton>}
-          iconElementRight={
-            <RaisedButton
-              label={t('Results')}
-              style={btnStyle}
-              onTouchTap={this.onShowResultsTable}
-            />}
-        />
-        <div>
+        <Navbar inverse collapseOnSelect>
+          <Navbar.Header>
+            <img src={logo} alt='logo' className="logo"></img>
+            <Navbar.Brand>
+              <a href="https://www.maprunner.co.uk">Maprunner</a>
+            </Navbar.Brand>
+            <Navbar.Text>{t('IOF Control Description Quiz') + ' 2018'}</Navbar.Text>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav pullRight>
+              <NavItem eventKey={1} onClick={this.onShowResultsTable}>{t('Results')}</NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+        <div className='container'>
           {body}
           {message}
         </div>
@@ -351,5 +347,3 @@ export class Quiz extends React.Component {
   }
 }
 
-Quiz.propTypes = {
-}
