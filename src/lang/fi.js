@@ -48,6 +48,7 @@ const fi = {
   "Pit": "Pieni kaivettu kuoppa",
   "Broken ground": "Pienimuotoinen alue",
   "Ant hill": "Muurahaispesä",
+  "Trench": "",
   "Cliff, crag": "Jyrkänne",
   "Rock pillar": "Kivipilari",
   "Cave": "Luola",
@@ -100,6 +101,7 @@ const fi = {
   "Statue": "Monumentti, patsas",
   "Canopy": "Käytävä läpi talon",
   "Stairway": "Portaat",
+  "Out of bounds area": "Kielletty alue",
   "Special item": "Erikoiskohde"
 };
 export default {fi};
