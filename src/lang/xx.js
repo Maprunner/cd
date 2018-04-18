@@ -49,6 +49,7 @@ const xx = {
   "Pit": "",
   "Broken ground": "",
   "Ant hill": "",
+  "Trench": "",
   "Cliff, crag": "",
   "Rock pillar": "",
   "Cave": "",
@@ -101,6 +102,7 @@ const xx = {
   "Statue": "",
   "Canopy": "",
   "Stairway": "",
+  "Out of bounds area": "",
   "Special item": ""
 };
 export default {xx};
