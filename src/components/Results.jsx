@@ -70,7 +70,7 @@ export class Results extends React.Component {
     }
     formattedResults = results.map(function(result, idx) {
       return(
-        <tr>
+        <tr key={idx}>
           <td>{idx + 1}</td>
           <td>{result.name}</td>
           <td>{t(result.type)}</td>
