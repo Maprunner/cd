@@ -73,7 +73,7 @@ export class StartPage extends React.Component {
     symbols = [];
     for (i = 0; i < shuffled.length; i = i + 1) {
       // only use one 'special symbol' to avoid confusion
-      if (shuffled[i].code !== 59717) {
+      if (shuffled[i].code !== 59719) {
         text.push({
           type: 'text',
           code: shuffled[i].code,

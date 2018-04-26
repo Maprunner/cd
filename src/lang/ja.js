@@ -19,6 +19,7 @@ const ja = {
   "Text": "テキスト",
   "Match": "組み合わせ",
   "Results": "結果",
+  "Start": "開始",
   "Identify the text description for a given symbol": "与えられた記号に対するテキストを回答",
   "Identify the symbol for a given text description": "与えられたテキストに対する記号を回答",
   "Match symbols and text": "記号とテキストの組み合わせを回答",
@@ -48,6 +49,7 @@ const ja = {
   "Pit": "穴",
   "Broken ground": "凹凸地",
   "Ant hill": "アリ塚",
+  "Trench": "トレンチ",
   "Cliff, crag": "岩がけ",
   "Rock pillar": "柱状の岩",
   "Cave": "横穴",
@@ -100,6 +102,7 @@ const ja = {
   "Statue": "記念物・彫像",
   "Canopy": "建物の通過できる部分",
   "Stairway": "階段",
+  "Out of bounds area": "立入禁止区域",
   "Special item": "(特別な特徴物)"
 };
 export default {ja};
