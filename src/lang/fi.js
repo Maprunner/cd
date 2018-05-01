@@ -48,7 +48,7 @@ const fi = {
   "Pit": "Pieni kaivettu kuoppa",
   "Broken ground": "Pienimuotoinen alue",
   "Ant hill": "Muurahaispesä",
-  "Trench": "",
+  "Trench": "Kaivanto",
   "Cliff, crag": "Jyrkänne",
   "Rock pillar": "Kivipilari",
   "Cave": "Luola",
