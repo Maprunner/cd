@@ -35,7 +35,7 @@ everyone said it would be, after getting over the move to ES6.
 turned out to be the easiest way to get things working. The hot module replacement is impressive, but it feels like I've installed
 an awful lot of things which I now need to rely on not to break. And it did cause a lot of grief when I needed to update it...
 * [npm](https://www.npmjs.com/): The node package manager.
-* [IcoMoon App](https://icomoon.io/app/#/select): A realy nice utility to generate the icon fonts files.
+* [IcoMoon App](https://icomoon.io/app/#/select): A really nice utility to generate the icon fonts files.
 * [Inkscape](https://inkscape.org/en/): SVG editor.
 
 The second major release moved to React 16, and added Progressive Web App features, so in theory you can now install this and run it without an internet connection.
