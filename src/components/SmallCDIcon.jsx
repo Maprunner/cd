@@ -1,10 +1,10 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
+import { t } from './Quiz.jsx';
 
-export class SmallCDIcon extends React.Component {
+export default class SmallCDIcon extends React.Component {
   getContent() {
     if (this.props.code === 0) {
-      return(
+      return (
         <span
           className={'unanswered'}
           title={''}
@@ -13,7 +13,7 @@ export class SmallCDIcon extends React.Component {
         </span>
       )
     } else {
-      return(
+      return (
         <span
           className={this.props.gotIt ? 'correct' : 'wrong'}
           title={t(this.props.desc)}
@@ -23,10 +23,10 @@ export class SmallCDIcon extends React.Component {
       )
     }
   }
-  
+
   render() {
     const content = this.getContent();
-    
+
     return (
       <div className='small-cd-icon cd'>
         {content}

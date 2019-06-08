@@ -1,13 +1,18 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {Panel} from 'react-bootstrap';
+import { t } from './Quiz.jsx';
+import Card from 'react-bootstrap/Card';
 
-export class Timer extends React.Component {
-  render() {
-    return (
-      <Panel header={t('Time')} bsStyle='primary'>
+function Timer() {
+  return (
+    <Card variant='primary'>
+      <Card.Body>
+        <Card.Title>
+          header={t('Time')}
+        </Card.Title>
         <p className='large-text text-center'>{this.props.elapsed}</p>
-      </Panel>
-    )
-  }
+      </Card.Body>
+    </Card>
+  );
 }
+
+export default Timer;

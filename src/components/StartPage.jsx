@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {MATCH_ITEMS, baseCategories, baseData} from './data.jsx';
-import {NameInput} from './NameInput.jsx';
-import {CategoryList} from './CategoryList.jsx';
-import {LanguageList} from './LanguageList.jsx';
-import {AnswerOptionList} from './AnswerOptionList.jsx';
-import {Types} from './Types.jsx'
-import {Panel, Form, FormGroup} from 'react-bootstrap';
-import {t} from './Quiz.jsx';
+import { MATCH_ITEMS, baseCategories, baseData } from './data.jsx';
+import NameInput from './NameInput.jsx';
+import CategoryList from './CategoryList.jsx';
+import LanguageList from './LanguageList.jsx';
+import AnswerOptionList from './AnswerOptionList.jsx';
+import Types from './Types.jsx'
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import { t } from './Quiz.jsx';
 import _ from 'underscore';
 
-export class StartPage extends React.Component {
+class StartPage extends React.Component {
   constructor(props) {
     super(props);
     var questions;
@@ -23,7 +25,7 @@ export class StartPage extends React.Component {
   }
 
   onAnswerClick = (value) => {
-    this.setState({answersPerQuestion: value});
+    this.setState({ answersPerQuestion: value });
   }
 
   onStart = (type) => {
@@ -55,14 +57,14 @@ export class StartPage extends React.Component {
     var questions, useCategories;
     // create a list of index values for categories to be used
     useCategories = _.chain(categories)
-      .where({'use': true})
+      .where({ 'use': true })
       .pluck('index')
       .value();
 
     questions = _.filter(this.props.data, function (q) {
-          //question id is three digits: first digit is category
-          return _.contains(useCategories, parseInt((q.id /100), 10));
-        });
+      //question id is three digits: first digit is category
+      return _.contains(useCategories, parseInt((q.id / 100), 10));
+    });
     return questions;
   }
 
@@ -95,8 +97,8 @@ export class StartPage extends React.Component {
     // merge symbol and text arrays
     // by taking symbol and text alternately
     // starting with an empty array
-    questions = _.reduce( symbols,
-      function(questions, symbol, idx) {
+    questions = _.reduce(symbols,
+      function (questions, symbol, idx) {
         questions.push(symbol);
         questions.push(text[idx])
         return questions;
@@ -144,8 +146,8 @@ export class StartPage extends React.Component {
     i = 0;
     while ((list.length < this.state.answersPerQuestion) && (i < possible.length)) {
       // don't duplicate correct answer, and only use items in same group
-      if ((possible[i].desc !== question.desc)  &&
-          (parseInt((question.id/100), 10) === parseInt((possible[i].id/100), 10))) {
+      if ((possible[i].desc !== question.desc) &&
+        (parseInt((question.id / 100), 10) === parseInt((possible[i].id / 100), 10))) {
         list.push({
           desc: possible[i].desc,
           code: possible[i].code,
@@ -157,54 +159,43 @@ export class StartPage extends React.Component {
     return _.shuffle(list);
   }
 
-  render(){
-    //const style = {
-    //  float: 'right',
-    //  margin:16,
-    //  'paddingBottom': 16,
-    //  'paddingLeft': 16,
-    //  'paddingRight': 16,
-    //  width: '300'
-    //};
-
+  render() {
     return (
       <div>
         <Types
           onStart={this.onStart}
         />
-        <Panel
-          header={t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
-          bsStyle="primary"
-        >
-        <Form>
-          <FormGroup
-            controlId="frm-options"
-          >
-            <div className="row">
-            <CategoryList
-              onClick={this.onSetCategory}
-              categories={this.state.categories}
-            />
-            </div>
-            <div className="row">
-            <NameInput
-              name={this.props.name}
-              onSetName={this.props.onSetName}
-            />
-            <AnswerOptionList
-              possibleAnswers={[1, 2, 3, 4, 5]}
-              onChange={this.onAnswerClick}
-              setting={this.state.answersPerQuestion}
-              />
-            <LanguageList
-              language={this.props.language}
-              onSelectLanguage={this.props.onSelectLanguage}
-              />
-            </div>
-          </FormGroup>
-        </Form>
-        </Panel>
-      </div>
+        <Card className="m-1">
+          <Card.Header>
+            {t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
+          </Card.Header>
+          <Card.Body>
+            <Form>
+              <Row>
+                <CategoryList
+                  onClick={this.onSetCategory}
+                  categories={this.state.categories}
+                />
+              </Row>
+              <Form.Group as={Row}>
+                <NameInput
+                  name={this.props.name}
+                  onSetName={this.props.onSetName}
+                />
+                <AnswerOptionList
+                  possibleAnswers={[1, 2, 3, 4, 5]}
+                  onChange={this.onAnswerClick}
+                  setting={this.state.answersPerQuestion}
+                />
+                <LanguageList
+                  language={this.props.language}
+                  onSelectLanguage={this.props.onSelectLanguage}
+                />
+              </Form.Group>
+            </Form>
+          </Card.Body>
+        </Card>
+      </div >
     );
   }
 }
@@ -214,9 +205,11 @@ StartPage.defaultProps = {
 }
 
 StartPage.propTypes = {
-    onStart: PropTypes.func,
-    onSetName: PropTypes.func,
-    onSelectLanguage: PropTypes.func,
-    language: PropTypes.string,
-    name: PropTypes.string
+  onStart: PropTypes.func,
+  onSetName: PropTypes.func,
+  onSelectLanguage: PropTypes.func,
+  language: PropTypes.string,
+  name: PropTypes.string
 }
+
+export default StartPage;

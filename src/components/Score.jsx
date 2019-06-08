@@ -1,13 +1,16 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {Panel} from 'react-bootstrap';
+import { t } from './Quiz.jsx';
+import Card from 'react-bootstrap/Card';
 
-export class Score extends React.Component {
-  render() {
-    return (
-      <Panel header={t('Score')} bsStyle='primary'>
+function Score(props) {
+  return (
+    <Card variant='primary'>
+      <Card.Body>
+        <Card.Title>{t('Score')}</Card.Title>
         <p className='large-text text-center'>{this.props.score + '/' + this.props.from}</p>
-      </Panel>
-    )
-  }
+      </Card.Body>
+    </Card>
+  );
 }
+
+export default Score;

@@ -1,34 +1,35 @@
 import React from 'react';
-import {MatchCard} from './MatchCard.jsx';
-import {t} from './Quiz.jsx';
-import {Button, Modal} from 'react-bootstrap';
-var update = require('react-addons-update');
+import MatchCard from './MatchCard.jsx';
+import { t } from './Quiz.jsx';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import update from 'immutability-helper';
 
-export class MatchCards extends React.Component {
+class MatchCards extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        // use what we get as a basis for our own set of questions
-        // which we track ourselves
-        questions: this.props.questions,
-        selectedIdx: null,
-        matched: 0,
-        attempts: 0,
-        elapsed: 0
-      };
+      // use what we get as a basis for our own set of questions
+      // which we track ourselves
+      questions: this.props.questions,
+      selectedIdx: null,
+      matched: 0,
+      attempts: 0,
+      elapsed: 0
+    };
   }
 
-    componentDidMount() {
-      this.matchTimer = setInterval(this.onTick, 1000);
-    }
+  componentDidMount() {
+    this.matchTimer = setInterval(this.onTick, 1000);
+  }
 
   componentWillUnmount() {
-   clearInterval(this.matchTimer);
+    clearInterval(this.matchTimer);
   }
 
   onTick = () => {
     if (this.state.matched < (this.state.questions.length / 2)) {
-      this.setState({elapsed: this.state.elapsed + 1});
+      this.setState({ elapsed: this.state.elapsed + 1 });
     }
   }
 
@@ -58,9 +59,9 @@ export class MatchCards extends React.Component {
       a1.selected = true;
       selected = idx;
     }
-    newQuestions = update(this.state.questions, {[idx]: {$set: a1}});
+    newQuestions = update(this.state.questions, { [idx]: { $set: a1 } });
     if (a2) {
-      newQuestions = update(newQuestions, {[this.state.selectedIdx]: {$set: a2}});
+      newQuestions = update(newQuestions, { [this.state.selectedIdx]: { $set: a2 } });
     }
     this.setState({
       questions: newQuestions,
@@ -79,8 +80,8 @@ export class MatchCards extends React.Component {
 
   render() {
     let self = this;
-    let cards = this.state.questions.map(function(q, i) {
-      return(
+    let cards = this.state.questions.map(function (q, i) {
+      return (
         <MatchCard
           idx={i}
           key={i}
@@ -92,7 +93,7 @@ export class MatchCards extends React.Component {
     let status = this.state.matched + ' ' + t('matched') + '. ';
     status = status + (this.state.attempts - this.state.matched) + ' ' + t('mistakes');
     status = status + '. ' + this.state.elapsed + ' ' + t('seconds') + '.';
-    return(
+    return (
       <Modal
         show={this.props.open}
         onHide={this.handleClose}
@@ -102,7 +103,7 @@ export class MatchCards extends React.Component {
           <Modal.Title>{status}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {cards} 
+          {cards}
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.handleClose}>Close</Button>
@@ -111,3 +112,5 @@ export class MatchCards extends React.Component {
     );
   }
 }
+
+export default MatchCards;

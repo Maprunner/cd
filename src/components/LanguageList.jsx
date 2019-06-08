@@ -1,34 +1,36 @@
 import React from 'react';
-import {t, availableLanguages} from './Quiz.jsx';
-import {FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import { t, availableLanguages } from './Quiz.jsx';
+import Form from 'react-bootstrap/Form';
 
-export class LanguageList extends React.Component {
+class LanguageList extends React.Component {
   handleChange = (event) => {
     this.props.onSelectLanguage(event.target.value);
   }
 
   render() {
-    let languages = availableLanguages.map(function(lang, i){
-      return(
+    let languages = availableLanguages.map(function (lang, i) {
+      return (
         <option value={lang} key={i}>{lang}</option>
       );
     });
 
-    return(
+    return (
 
-    <FormGroup
-      controlId="frmLanguageSelect"
-      className="col-md-4"
-    >
-      <ControlLabel>{t('Language')}</ControlLabel>
-      <FormControl
-        onChange={this.handleChange}
-        componentClass="select"
-        value={this.props.language}
+      <Form.Group
+        controlId="frmLanguageSelect"
+        className="col-md-4"
       >
-        {languages}
-      </FormControl>
-    </FormGroup>
+        <Form.Label>{t('Language')}</Form.Label>
+        <Form.Control
+          onChange={this.handleChange}
+          as="select"
+          value={this.props.language}
+        >
+          {languages}
+        </Form.Control>
+      </Form.Group>
     )
   }
 }
+
+export default LanguageList;

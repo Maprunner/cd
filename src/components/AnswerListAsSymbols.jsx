@@ -7,7 +7,7 @@ export class AnswerAsSymbol extends React.Component {
 
   render() {
     var chr = String.fromCharCode(this.props.code);
-    return(
+    return (
       <div className='big-cd-icon' onClick={this.onClick}>
         <span className='cd'>{chr}</span>
       </div>
@@ -15,14 +15,14 @@ export class AnswerAsSymbol extends React.Component {
   }
 }
 
-export class AnswerListAsSymbols extends React.Component {
+class AnswerListAsSymbols extends React.Component {
   render() {
     var self = this;
     if (!this.props.answers) {
       return null;
     }
-    var answers = this.props.answers.map(function(ans, i) {
-      return(
+    var answers = this.props.answers.map(function (ans, i) {
+      return (
         <AnswerAsSymbol
           key={i}
           answer={ans.desc}
@@ -31,7 +31,7 @@ export class AnswerListAsSymbols extends React.Component {
         />
       );
     });
-    if(!answers.length) {
+    if (!answers.length) {
       return null;
     }
     return (
@@ -41,3 +41,5 @@ export class AnswerListAsSymbols extends React.Component {
     )
   }
 }
+
+export default AnswerListAsSymbols;

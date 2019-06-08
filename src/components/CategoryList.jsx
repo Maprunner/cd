@@ -1,11 +1,10 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {Checkbox, FormGroup} from 'react-bootstrap';
+import Category from './Category.jsx'
 
-export class CategoryList extends React.Component {
+class CategoryList extends React.Component {
   render() {
     var self = this;
-    var categories = this.props.categories.map(function(cat, idx){
+    var categories = this.props.categories.map(function (cat, idx) {
       return (
         <Category
           key={idx}
@@ -17,29 +16,10 @@ export class CategoryList extends React.Component {
     })
     return (
       <div>
-        <FormGroup controlId="chkCategorySelect">
-          {categories}
-        </FormGroup>
+        {categories}
       </div>
     )
   }
 }
 
-export class Category extends React.Component {
-  onClick = (event) => {
-    this.props.onClick(this.props.category);
-  }
-
-  render(){
-    return(
-      <Checkbox
-        //value={this.props.category}
-        defaultChecked={this.props.use}
-        onClick={this.onClick}
-        className="col-md-2 reset-top-margin"
-      >
-        {t(this.props.category)}
-      </Checkbox>
-    )
-  }
-}
+export default CategoryList;

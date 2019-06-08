@@ -1,22 +1,21 @@
 import React from 'react';
 import _ from 'underscore';
-import {StartPage} from './StartPage.jsx'
-import {QuestionPage} from './QuestionPage.jsx'
-import {Results,
-        loadAllTimeResults, saveAllTimeResults,
-        loadName, saveName,
-        loadLanguage, saveLanguage} from './Results.jsx'
-import {ResultMessage} from './ResultMessage.jsx'
-import {MATCH_ITEMS, NO_TYPE, quizDefs} from './data.jsx'
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import update from 'immutability-helper';
+import StartPage from './StartPage.jsx'
+import QuestionPage from './QuestionPage.jsx'
+import Header from './Header.jsx'
+import Results, {
+  loadAllTimeResults, saveAllTimeResults,
+  loadName, saveName,
+  loadLanguage, saveLanguage
+} from './Results.jsx'
+import ResultMessage from './ResultMessage.jsx'
+import { MATCH_ITEMS, NO_TYPE, quizDefs } from './data.jsx'
 import cz from '../lang/cz.js';
 import fi from '../lang/fi.js';
 import fr from '../lang/fr.js';
 import ja from '../lang/ja.js';
 import pl from '../lang/pl.js';
-
-var update = require('react-addons-update');
-var logo = require('./img/cdquizlogo.gif');
 
 export const NEW_RESULTS_COUNT = 10;
 export const ALL_TIME_RESULTS_COUNT = 10;
@@ -45,7 +44,7 @@ function setDictionary(dict) {
   dictionary = dict;
 }
 
-export class Quiz extends React.Component {
+class Quiz extends React.Component {
   constructor(props) {
     super(props);
     setDictionary({});
@@ -79,12 +78,12 @@ export class Quiz extends React.Component {
   }
 
   componentWillUnmount() {
-   clearInterval(this.timer);
+    clearInterval(this.timer);
   }
 
   onTick = () => {
     if (this.state.quizRunning) {
-      this.setState({elapsed: new Date() - this.state.start});
+      this.setState({ elapsed: new Date() - this.state.start });
     }
   }
 
@@ -108,7 +107,7 @@ export class Quiz extends React.Component {
 
   onSelectLanguage = (lang) => {
     if (dictionaries.hasOwnProperty(lang)) {
-      setDictionary(dictionaries[lang][lang]);      
+      setDictionary(dictionaries[lang][lang]);
     } else {
       setDictionary({});
       lang = 'en'
@@ -118,7 +117,7 @@ export class Quiz extends React.Component {
       language: lang
     });
   }
-  
+
   onSetName = (name) => {
     saveName(name);
     this.setState({
@@ -168,19 +167,18 @@ export class Quiz extends React.Component {
       score = score + 1;
       gotIt = true;
     }
-    // http://stackoverflow.com/questions/30899454/dynamic-key-in-immutability-update-helper-for-array
     q = this.state.questions[idx];
     q.gotIt = gotIt;
-    answered = this.state.answered + 1
+    answered = this.state.answered + 1;
     this.setState({
-      questions: update(this.state.questions, {[idx]: {$set: q}}),
+      questions: update(this.state.questions, { [idx]: { $set: q } }),
       answered: answered,
       score: score
     })
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
       this.saveResult(score, answered);
     } else {
-      this.setState({currentQuestionIdx: this.state.currentQuestionIdx + 1});
+      this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 });
     }
   }
 
@@ -190,8 +188,8 @@ export class Quiz extends React.Component {
       name: this.state.name,
       score: score,
       from: from,
-      percent: (score * 100/from).toFixed(1),
-      time: parseInt((this.state.elapsed/1000), 10)
+      percent: (score * 100 / from).toFixed(1),
+      time: parseInt((this.state.elapsed / 1000), 10)
     });
     this.setState({
       results: newResults.new,
@@ -211,7 +209,7 @@ export class Quiz extends React.Component {
       // sort by score DESC percent DESC time ASC
       .sortBy('time')
       .reverse()
-      .sortBy(function(r) {return parseFloat(r.percent);})
+      .sortBy(function (r) { return parseFloat(r.percent); })
       .sortBy('score')
       .reverse()
       // truncate
@@ -233,7 +231,7 @@ export class Quiz extends React.Component {
       ALL_TIME_RESULTS_COUNT
     );
     saveAllTimeResults(newAllTimeResults);
-    return({
+    return ({
       new: newResults,
       allTime: newAllTimeResults
     });
@@ -241,21 +239,21 @@ export class Quiz extends React.Component {
 
   getTypeText(type) {
     return _.chain(quizDefs)
-      .where({value: type})
+      .where({ value: type })
       .pluck('text')
       .value();
   }
 
   getCaptionText(type) {
     return _.chain(quizDefs)
-      .where({value: type})
+      .where({ value: type })
       .pluck('caption')
       .value();
   }
 
   renderBody() {
     if (this.state.displayResultsTable) {
-      return(
+      return (
         <Results
           results={this.state.results}
           allTimeResults={this.state.allTimeResults}
@@ -265,7 +263,7 @@ export class Quiz extends React.Component {
       );
     }
     if (!this.state.quizRunning) {
-      return(
+      return (
         <StartPage
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
@@ -274,25 +272,24 @@ export class Quiz extends React.Component {
           name={this.state.name}
         />
       );
-    } else {
-      return(
-        <QuestionPage
-          idx={this.state.currentQuestionIdx}
-          type={this.state.type}
-          title={this.getTypeText(this.state.type)}
-          caption={this.getCaptionText(this.state.type)}
-          questions={this.state.questions}
-          score={this.state.score}
-          answered={this.state.answered}
-          elapsed={parseInt((this.state.elapsed/1000), 10)}
-          onCheckAnswer={this.state.type === MATCH_ITEMS ?
-            this.onMatchFinished
-            :
-            this.onCheckAnswer
-          }
-        />
-      );
     }
+    return (
+      <QuestionPage
+        idx={this.state.currentQuestionIdx}
+        type={this.state.type}
+        title={this.getTypeText(this.state.type)}
+        caption={this.getCaptionText(this.state.type)}
+        questions={this.state.questions}
+        score={this.state.score}
+        answered={this.state.answered}
+        elapsed={parseInt((this.state.elapsed / 1000), 10)}
+        onCheckAnswer={this.state.type === MATCH_ITEMS ?
+          this.onMatchFinished
+          :
+          this.onCheckAnswer
+        }
+      />
+    );
   }
 
   renderNewResult() {
@@ -302,7 +299,7 @@ export class Quiz extends React.Component {
     // eslint-disable-next-line
     message = message.replace(/\#2/, this.state.answered);
     // eslint-disable-next-line
-    message = message.replace(/\#3/, parseInt((this.state.elapsed/1000), 10));
+    message = message.replace(/\#3/, parseInt((this.state.elapsed / 1000), 10));
     return (
       <ResultMessage
         handleClose={this.onCloseNewResult}
@@ -323,21 +320,9 @@ export class Quiz extends React.Component {
 
     return (
       <div>
-        <Navbar inverse collapseOnSelect>
-          <Navbar.Header>
-            <img src={logo} alt='logo' className="logo"></img>
-            <Navbar.Brand>
-              <a href="https://www.maprunner.co.uk">Maprunner</a>
-            </Navbar.Brand>
-            <Navbar.Text>{t('IOF Control Description Quiz') + ' 2018'}</Navbar.Text>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              <NavItem eventKey={1} onClick={this.onShowResultsTable}>{t('Results')}</NavItem>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+        <Header
+          onShowResultsTable={this.onShowResultsTable}
+        />
         <div className='container'>
           {body}
           {message}
@@ -347,3 +332,4 @@ export class Quiz extends React.Component {
   }
 }
 
+export default Quiz;

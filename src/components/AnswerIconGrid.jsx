@@ -1,15 +1,15 @@
 import React from 'react';
-import {SmallCDIcon} from './SmallCDIcon.jsx'
+import SmallCDIcon from './SmallCDIcon.jsx'
 
-export class AnswerIconGrid extends React.Component {
+class AnswerIconGrid extends React.Component {
   render() {
     var j;
-    let answered = this.props.answers.map(function(q, i) {
-      return(
+    let answered = this.props.answers.map(function (q, i) {
+      return (
         <SmallCDIcon
-           key={i}
-           code={q.question.code}
-           gotIt={q.gotIt}
+          key={i}
+          code={q.question.code}
+          gotIt={q.gotIt}
           desc={q.question.desc}
         />
       )
@@ -32,3 +32,5 @@ export class AnswerIconGrid extends React.Component {
     );
   }
 }
+
+export default AnswerIconGrid

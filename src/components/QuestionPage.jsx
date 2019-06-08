@@ -1,12 +1,12 @@
 import React from 'react';
-import {MatchCards} from './MatchCards.jsx'
-import {TextToSymbolsQuestionPage} from './TextToSymbolsQuestionPage.jsx'
-import {SymbolsToTextQuestionPage} from './SymbolsToTextQuestionPage.jsx'
-import {SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS} from './data.jsx'
+import MatchCards from './MatchCards.jsx'
+import TextToSymbolsQuestionPage from './TextToSymbolsQuestionPage.jsx'
+import SymbolsToTextQuestionPage from './SymbolsToTextQuestionPage.jsx'
+import { SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS } from './data.jsx'
 
-export class QuestionPage extends React.Component {
+class QuestionPage extends React.Component {
   renderSymbolsToText() {
-    return(
+    return (
       <div>
         <SymbolsToTextQuestionPage
           idx={this.props.idx}
@@ -23,7 +23,7 @@ export class QuestionPage extends React.Component {
   }
 
   renderTextToSymbols() {
-    return(
+    return (
       <div>
         <TextToSymbolsQuestionPage
           idx={this.props.idx}
@@ -40,7 +40,7 @@ export class QuestionPage extends React.Component {
   }
 
   renderMatchItems() {
-    return(
+    return (
       <div>
         <MatchCards
           questions={this.props.questions}
@@ -55,7 +55,7 @@ export class QuestionPage extends React.Component {
   }
 
   render() {
-    switch(this.props.type) {
+    switch (this.props.type) {
       case SYMBOLS_TO_TEXT:
         return this.renderSymbolsToText();
       case TEXT_TO_SYMBOLS:
@@ -67,4 +67,6 @@ export class QuestionPage extends React.Component {
     }
   }
 }
+
+export default QuestionPage;
 

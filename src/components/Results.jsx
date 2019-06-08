@@ -1,6 +1,8 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {Button, Modal, Table} from 'react-bootstrap';
+import { t } from './Quiz.jsx';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Table from 'react-bootstrap/Table';
 export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
 export const CD_QUIZ_LANGUAGE_ITEM = 'cdquiz-language';
@@ -61,15 +63,15 @@ export class Results extends React.Component {
   renderResults(results, title) {
     var formattedResults;
     if (results.length === 0) {
-      return(
+      return (
         <div>
           <h4>{title}</h4>
           {t('No results yet')}
         </div>
       );
     }
-    formattedResults = results.map(function(result, idx) {
-      return(
+    formattedResults = results.map(function (result, idx) {
+      return (
         <tr key={idx}>
           <td>{idx + 1}</td>
           <td>{result.name}</td>
@@ -81,7 +83,7 @@ export class Results extends React.Component {
       );
     });
 
-    return(
+    return (
       <div>
         <h4>{title}</h4>
         <Table striped bordered condensed hover>
@@ -104,7 +106,7 @@ export class Results extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <Modal show={this.props.open} onHide={this.handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{t('Results')}</Modal.Title>
@@ -120,3 +122,5 @@ export class Results extends React.Component {
     );
   }
 }
+
+export default Results;

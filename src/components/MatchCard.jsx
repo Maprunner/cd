@@ -1,5 +1,5 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
+import { t } from './Quiz.jsx';
 
 class CardFace extends React.Component {
   onClick = () => {
@@ -19,7 +19,7 @@ class CardFace extends React.Component {
     if (this.props.question.selected) {
       style = style + ' card-selected';
     }
-    return(
+    return (
       <div className={style} onClick={this.onClick}>
         {content}
       </div>
@@ -29,7 +29,7 @@ class CardFace extends React.Component {
 
 class FinishedCard extends React.Component {
   render() {
-    return(
+    return (
       <div className='cd-card card-got-it'>
         {t('OK')}
       </div>
@@ -37,20 +37,22 @@ class FinishedCard extends React.Component {
   }
 }
 
-export class MatchCard extends React.Component {
+class MatchCard extends React.Component {
   render() {
     if (this.props.question.gotIt) {
-      return(
+      return (
         <FinishedCard />
       );
     }
-    return(
+    return (
       <CardFace
         question={this.props.question}
         idx={this.props.idx}
         onClick={this.props.onClick}
         type={this.props.question.type}
       />
-  )
+    )
   }
 }
+
+export default MatchCard;

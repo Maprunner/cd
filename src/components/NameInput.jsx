@@ -1,8 +1,8 @@
 import React from 'react';
-import {t} from './Quiz.jsx';
-import {FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import { t } from './Quiz.jsx';
+import Form from 'react-bootstrap/Form';
 
-export class NameInput extends React.Component {
+class NameInput extends React.Component {
   onNameChange = (event) => {
     let name = event.target.value;
     // limit valid characters to 1 to 25 of quite a wide range
@@ -15,21 +15,23 @@ export class NameInput extends React.Component {
     this.props.onSetName(name);
   }
 
-  render(){
-    return(
-      <FormGroup
+  render() {
+    return (
+      <Form.Group
         controlId="frmNameInput"
         className="col-md-4"
       >
-        <ControlLabel>{t('Name')}</ControlLabel>
-        <FormControl
+        <Form.Label>{t('Name')}</Form.Label>
+        <Form.Control
           type="text"
           value={this.props.name}
           placeholder={this.props.name}
           onChange={this.onNameChange}
         />
-      </FormGroup>
+      </Form.Group>
     );
   }
 }
+
+export default NameInput;
 

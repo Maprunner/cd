@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from 'react-bootstrap';
-import {t} from './Quiz.jsx'
+import Button from 'react-bootstrap/Button';
+import { t } from './Quiz.jsx'
 
 export class AnswerAsText extends React.Component {
   onClick = () => {
@@ -8,9 +8,9 @@ export class AnswerAsText extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <Button
-        bsSize='large'
+        size='large'
         onClick={this.onClick}
         block
       >
@@ -20,14 +20,14 @@ export class AnswerAsText extends React.Component {
   }
 }
 
-export class AnswerListAsText extends React.Component {
+class AnswerListAsText extends React.Component {
   render() {
     var self = this;
     if (!this.props.answers) {
       return null;
     }
-    var answers = this.props.answers.map(function(ans, i) {
-      return(
+    var answers = this.props.answers.map(function (ans, i) {
+      return (
         <AnswerAsText
           key={i}
           number={i + 1}
@@ -36,7 +36,7 @@ export class AnswerListAsText extends React.Component {
         />
       );
     });
-    if(!answers.length) {
+    if (!answers.length) {
       return null;
     }
     return (
@@ -46,3 +46,5 @@ export class AnswerListAsText extends React.Component {
     )
   }
 }
+
+export default AnswerListAsText;
