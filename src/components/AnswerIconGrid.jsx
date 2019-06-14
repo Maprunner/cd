@@ -26,9 +26,9 @@ class AnswerIconGrid extends React.Component {
       );
     }
     return (
-      <div className='answer-icon-grid'>
+      <>
         {answered.concat(unanswered)}
-      </div>
+      </>
     );
   }
 }

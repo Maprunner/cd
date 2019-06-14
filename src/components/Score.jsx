@@ -5,9 +5,11 @@ import Card from 'react-bootstrap/Card';
 function Score(props) {
   return (
     <Card variant='primary'>
+      <Card.Header>{t('Score')}</Card.Header>
       <Card.Body>
-        <Card.Title>{t('Score')}</Card.Title>
-        <p className='large-text text-center'>{this.props.score + '/' + this.props.from}</p>
+        <Card.Text>
+          {props.score + '/' + props.from}
+        </Card.Text>
       </Card.Body>
     </Card>
   );

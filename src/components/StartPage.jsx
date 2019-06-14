@@ -171,12 +171,12 @@ class StartPage extends React.Component {
           </Card.Header>
           <Card.Body>
             <Form>
-              <Row>
+              <Form.Group>
                 <CategoryList
                   onClick={this.onSetCategory}
                   categories={this.state.categories}
                 />
-              </Row>
+              </Form.Group>
               <Form.Group as={Row}>
                 <NameInput
                   name={this.props.name}

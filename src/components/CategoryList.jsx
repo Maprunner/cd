@@ -1,5 +1,6 @@
 import React from 'react';
 import Category from './Category.jsx'
+import Row from 'react-bootstrap/Row';
 
 class CategoryList extends React.Component {
   render() {
@@ -15,9 +16,9 @@ class CategoryList extends React.Component {
       );
     })
     return (
-      <div>
+      <Row className="pb-2">
         {categories}
-      </div>
+      </Row>
     )
   }
 }

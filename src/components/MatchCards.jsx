@@ -108,7 +108,7 @@ class MatchCards extends React.Component {
         <Modal.Footer>
           <Button onClick={this.handleClose}>Close</Button>
         </Modal.Footer>
-      </Modal>
+      </Modal >
     );
   }
 }

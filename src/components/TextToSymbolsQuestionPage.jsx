@@ -1,5 +1,7 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Score from './Score.jsx'
 import Timer from './Timer.jsx'
 import AnswerIconGrid from './AnswerIconGrid.jsx'
@@ -9,43 +11,45 @@ import { t } from './Quiz.jsx'
 class TextToSymbolsQuestionPage extends React.Component {
   render() {
     return (
-      <div className='question-container'>
-        <div className='row'>
-          <div className='col-md-8'>
+      <>
+        <Row className="py-2">
+          <Col xs={6}>
             <Card variant='primary'>
+              <Card.Header>{t(this.props.title)}</Card.Header>
               <Card.Body>
-                <Card.Title>{t(this.props.title)}</Card.Title>
-                {t(this.props.caption)}
+                <Card.Text>
+                  {t(this.props.caption)}
+                </Card.Text>
               </Card.Body>
             </Card>
-          </div>
-          <div className='col-md-2'>
+          </Col>
+          <Col xs={3}>
             <Score score={this.props.score} from={this.props.idx} />
-          </div>
-          <div className='col-md-2'>
+          </Col>
+          <Col xs={3}>
             <Timer elapsed={this.props.elapsed} />
-          </div>
-        </div>
-        <div className='row text-center'>
-          <div className='col-md-12'>
-            <p className='large-text'>{t(this.props.questions[this.props.idx].question.desc)}</p>
-          </div>
-        </div>
-        <div className='row text-center'>
-          <div className='col-md-12'>
+          </Col>
+        </Row>
+        <Row className="py-2">
+          <Col className="text-center font-weight-bolder large-text">
+            {t(this.props.questions[this.props.idx].question.desc)}
+          </Col>
+        </Row>
+        <Row className='text-center py-2'>
+          <Col>
             <AnswerListAsSymbols
               answers={this.props.questions[this.props.idx].answers}
               onClick={this.props.onCheckAnswer}
             />
-          </div>
-        </div>
-        <div className='row'>
+          </Col>
+        </Row>
+        <Row className="py-2 answer-icon-grid">
           <AnswerIconGrid
             answers={this.props.questions.slice(0, this.props.answered)}
             questions={this.props.questions.length}
           />
-        </div>
-      </div>
+        </Row>
+      </>
     );
   }
 }

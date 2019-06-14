@@ -3,6 +3,8 @@ import { t } from './Quiz.jsx';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
 export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
 export const CD_QUIZ_LANGUAGE_ITEM = 'cdquiz-language';
@@ -86,7 +88,7 @@ export class Results extends React.Component {
     return (
       <div>
         <h4>{title}</h4>
-        <Table striped bordered condensed hover>
+        <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <th className='text-center'>#</th>
@@ -112,8 +114,14 @@ export class Results extends React.Component {
           <Modal.Title>{t('Results')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.renderResults(this.props.results, t('This session'))}
-          {this.renderResults(this.props.allTimeResults, t('All time'))}
+          <Container>
+            <Row className="py-2">
+              {this.renderResults(this.props.results, t('This session'))}
+            </Row>
+            <Row className="py-2">
+              {this.renderResults(this.props.allTimeResults, t('All time'))}
+            </Row>
+          </Container>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.handleClose}>OK</Button>

@@ -7,50 +7,44 @@ import { SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS } from './data.jsx'
 class QuestionPage extends React.Component {
   renderSymbolsToText() {
     return (
-      <div>
-        <SymbolsToTextQuestionPage
-          idx={this.props.idx}
-          answered={this.props.answered}
-          elapsed={this.props.elapsed}
-          questions={this.props.questions}
-          score={this.props.score}
-          onCheckAnswer={this.props.onCheckAnswer}
-          title={this.props.title}
-          caption={this.props.caption}
-        />
-      </div>
+      <SymbolsToTextQuestionPage
+        idx={this.props.idx}
+        answered={this.props.answered}
+        elapsed={this.props.elapsed}
+        questions={this.props.questions}
+        score={this.props.score}
+        onCheckAnswer={this.props.onCheckAnswer}
+        title={this.props.title}
+        caption={this.props.caption}
+      />
     );
   }
 
   renderTextToSymbols() {
     return (
-      <div>
-        <TextToSymbolsQuestionPage
-          idx={this.props.idx}
-          answered={this.props.answered}
-          elapsed={this.props.elapsed}
-          questions={this.props.questions}
-          score={this.props.score}
-          onCheckAnswer={this.props.onCheckAnswer}
-          title={this.props.title}
-          caption={this.props.caption}
-        />
-      </div>
+      <TextToSymbolsQuestionPage
+        idx={this.props.idx}
+        answered={this.props.answered}
+        elapsed={this.props.elapsed}
+        questions={this.props.questions}
+        score={this.props.score}
+        onCheckAnswer={this.props.onCheckAnswer}
+        title={this.props.title}
+        caption={this.props.caption}
+      />
     );
   }
 
   renderMatchItems() {
     return (
-      <div>
-        <MatchCards
-          questions={this.props.questions}
-          answered={this.props.answered}
-          elapsed={this.props.elapsed}
-          score={this.props.score}
-          open={true}
-          onFinished={this.props.onCheckAnswer}
-        />
-      </div>
+      <MatchCards
+        questions={this.props.questions}
+        answered={this.props.answered}
+        elapsed={this.props.elapsed}
+        score={this.props.score}
+        open={true}
+        onFinished={this.props.onCheckAnswer}
+      />
     );
   }
 

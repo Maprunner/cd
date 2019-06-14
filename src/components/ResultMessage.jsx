@@ -17,7 +17,7 @@ class ResultMessage extends React.Component {
           <Modal.Title>{t('Congratulations') + ' ' + this.props.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.props.children}
+          <div>{this.props.children}</div>
           {this.props.type !== MATCH_ITEMS ? <AnswerIconGrid answers={this.props.questions} /> : null}
         </Modal.Body>
         <Modal.Footer>

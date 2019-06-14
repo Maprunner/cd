@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
 import { t } from './Quiz.jsx'
 
 export class AnswerAsText extends React.Component {
@@ -9,13 +10,16 @@ export class AnswerAsText extends React.Component {
 
   render() {
     return (
-      <Button
-        size='large'
-        onClick={this.onClick}
-        block
-      >
-        {t(this.props.answer)}
-      </Button>
+      <Col>
+        <Button
+          variant='outline-primary'
+          size='lg'
+          block
+          onClick={this.onClick}
+        >
+          {t(this.props.answer)}
+        </Button>
+      </Col>
     );
   }
 }
@@ -40,9 +44,9 @@ class AnswerListAsText extends React.Component {
       return null;
     }
     return (
-      <div>
+      <>
         {answers}
-      </div>
+      </>
     )
   }
 }
