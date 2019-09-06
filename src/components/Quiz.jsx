@@ -14,17 +14,19 @@ import { MATCH_ITEMS, NO_TYPE, quizDefs } from './data.jsx'
 import cz from '../lang/cz.js';
 import fi from '../lang/fi.js';
 import fr from '../lang/fr.js';
+import hu from '../lang/hu.js';
 import ja from '../lang/ja.js';
 import pl from '../lang/pl.js';
 
 export const NEW_RESULTS_COUNT = 10;
 export const ALL_TIME_RESULTS_COUNT = 10;
 
-export const availableLanguages = ['en', 'cz', 'fi', 'fr', 'ja', 'pl'];
+export const availableLanguages = ['en', 'cz', 'fi', 'fr', 'hu', 'ja', 'pl'];
 const dictionaries = {
   'cz': cz,
   'fi': fi,
   'fr': fr,
+  'hu': hu,
   'ja': ja,
   'pl': pl
 };
