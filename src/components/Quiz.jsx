@@ -53,6 +53,10 @@ class Quiz extends React.Component {
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
+      // how long you have to answer question
+      timerOption: 0,
+      // how long you have left for this question
+      countdown: 0,
       answered: 0,
       score: 0,
       start: 0,
@@ -70,8 +74,6 @@ class Quiz extends React.Component {
   }
 
   componentDidMount() {
-    // timer runs continuously: count ticks when quiz is running
-    this.timer = setInterval(this.onTick, 1000);
     // get saved language
     const lang = loadLanguage();
     if (lang !== 'en') {
@@ -80,12 +82,30 @@ class Quiz extends React.Component {
   }
 
   componentWillUnmount() {
+    // shouldn't need this...
     clearInterval(this.timer);
+    clearInterval(this.questionTimer);
   }
 
   onTick = () => {
     if (this.state.quizRunning) {
-      this.setState({ elapsed: new Date() - this.state.start });
+      this.setState({ 
+        elapsed: new Date() - this.state.start,
+      });
+    }
+  }
+
+  onQuestionTimer = () => {
+    if (this.state.quizRunning) {
+      let secsForThisQuestion = this.state.secsForThisQuestion + 1;
+      if (secsForThisQuestion >= this.state.timerOption) {
+        // simulate an incorrect answer
+        this.onCheckAnswer("");
+        secsForThisQuestion = 0;
+      }
+      this.setState({ 
+        secsForThisQuestion: secsForThisQuestion
+      });
     }
   }
 
@@ -127,7 +147,7 @@ class Quiz extends React.Component {
     });
   }
 
-  onStartNewQuiz = (questions, type) => {
+  onStartNewQuiz = (questions, type, timerOption) => {
     if (questions.length > 0) {
       this.setState({
         questions: questions,
@@ -137,8 +157,14 @@ class Quiz extends React.Component {
         start: new Date().getTime(),
         elapsed: 0,
         answered: 0,
-        score: 0
+        score: 0,
+        timerOption: timerOption,
+        secsForThisQuestion: 0
       });
+    }
+    this.timer = setInterval(this.onTick, 1000);
+    if ((timerOption > 0) && (type !== MATCH_ITEMS)) {
+      this.questionTimer = setInterval(this.onQuestionTimer, 1000);
     }
   }
 
@@ -175,12 +201,19 @@ class Quiz extends React.Component {
     this.setState({
       questions: update(this.state.questions, { [idx]: { $set: q } }),
       answered: answered,
-      score: score
+      score: score,
+      secsForThisQuestion: 0
     })
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+      clearInterval(this.timer);
+      clearInterval(this.questionTimer);
       this.saveResult(score, answered);
     } else {
       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 });
+      if ((this.state.timerOption > 0) && (this.state.type !== MATCH_ITEMS)) {
+        clearInterval(this.questionTimer);
+        this.questionTimer = setInterval(this.onQuestionTimer, 1000);
+      }
     }
   }
 
@@ -285,6 +318,8 @@ class Quiz extends React.Component {
         score={this.state.score}
         answered={this.state.answered}
         elapsed={parseInt((this.state.elapsed / 1000), 10)}
+        timerOption={this.state.timerOption}
+        countdown={this.state.timerOption - this.state.secsForThisQuestion}
         onCheckAnswer={this.state.type === MATCH_ITEMS ?
           this.onMatchFinished
           :

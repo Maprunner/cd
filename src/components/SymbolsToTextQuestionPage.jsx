@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Score from './Score.jsx'
 import Timer from './Timer.jsx'
+import Countdown from './Countdown.jsx'
 import AnswerIconGrid from './AnswerIconGrid.jsx'
 import AnswerListAsText from './AnswerListAsText.jsx'
 import { t } from './Quiz.jsx'
@@ -14,8 +15,8 @@ class SymbolsToTextQuestionPage extends React.Component {
     let chr = String.fromCharCode(this.props.questions[this.props.idx].question.code);
     return (
       <>
-        <Row className="py-2">
-          <Col xs={6}>
+        <Row>
+          <Col md={6}>
             <Card variant='primary'>
               <Card.Header>
                 {t(this.props.title)}
@@ -27,11 +28,19 @@ class SymbolsToTextQuestionPage extends React.Component {
               </Card.Body>
             </Card>
           </Col>
-          <Col xs={3}>
+          <Col md={2}>
             <Score score={this.props.score} from={this.props.idx} />
           </Col>
-          <Col xs={3}>
-            <Timer elapsed={this.props.elapsed} />
+          <Col md={2}>
+            <Timer
+              elapsed={this.props.elapsed}
+            />
+          </Col>
+          <Col md={2}>
+            <Countdown
+              countdown={this.props.countdown}
+              timerOption={this.props.timerOption}
+            />
           </Col>
         </Row>
         <Row className="py-2">

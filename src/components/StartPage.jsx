@@ -5,6 +5,7 @@ import NameInput from './NameInput.jsx';
 import CategoryList from './CategoryList.jsx';
 import LanguageList from './LanguageList.jsx';
 import AnswerOptionList from './AnswerOptionList.jsx';
+import TimerOptionList from './TimerOptionList.jsx';
 import Types from './Types.jsx'
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
@@ -19,6 +20,7 @@ class StartPage extends React.Component {
     questions = this.filterQuestions(baseCategories);
     this.state = {
       answersPerQuestion: 3,
+      timerOption: 0,
       questions: questions,
       categories: baseCategories
     };
@@ -28,6 +30,10 @@ class StartPage extends React.Component {
     this.setState({ answersPerQuestion: value });
   }
 
+  onTimerClick = (value) => {
+    this.setState({ timerOption: value });
+  }
+
   onStart = (type) => {
     var questions;
     if (type === MATCH_ITEMS) {
@@ -35,7 +41,7 @@ class StartPage extends React.Component {
     } else {
       questions = this.createQuiz();
     }
-    this.props.onStart(questions, type);
+    this.props.onStart(questions, type, this.state.timerOption);
   }
 
   onSetCategory = (category) => {
@@ -190,6 +196,11 @@ class StartPage extends React.Component {
                 <LanguageList
                   language={this.props.language}
                   onSelectLanguage={this.props.onSelectLanguage}
+                />
+                <TimerOptionList
+                  possibleTimers={[0, 2, 5, 10]}
+                  onChange={this.onTimerClick}
+                  setting={this.state.timerOption}
                 />
               </Form.Group>
             </Form>

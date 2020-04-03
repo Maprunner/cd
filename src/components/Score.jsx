@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 
 function Score(props) {
   return (
-    <Card variant='primary'>
+    <Card variant='primary' className="my-2">
       <Card.Header>{t('Score')}</Card.Header>
       <Card.Body>
         <Card.Text>

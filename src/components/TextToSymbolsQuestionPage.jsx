@@ -2,19 +2,20 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Score from './Score.jsx'
-import Timer from './Timer.jsx'
-import AnswerIconGrid from './AnswerIconGrid.jsx'
-import AnswerListAsSymbols from './AnswerListAsSymbols.jsx'
-import { t } from './Quiz.jsx'
+import Score from './Score.jsx';
+import Timer from './Timer.jsx';
+import Countdown from './Countdown.jsx';
+import AnswerIconGrid from './AnswerIconGrid.jsx';
+import AnswerListAsSymbols from './AnswerListAsSymbols.jsx';
+import { t } from './Quiz.jsx';
 
 class TextToSymbolsQuestionPage extends React.Component {
   render() {
-    return (
+  return (
       <>
-        <Row className="py-2">
-          <Col xs={6}>
-            <Card variant='primary'>
+        <Row>
+          <Col md={6}>
+            <Card variant='primary' className="my-2">
               <Card.Header>{t(this.props.title)}</Card.Header>
               <Card.Body>
                 <Card.Text>
@@ -23,11 +24,19 @@ class TextToSymbolsQuestionPage extends React.Component {
               </Card.Body>
             </Card>
           </Col>
-          <Col xs={3}>
+          <Col md={2}>
             <Score score={this.props.score} from={this.props.idx} />
           </Col>
-          <Col xs={3}>
-            <Timer elapsed={this.props.elapsed} />
+          <Col md={2}>
+            <Timer
+              elapsed={this.props.elapsed} 
+            />
+          </Col>
+          <Col md={2}>
+            <Countdown
+              countdown={this.props.countdown}
+              timerOption={this.props.timerOption}
+            />
           </Col>
         </Row>
         <Row className="py-2">

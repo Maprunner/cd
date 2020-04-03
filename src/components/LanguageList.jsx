@@ -18,7 +18,7 @@ class LanguageList extends React.Component {
 
       <Form.Group
         controlId="frmLanguageSelect"
-        className="col-md-4"
+        className="col-md-2"
       >
         <Form.Label>{t('Language')}</Form.Label>
         <Form.Control

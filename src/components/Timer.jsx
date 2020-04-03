@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 
 function Timer(props) {
   return (
-    <Card variant='primary'>
+    <Card variant='primary' className="my-2">
       <Card.Header>
         {t('Time')}
       </Card.Header>

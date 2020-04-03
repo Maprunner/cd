@@ -11,6 +11,8 @@ class QuestionPage extends React.Component {
         idx={this.props.idx}
         answered={this.props.answered}
         elapsed={this.props.elapsed}
+        countdown={this.props.countdown}
+        timerOption={this.props.timerOption}
         questions={this.props.questions}
         score={this.props.score}
         onCheckAnswer={this.props.onCheckAnswer}
@@ -26,6 +28,8 @@ class QuestionPage extends React.Component {
         idx={this.props.idx}
         answered={this.props.answered}
         elapsed={this.props.elapsed}
+        countdown={this.props.countdown}
+        timerOption={this.props.timerOption}
         questions={this.props.questions}
         score={this.props.score}
         onCheckAnswer={this.props.onCheckAnswer}
