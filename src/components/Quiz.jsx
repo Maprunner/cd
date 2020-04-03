@@ -4,6 +4,7 @@ import update from 'immutability-helper';
 import StartPage from './StartPage.jsx'
 import QuestionPage from './QuestionPage.jsx'
 import Header from './Header.jsx'
+import Footer from './Footer.jsx'
 import Results, {
   loadAllTimeResults, saveAllTimeResults,
   loadName, saveName,
@@ -69,7 +70,8 @@ class Quiz extends React.Component {
       results: [],
       name: loadName(),
       allTimeResults: loadAllTimeResults(),
-      language: 'en'
+      language: 'en',
+      answersPerQuestion: 3
     };
   }
 
@@ -140,6 +142,10 @@ class Quiz extends React.Component {
     });
   }
 
+  onTimerClick = (value) => {
+    this.setState({ timerOption: parseInt(value, 10) });
+  }
+
   onSetName = (name) => {
     saveName(name);
     this.setState({
@@ -147,7 +153,11 @@ class Quiz extends React.Component {
     });
   }
 
-  onStartNewQuiz = (questions, type, timerOption) => {
+  onSetAnswersPerQuestion = (value) => {
+    this.setState({ answersPerQuestion: parseInt(value, 10) });
+  }
+
+  onStartNewQuiz = (questions, type) => {
     if (questions.length > 0) {
       this.setState({
         questions: questions,
@@ -158,12 +168,11 @@ class Quiz extends React.Component {
         elapsed: 0,
         answered: 0,
         score: 0,
-        timerOption: timerOption,
         secsForThisQuestion: 0
       });
     }
     this.timer = setInterval(this.onTick, 1000);
-    if ((timerOption > 0) && (type !== MATCH_ITEMS)) {
+    if ((this.state.timerOption > 0) && (type !== MATCH_ITEMS)) {
       this.questionTimer = setInterval(this.onQuestionTimer, 1000);
     }
   }
@@ -303,7 +312,11 @@ class Quiz extends React.Component {
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
           onSelectLanguage={this.onSelectLanguage}
+          onTimerClick={this.onTimerClick}
+          onSetAnswersPerQuestion={this.onSetAnswersPerQuestion}
+          timerOption={this.state.timerOption}
           language={this.state.language}
+          answersPerQuestion={this.state.answersPerQuestion}
           name={this.state.name}
         />
       );
@@ -364,6 +377,7 @@ class Quiz extends React.Component {
           {body}
           {message}
         </div>
+        <Footer />
       </div>
     );
   }

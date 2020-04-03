@@ -16,7 +16,7 @@ class TimerOptionList extends React.Component {
 
     return (
       <Form.Group
-        controlId="frmAnswersPerQuestionSelect"
+        controlId="frmTimerOptionSelect"
         className="col-md-2"
       >
         <Form.Label>{t('Time')}</Form.Label>

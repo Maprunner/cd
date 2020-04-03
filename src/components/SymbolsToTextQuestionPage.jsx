@@ -17,7 +17,7 @@ class SymbolsToTextQuestionPage extends React.Component {
       <>
         <Row>
           <Col md={6}>
-            <Card variant='primary'>
+            <Card variant='primary' className="my-2">
               <Card.Header>
                 {t(this.props.title)}
               </Card.Header>

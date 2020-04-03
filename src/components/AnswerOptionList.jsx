@@ -4,7 +4,7 @@ import { t } from './Quiz.jsx';
 
 class AnswerOptionList extends React.Component {
   handleChange = (event) => {
-    this.props.onChange(event.target.value);
+    this.props.onSetAnswersPerQuestion(event.target.value);
   }
 
   render() {
@@ -25,7 +25,7 @@ class AnswerOptionList extends React.Component {
           as="select"
           value={this.props.setting}
         >
-          {answers}
+        {answers}
         </Form.Control>
       </Form.Group>
     )

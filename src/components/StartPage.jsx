@@ -19,19 +19,9 @@ class StartPage extends React.Component {
     var questions;
     questions = this.filterQuestions(baseCategories);
     this.state = {
-      answersPerQuestion: 3,
-      timerOption: 0,
       questions: questions,
       categories: baseCategories
     };
-  }
-
-  onAnswerClick = (value) => {
-    this.setState({ answersPerQuestion: value });
-  }
-
-  onTimerClick = (value) => {
-    this.setState({ timerOption: value });
   }
 
   onStart = (type) => {
@@ -39,9 +29,9 @@ class StartPage extends React.Component {
     if (type === MATCH_ITEMS) {
       questions = this.createMatch();
     } else {
-      questions = this.createQuiz();
+      questions = this.createQuiz(this.props.answersPerQuestion);
     }
-    this.props.onStart(questions, type, this.state.timerOption);
+    this.props.onStart(questions, type);
   }
 
   onSetCategory = (category) => {
@@ -114,7 +104,7 @@ class StartPage extends React.Component {
     return questions;
   }
 
-  createQuiz() {
+  createQuiz(answersPerQuestion) {
     var i, shuffled, detail, questions, answers;
     shuffled = _.shuffle(this.state.questions);
     // extract list of possible answers
@@ -135,14 +125,14 @@ class StartPage extends React.Component {
         id: shuffled[i].id,
         desc: shuffled[i].desc
       };
-      detail.answers = this.generateAnswers(detail.question, answers);
+      detail.answers = this.generateAnswers(detail.question, answers, answersPerQuestion);
       detail.gotIt = false;
       questions.push(detail);
     }
     return questions;
   }
 
-  generateAnswers(question, possible) {
+  generateAnswers(question, possible, answersPerQuestion) {
     var list, i;
     // add correct answer
     list = [question];
@@ -150,7 +140,7 @@ class StartPage extends React.Component {
     possible = _.shuffle(possible);
     // add as many incorrect answers as needed/available
     i = 0;
-    while ((list.length < this.state.answersPerQuestion) && (i < possible.length)) {
+    while ((list.length < answersPerQuestion) && (i < possible.length)) {
       // don't duplicate correct answer, and only use items in same group
       if ((possible[i].desc !== question.desc) &&
         (parseInt((question.id / 100), 10) === parseInt((possible[i].id / 100), 10))) {
@@ -190,8 +180,8 @@ class StartPage extends React.Component {
                 />
                 <AnswerOptionList
                   possibleAnswers={[1, 2, 3, 4, 5]}
-                  onChange={this.onAnswerClick}
-                  setting={this.state.answersPerQuestion}
+                  onSetAnswersPerQuestion={this.props.onSetAnswersPerQuestion}
+                  setting={this.props.answersPerQuestion}
                 />
                 <LanguageList
                   language={this.props.language}
@@ -199,8 +189,8 @@ class StartPage extends React.Component {
                 />
                 <TimerOptionList
                   possibleTimers={[0, 2, 5, 10]}
-                  onChange={this.onTimerClick}
-                  setting={this.state.timerOption}
+                  onChange={this.props.onTimerClick}
+                  setting={this.props.timerOption}
                 />
               </Form.Group>
             </Form>
