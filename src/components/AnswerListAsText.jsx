@@ -26,11 +26,11 @@ export class AnswerAsText extends React.Component {
 
 class AnswerListAsText extends React.Component {
   render() {
-    var self = this;
+    const self = this;
     if (!this.props.answers) {
       return null;
     }
-    var answers = this.props.answers.map(function (ans, i) {
+    const answers = this.props.answers.map(function (ans, i) {
       return (
         <AnswerAsText
           key={i}

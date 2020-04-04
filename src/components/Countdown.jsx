@@ -16,12 +16,12 @@ function Countdown(props) {
   }
 
   return (
-    <Card bg={bg} className="my-2">
-      <Card.Header>
+    <Card bg={bg} className="my-2 text-center">
+      <Card.Header className="font-weight-bold">
         {t('Countdown')}
       </Card.Header>
       <Card.Body>
-        <Card.Text>
+        <Card.Text className="h2">
           {props.countdown}
         </Card.Text>
       </Card.Body>

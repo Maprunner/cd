@@ -11,14 +11,13 @@ class Types extends React.Component {
   }
 
   render() {
-    var types, self;
-    self = this;
+    const self = this;
 
-    types = this.props.quizDefs.map(function (btn, i) {
+    const types = this.props.quizDefs.map(function (btn, i) {
       return (
         <div className="col-md-4" key={i}>
           <Card className="my-2">
-            <Card.Header>
+            <Card.Header className="font-weight-bold">
               {t(btn.text)}
             </Card.Header>
             <Card.Body>

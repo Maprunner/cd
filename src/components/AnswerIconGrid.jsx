@@ -3,7 +3,6 @@ import SmallCDIcon from './SmallCDIcon.jsx'
 
 class AnswerIconGrid extends React.Component {
   render() {
-    var j;
     let answered = this.props.answers.map(function (q, i) {
       return (
         <SmallCDIcon
@@ -15,7 +14,7 @@ class AnswerIconGrid extends React.Component {
       )
     });
     let unanswered = [];
-    for (j = this.props.answers.length; j < this.props.questions; j = j + 1) {
+    for (let j = this.props.answers.length; j < this.props.questions; j = j + 1) {
       unanswered.push(
         <SmallCDIcon
           key={j}

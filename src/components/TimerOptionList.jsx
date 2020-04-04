@@ -19,7 +19,7 @@ class TimerOptionList extends React.Component {
         controlId="frmTimerOptionSelect"
         className="col-md-2"
       >
-        <Form.Label>{t('Time')}</Form.Label>
+        <Form.Label className="font-weight-bold">{t('Time')}</Form.Label>
         <Form.Control
           onChange={this.handleChange}
           as="select"

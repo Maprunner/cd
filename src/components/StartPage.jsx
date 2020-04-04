@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MATCH_ITEMS, baseCategories, baseData } from './data.jsx';
+import {loadSettings, saveSettings} from './Persist.jsx';
 import NameInput from './NameInput.jsx';
 import CategoryList from './CategoryList.jsx';
 import LanguageList from './LanguageList.jsx';
@@ -16,8 +17,14 @@ import _ from 'underscore';
 class StartPage extends React.Component {
   constructor(props) {
     super(props);
-    var questions;
-    questions = this.filterQuestions(baseCategories);
+    // use saved settings if available
+    let settings = loadSettings();
+    baseCategories.forEach(function (item) {
+      if (settings.hasOwnProperty(item.name)) {
+        item.use = settings[item.name];
+      }
+    });
+    let questions = this.filterQuestions(baseCategories);
     this.state = {
       questions: questions,
       categories: baseCategories
@@ -25,7 +32,7 @@ class StartPage extends React.Component {
   }
 
   onStart = (type) => {
-    var questions;
+    let questions;
     if (type === MATCH_ITEMS) {
       questions = this.createMatch();
     } else {
@@ -35,29 +42,28 @@ class StartPage extends React.Component {
   }
 
   onSetCategory = (category) => {
-    var categories, newQuestions;
-    categories = this.state.categories;
+    let categories = this.state.categories;
     categories.forEach(function (item) {
       if (item.name === category) {
         item.use = !item.use;
+        saveSettings(item.name, item.use);
       }
     });
-    newQuestions = this.filterQuestions(categories);
     this.setState({
       categories: categories,
-      questions: newQuestions
+      questions: this.filterQuestions(categories)
     });
   }
 
+
   filterQuestions(categories) {
-    var questions, useCategories;
     // create a list of index values for categories to be used
-    useCategories = _.chain(categories)
+    const useCategories = _.chain(categories)
       .where({ 'use': true })
       .pluck('index')
       .value();
 
-    questions = _.filter(this.props.data, function (q) {
+    const questions = _.filter(this.props.data, function (q) {
       //question id is three digits: first digit is category
       return _.contains(useCategories, parseInt((q.id / 100), 10));
     });
@@ -65,11 +71,10 @@ class StartPage extends React.Component {
   }
 
   createMatch() {
-    var i, shuffled, text, symbols, questions;
-    shuffled = _.shuffle(this.state.questions);
-    text = [];
-    symbols = [];
-    for (i = 0; i < shuffled.length; i = i + 1) {
+    const shuffled = _.shuffle(this.state.questions);
+    let text = [];
+    let symbols = [];
+    for (let i = 0; i < shuffled.length; i = i + 1) {
       // only use one 'special symbol' to avoid confusion
       if (shuffled[i].code !== 59719) {
         text.push({
@@ -93,7 +98,7 @@ class StartPage extends React.Component {
     // merge symbol and text arrays
     // by taking symbol and text alternately
     // starting with an empty array
-    questions = _.reduce(symbols,
+    const questions = _.reduce(symbols,
       function (questions, symbol, idx) {
         questions.push(symbol);
         questions.push(text[idx])
@@ -105,11 +110,10 @@ class StartPage extends React.Component {
   }
 
   createQuiz(answersPerQuestion) {
-    var i, shuffled, detail, questions, answers;
-    shuffled = _.shuffle(this.state.questions);
+    const shuffled = _.shuffle(this.state.questions);
     // extract list of possible answers
-    answers = [];
-    for (i = 0; i < shuffled.length; i = i + 1) {
+    let answers = [];
+    for (let i = 0; i < shuffled.length; i = i + 1) {
       answers.push({
         code: shuffled[i].code,
         desc: shuffled[i].desc,
@@ -117,9 +121,9 @@ class StartPage extends React.Component {
       });
     }
     // generate question for each entry in shuffled array
-    questions = [];
-    for (i = 0; i < shuffled.length; i = i + 1) {
-      detail = [];
+    let questions = [];
+    for (let i = 0; i < shuffled.length; i = i + 1) {
+      let detail = [];
       detail.question = {
         code: shuffled[i].code,
         id: shuffled[i].id,
@@ -133,13 +137,12 @@ class StartPage extends React.Component {
   }
 
   generateAnswers(question, possible, answersPerQuestion) {
-    var list, i;
     // add correct answer
-    list = [question];
+    let list = [question];
     // shuffle possible answers
     possible = _.shuffle(possible);
     // add as many incorrect answers as needed/available
-    i = 0;
+    let i = 0;
     while ((list.length < answersPerQuestion) && (i < possible.length)) {
       // don't duplicate correct answer, and only use items in same group
       if ((possible[i].desc !== question.desc) &&
@@ -162,7 +165,7 @@ class StartPage extends React.Component {
           onStart={this.onStart}
         />
         <Card className="m-1">
-          <Card.Header>
+          <Card.Header className="font-weight-bold">
             {t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
           </Card.Header>
           <Card.Body>

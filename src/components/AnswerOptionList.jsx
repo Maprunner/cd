@@ -19,7 +19,7 @@ class AnswerOptionList extends React.Component {
         controlId="frmAnswersPerQuestionSelect"
         className="col-md-4"
       >
-        <Form.Label>{t('Answers per question')}</Form.Label>
+        <Form.Label className="font-weight-bold">{t('Answers per question')}</Form.Label>
         <Form.Control
           onChange={this.handleChange}
           as="select"

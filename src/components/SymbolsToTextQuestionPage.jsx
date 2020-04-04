@@ -1,89 +1,67 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Score from './Score.jsx'
 import Timer from './Timer.jsx'
+import QuizType from './QuizType.jsx';
 import Countdown from './Countdown.jsx'
 import AnswerIconGrid from './AnswerIconGrid.jsx'
 import AnswerListAsText from './AnswerListAsText.jsx'
-import { t } from './Quiz.jsx'
 
-class SymbolsToTextQuestionPage extends React.Component {
-  render() {
-    let chr = String.fromCharCode(this.props.questions[this.props.idx].question.code);
+function SymbolsToTextQuestionPage(props) {
     return (
       <>
         <Row>
           <Col md={6}>
-            <Card variant='primary' className="my-2">
-              <Card.Header>
-                {t(this.props.title)}
-              </Card.Header>
-              <Card.Body>
-                <Card.Text>
-                  {t(this.props.caption)}
-                </Card.Text>
-              </Card.Body>
-            </Card>
+            <QuizType
+              title={props.title}
+              caption={props.caption}
+            />
           </Col>
           <Col md={2}>
-            <Score score={this.props.score} from={this.props.idx} />
+            <Score score={props.score} from={props.idx} />
           </Col>
           <Col md={2}>
             <Timer
-              elapsed={this.props.elapsed}
+              elapsed={props.elapsed}
             />
           </Col>
           <Col md={2}>
             <Countdown
-              countdown={this.props.countdown}
-              timerOption={this.props.timerOption}
+              countdown={props.countdown}
+              timerOption={props.timerOption}
             />
           </Col>
         </Row>
         <Row className="py-2">
           <Col>
             <div className='question-cell'>
-              <span className='cd'>{chr}</span>
+              <span className='cd'>{String.fromCharCode(props.questions[props.idx].question.code)}</span>
             </div>
           </Col>
         </Row>
         <Row className="py-2">
           <AnswerListAsText
-            answers={this.props.questions[this.props.idx].answers}
-            onClick={this.props.onCheckAnswer}
+            answers={props.questions[props.idx].answers}
+            onClick={props.onCheckAnswer}
           />
         </Row>
         <div className="py-2 answer-icon-grid">
           <AnswerIconGrid
-            answers={this.props.questions.slice(0, this.props.answered)}
-            questions={this.props.questions.length}
+            answers={props.questions.slice(0, props.answered)}
+            questions={props.questions.length}
           />
         </div>
       </>
-    );
-  }
+    )
 }
 
-export class QuestionAsCD extends React.Component {
-  render() {
-    var chr = String.fromCharCode(this.props.code);
-    return (
-      <div className='question-cell'>
-        <span className='cd'>{chr}</span>
-      </div>
-    );
-  }
-}
-
-SymbolsToTextQuestionPage.propTypes = {
-  questions: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
-  onCheckAnswer: PropTypes.func,
-  answered: PropTypes.number,
-  elapsed: PropTypes.number,
-  idx: PropTypes.number
+export function QuestionAsCD(props) {
+  return (
+    <div className='question-cell'>
+      <span className='cd'>{String.fromCharCode(props.code)}</span>
+    </div>
+  )
 }
 
 export default SymbolsToTextQuestionPage
