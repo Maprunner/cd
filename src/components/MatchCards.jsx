@@ -34,10 +34,11 @@ class MatchCards extends React.Component {
   }
 
   onCheckMatch = (idx) => {
-    var a1, a2, selected, newQuestions, matched, attempts;
-    a1 = this.state.questions[idx];
-    matched = this.state.matched;
-    attempts = this.state.attempts;
+    let a1 = this.state.questions[idx];
+    let matched = this.state.matched;
+    let attempts = this.state.attempts;
+    let selected;
+    let a2;
     if (this.state.selectedIdx !== null) {
       // card already selected: is this a match?
       attempts = attempts + 1;
@@ -59,7 +60,7 @@ class MatchCards extends React.Component {
       a1.selected = true;
       selected = idx;
     }
-    newQuestions = update(this.state.questions, { [idx]: { $set: a1 } });
+    let newQuestions = update(this.state.questions, { [idx]: { $set: a1 } });
     if (a2) {
       newQuestions = update(newQuestions, { [this.state.selectedIdx]: { $set: a2 } });
     }

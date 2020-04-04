@@ -15,12 +15,11 @@ class LanguageList extends React.Component {
     });
 
     return (
-
       <Form.Group
         controlId="frmLanguageSelect"
-        className="col-md-4"
+        className="col-md-2"
       >
-        <Form.Label>{t('Language')}</Form.Label>
+        <Form.Label className="font-weight-bold">{t('Language')}</Form.Label>
         <Form.Control
           onChange={this.handleChange}
           as="select"

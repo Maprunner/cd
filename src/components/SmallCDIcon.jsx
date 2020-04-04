@@ -1,9 +1,8 @@
 import React from 'react';
 import { t } from './Quiz.jsx';
 
-export default class SmallCDIcon extends React.Component {
-  getContent() {
-    if (this.props.code === 0) {
+function getContent(props) {
+    if (props.code === 0) {
       return (
         <span
           className={'unanswered'}
@@ -15,23 +14,21 @@ export default class SmallCDIcon extends React.Component {
     } else {
       return (
         <span
-          className={this.props.gotIt ? 'correct' : 'wrong'}
-          title={t(this.props.desc)}
+          className={props.gotIt ? 'correct' : 'wrong'}
+          title={t(props.desc)}
         >
-          {String.fromCharCode(this.props.code)}
+          {String.fromCharCode(props.code)}
         </span>
       )
     }
   }
 
-  render() {
-    const content = this.getContent();
-
+function SmallCDIcon(props) {
     return (
       <div className='small-cd-icon cd'>
-        {content}
+        {getContent(props)}
       </div>
-    );
-  }
+    )
 }
 
+export default SmallCDIcon;

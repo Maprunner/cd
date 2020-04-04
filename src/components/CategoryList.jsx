@@ -4,8 +4,8 @@ import Row from 'react-bootstrap/Row';
 
 class CategoryList extends React.Component {
   render() {
-    var self = this;
-    var categories = this.props.categories.map(function (cat, idx) {
+    const self = this;
+    const categories = this.props.categories.map(function (cat, idx) {
       return (
         <Category
           key={idx}

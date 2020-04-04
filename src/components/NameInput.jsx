@@ -21,7 +21,7 @@ class NameInput extends React.Component {
         controlId="frmNameInput"
         className="col-md-4"
       >
-        <Form.Label>{t('Name')}</Form.Label>
+        <Form.Label className="font-weight-bold">{t('Name')}</Form.Label>
         <Form.Control
           type="text"
           value={this.props.name}

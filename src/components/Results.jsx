@@ -5,57 +5,6 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-export const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
-export const CD_QUIZ_NAME_ITEM = 'cdquiz-name';
-export const CD_QUIZ_LANGUAGE_ITEM = 'cdquiz-language';
-
-function loadItem(item, defaultValue) {
-  var data = defaultValue;
-  try {
-    if ((window.hasOwnProperty('localStorage')) && (window.localStorage !== null)) {
-      if (localStorage.getItem(item) !== null) {
-        data = JSON.parse(localStorage.getItem(item));
-      }
-    }
-    return data;
-  } catch (e) {
-    return data;
-  }
-}
-
-function saveItem(item, value) {
-  try {
-    if ((window.hasOwnProperty('localStorage')) && (window.localStorage !== null)) {
-      localStorage.setItem(item, JSON.stringify(value));
-    }
-  } catch (e) {
-    return null;
-  }
-}
-
-export function loadAllTimeResults() {
-  return loadItem(CD_QUIZ_RESULTS_ITEM, []);
-}
-
-export function loadName() {
-  return loadItem(CD_QUIZ_NAME_ITEM, 'Player 1');
-}
-
-export function loadLanguage() {
-  return loadItem(CD_QUIZ_LANGUAGE_ITEM, 'en');
-}
-
-export function saveAllTimeResults(results) {
-  saveItem(CD_QUIZ_RESULTS_ITEM, results);
-}
-
-export function saveName(name) {
-  saveItem(CD_QUIZ_NAME_ITEM, name);
-}
-
-export function saveLanguage(lang) {
-  saveItem(CD_QUIZ_LANGUAGE_ITEM, lang);
-}
 
 export class Results extends React.Component {
   handleClose = () => {
@@ -63,7 +12,6 @@ export class Results extends React.Component {
   }
 
   renderResults(results, title) {
-    var formattedResults;
     if (results.length === 0) {
       return (
         <div>
@@ -72,7 +20,7 @@ export class Results extends React.Component {
         </div>
       );
     }
-    formattedResults = results.map(function (result, idx) {
+    const formattedResults = results.map(function (result, idx) {
       return (
         <tr key={idx}>
           <td>{idx + 1}</td>

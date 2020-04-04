@@ -1,23 +1,18 @@
-'use strict';
-
 import React from 'react';
+import Navbar from 'react-bootstrap/Navbar';
 
 function Footer() {
   return (
-    <div className='footer'>
-      <div className='container'>
-        <span>You can download a copy of the Maprunner IOF pictorial
-          control description guide from the
-            <a
-            href='https://www.maprunner.co.uk/iof-control-descriptions/'
-            target='_blank'
-          >
-            &nbsp;Maprunner&nbsp;
-            </a>
-          website.
-          </span>
+    <>
+
+    <Navbar bg="dark" variant="dark" className="mt-2">
+      <div className="container">
+        <Navbar.Text>
+          Version 2.0.3
+        </Navbar.Text>
       </div>
-    </div>
+    </Navbar>
+    </>
   );
 }
 
