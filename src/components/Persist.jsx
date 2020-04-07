@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
 const CD_QUIZ_SETTINGS = 'cdquiz-settings';
 
@@ -39,7 +41,7 @@ function saveItem(item, value) {
 
 export function loadAllTimeResults() {
   const results = loadItem(CD_QUIZ_RESULTS_ITEM);
-  return (results === {} ? []: results);
+  return (_.isEmpty(results) ? []: results);
 }
 
 export function loadSettings() {
