@@ -41,7 +41,7 @@ function saveItem(item, value) {
 
 export function loadAllTimeResults(name, number) {
   const results = loadItem(nameHash(name, number));
-  return (_.isEmpty(results) ? []: results);
+  return (_.isEmpty(results) ? [{}, {}, {}]: results);
 }
 
 export function loadSettings() {

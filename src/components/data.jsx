@@ -87,17 +87,17 @@ export const MATCH_ITEMS = 2;
 export const NO_TYPE = 9999;
 
 export const quizDefs = [
-  {text: 'Course 1: Symbols',
+  {text: 'Symbols',
    hash: 'symbols',
    value: 0,
    caption: 'Identify the text description for a given symbol'
   },
-  {text: 'Course 2: Text',
+  {text: 'Text',
    hash: 'text',
    value: 1,
    caption: 'Identify the symbol for a given text description'
   },
-  {text: 'Course 3: Match',
+  {text: 'Match',
    hash: 'match',
    value: 2,
    caption: 'Match symbols and text'

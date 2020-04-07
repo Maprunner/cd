@@ -220,7 +220,7 @@ class Quiz extends React.Component {
     if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
-      this.saveResult(score, answered);
+      this.saveResult(score, answered - score);
     } else {
       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 });
       if ((this.state.timerOption > 0) && (this.state.type !== MATCH_ITEMS)) {
@@ -230,12 +230,13 @@ class Quiz extends React.Component {
     }
   }
 
-  saveResult(score, from) {
+  saveResult(score, wrong) {
     const newResults = this.addNewResult({
-      type: this.getTypeText(this.state.type),
+      type: this.state.type,
       name: this.state.name,
+      number: this.state.number,
       score: score,
-      from: from,
+      wrong: wrong,
       time: parseInt((this.state.elapsed / 1000), 10)
     });
     this.setState({
@@ -247,28 +248,9 @@ class Quiz extends React.Component {
     });
   }
 
-  adjustResultArray(array, result, length) {
-    const newResults = _.chain(array)
-      // add new result to array
-      .push(result)
-      // sort by score DESC percent DESC time ASC
-      .sortBy('time')
-      .reverse()
-      .sortBy(function (r) { return parseFloat(r.percent); })
-      .sortBy('score')
-      .reverse()
-      // truncate
-      .first(length)
-      .value();
-    return newResults;
-  }
-
-  addNewResult(result) {
-    const newAllTimeResults = this.adjustResultArray(
-      this.state.allTimeResults,
-      result,
-      ALL_TIME_RESULTS_COUNT
-    );
+ addNewResult(result) {
+    let newAllTimeResults = this.state.allTimeResults;
+    newAllTimeResults[result.type] = result;
     saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
     return ({
       allTime: newAllTimeResults
@@ -312,6 +294,7 @@ class Quiz extends React.Component {
           name={this.state.name}
           number={this.state.number}
           canStart={this.state.canStart}
+          results={this.state.allTimeResults}
         />
       );
     }

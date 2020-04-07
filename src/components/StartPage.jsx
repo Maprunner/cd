@@ -146,6 +146,7 @@ class StartPage extends React.Component {
     return (
       <Types
       onStart={this.onStart}
+      results={props.results}
     />
     )
   }
