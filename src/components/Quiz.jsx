@@ -16,7 +16,6 @@ import hu from '../lang/hu.js';
 import ja from '../lang/ja.js';
 import pl from '../lang/pl.js';
 
-export const NEW_RESULTS_COUNT = 10;
 export const ALL_TIME_RESULTS_COUNT = 10;
 
 export const availableLanguages = ['en', 'cz', 'fi', 'fr', 'hu', 'ja', 'pl'];
@@ -52,7 +51,7 @@ class Quiz extends React.Component {
       questions: {},
       currentQuestionIdx: 0,
       // how long you have to answer question
-      timerOption: settings.timerOption,
+      timerOption: 0,
       // how long you have left for this question
       countdown: 0,
       answered: 0,
@@ -64,11 +63,12 @@ class Quiz extends React.Component {
       displayNewResult: false,
       newResultType: NO_TYPE,
       type: NO_TYPE,
-      results: [],
       name: settings.name,
+      number: settings.number,
       allTimeResults: loadAllTimeResults(),
       language: settings.language,
-      answersPerQuestion: settings.answersPerQuestion
+      answersPerQuestion: 3,
+      canStart: this.canStart(settings.name, settings.number)
     }
   }
   componentDidMount() {
@@ -134,24 +134,26 @@ class Quiz extends React.Component {
     });
   }
 
-  onTimerClick = (value) => {
-    saveSettings("timerOption", parseInt(value, 10));    
-    this.setState({ timerOption: parseInt(value, 10) });
-  }
-
   onSetName = (name) => {
     saveSettings("name", name);
     this.setState({
-      name: name
+      name: name,
+      canStart: this.canStart(name, this.state.number)
     });
   }
 
-  onSetAnswersPerQuestion = (value) => {
-    saveSettings("answersPerQuestion", parseInt(value, 10));
-    this.setState({ answersPerQuestion: parseInt(value, 10) });
+  onSetNumber = (number) => {
+    saveSettings("number", number);
+    this.setState({
+      number: number,
+      canStart: this.canStart(this.state.name, number)
+    });
   }
 
   onStartNewQuiz = (questions, type) => {
+    if (!this.state.canStart) {
+      return;
+    }
     if (questions.length > 0) {
       this.setState({
         questions: questions,
@@ -169,6 +171,10 @@ class Quiz extends React.Component {
     if ((this.state.timerOption > 0) && (type !== MATCH_ITEMS)) {
       this.questionTimer = setInterval(this.onQuestionTimer, 1000);
     }
+  }
+
+  canStart = (name, number) => {
+    return ((name !== "") && (number !== "") ? true: false);
   }
 
   onMatchFinished = (validFinish, score, attempts) => {
@@ -229,7 +235,6 @@ class Quiz extends React.Component {
       time: parseInt((this.state.elapsed / 1000), 10)
     });
     this.setState({
-      results: newResults.new,
       allTimeResults: newResults.allTime,
       quizRunning: false,
       displayNewResult: true,
@@ -255,11 +260,6 @@ class Quiz extends React.Component {
   }
 
   addNewResult(result) {
-    const newResults = this.adjustResultArray(
-      this.state.results,
-      result,
-      NEW_RESULTS_COUNT
-    );
     const newAllTimeResults = this.adjustResultArray(
       this.state.allTimeResults,
       result,
@@ -267,7 +267,6 @@ class Quiz extends React.Component {
     );
     saveAllTimeResults(newAllTimeResults);
     return ({
-      new: newResults,
       allTime: newAllTimeResults
     });
   }
@@ -290,7 +289,6 @@ class Quiz extends React.Component {
     if (this.state.displayResultsTable) {
       return (
         <Results
-          results={this.state.results}
           allTimeResults={this.state.allTimeResults}
           handleClose={this.onCloseResultsTable}
           open={true}
@@ -302,13 +300,14 @@ class Quiz extends React.Component {
         <StartPage
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
+          onSetNumber={this.onSetNumber}
           onSelectLanguage={this.onSelectLanguage}
-          onTimerClick={this.onTimerClick}
-          onSetAnswersPerQuestion={this.onSetAnswersPerQuestion}
           timerOption={this.state.timerOption}
           language={this.state.language}
           answersPerQuestion={this.state.answersPerQuestion}
           name={this.state.name}
+          number={this.state.number}
+          canStart={this.state.canStart}
         />
       );
     }
@@ -321,6 +320,7 @@ class Quiz extends React.Component {
         questions={this.state.questions}
         score={this.state.score}
         answered={this.state.answered}
+        canStart={this.state.canStart}
         elapsed={parseInt((this.state.elapsed / 1000), 10)}
         timerOption={this.state.timerOption}
         countdown={this.state.timerOption - this.state.secsForThisQuestion}

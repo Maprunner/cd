@@ -11,11 +11,11 @@ function Header(props) {
         <div className="container">
           <img src={logo} alt='logo' className="pr-2"></img>
           <Navbar.Brand className="p-0" href="https://www.maprunner.co.uk">Maprunner</Navbar.Brand>
+          <Navbar.Text className="">{t('Lockdown Orienteering 2020 Control Description Quiz')}</Navbar.Text>
           <Navbar.Toggle />
           <Navbar.Collapse>
-            <Navbar.Text className="p-0 mr-auto">{t('IOF Control Description Quiz') + ' 2018'}</Navbar.Text>
-            <Nav>
-              <Nav.Link onClick={props.onShowResultsTable} className="p-0">{t('Results')}</Nav.Link>
+            <Nav className="ml-auto">
+              <Nav.Link onClick={props.onShowResultsTable} className="">{t('Results')}</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </div>

@@ -43,7 +43,6 @@ export class Results extends React.Component {
               <th>{t('Name')}</th>
               <th>{t('Type')}</th>
               <th className='text-center'>{t('Score')}</th>
-              <th className='text-center'>%</th>
               <th className='text-center'>{t('Time')}</th>
             </tr>
           </thead>
@@ -63,9 +62,6 @@ export class Results extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Container>
-            <Row className="py-2">
-              {this.renderResults(this.props.results, t('This session'))}
-            </Row>
             <Row className="py-2">
               {this.renderResults(this.props.allTimeResults, t('All time'))}
             </Row>

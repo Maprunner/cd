@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MATCH_ITEMS, baseCategories, baseData } from './data.jsx';
-import {loadSettings, saveSettings} from './Persist.jsx';
+import { MATCH_ITEMS, TEXT_TO_SYMBOLS, baseCategories, baseData, matchQuestions, matchSymbols, matchText } from './data.jsx';
 import NameInput from './NameInput.jsx';
-import CategoryList from './CategoryList.jsx';
+import NumberInput from './NumberInput.jsx';
 import LanguageList from './LanguageList.jsx';
-import AnswerOptionList from './AnswerOptionList.jsx';
-import TimerOptionList from './TimerOptionList.jsx';
 import Types from './Types.jsx'
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
@@ -17,13 +14,6 @@ import _ from 'underscore';
 class StartPage extends React.Component {
   constructor(props) {
     super(props);
-    // use saved settings if available
-    let settings = loadSettings();
-    baseCategories.forEach(function (item) {
-      if (settings.hasOwnProperty(item.name)) {
-        item.use = settings[item.name];
-      }
-    });
     let questions = this.filterQuestions(baseCategories);
     this.state = {
       questions: questions,
@@ -34,27 +24,18 @@ class StartPage extends React.Component {
   onStart = (type) => {
     let questions;
     if (type === MATCH_ITEMS) {
-      questions = this.createMatch();
+      // questions = this.createMatch();
+      questions = matchQuestions;
     } else {
-      questions = this.createQuiz(this.props.answersPerQuestion);
+      //questions = this.createQuiz(this.props.answersPerQuestion);
+      if (type === TEXT_TO_SYMBOLS) {
+        questions = matchSymbols;
+      } else {
+        questions = matchText;
+      }
     }
     this.props.onStart(questions, type);
   }
-
-  onSetCategory = (category) => {
-    let categories = this.state.categories;
-    categories.forEach(function (item) {
-      if (item.name === category) {
-        item.use = !item.use;
-        saveSettings(item.name, item.use);
-      }
-    });
-    this.setState({
-      categories: categories,
-      questions: this.filterQuestions(categories)
-    });
-  }
-
 
   filterQuestions(categories) {
     // create a list of index values for categories to be used
@@ -123,7 +104,7 @@ class StartPage extends React.Component {
     // generate question for each entry in shuffled array
     let questions = [];
     for (let i = 0; i < shuffled.length; i = i + 1) {
-      let detail = [];
+      let detail = {};
       detail.question = {
         code: shuffled[i].code,
         id: shuffled[i].id,
@@ -158,42 +139,40 @@ class StartPage extends React.Component {
     return _.shuffle(list);
   }
 
+  renderTypes(props) {
+    if (!props.canStart) {
+      return (<></>)
+    }
+    return (
+      <Types
+      onStart={this.onStart}
+    />
+    )
+  }
+
   render() {
+    let types = this.renderTypes(this.props);
     return (
       <div>
-        <Types
-          onStart={this.onStart}
-        />
+        {types}
         <Card className="m-1">
           <Card.Header className="font-weight-bold">
-            {t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
+            {t('Settings')}
           </Card.Header>
           <Card.Body>
             <Form>
-              <Form.Group>
-                <CategoryList
-                  onClick={this.onSetCategory}
-                  categories={this.state.categories}
-                />
-              </Form.Group>
               <Form.Group as={Row}>
                 <NameInput
                   name={this.props.name}
                   onSetName={this.props.onSetName}
                 />
-                <AnswerOptionList
-                  possibleAnswers={[1, 2, 3, 4, 5]}
-                  onSetAnswersPerQuestion={this.props.onSetAnswersPerQuestion}
-                  setting={this.props.answersPerQuestion}
+                <NumberInput
+                  number={this.props.number}
+                  onSetNumber={this.props.onSetNumber}
                 />
                 <LanguageList
                   language={this.props.language}
                   onSelectLanguage={this.props.onSelectLanguage}
-                />
-                <TimerOptionList
-                  possibleTimers={[0, 2, 5, 10]}
-                  onChange={this.props.onTimerClick}
-                  setting={this.props.timerOption}
                 />
               </Form.Group>
             </Form>

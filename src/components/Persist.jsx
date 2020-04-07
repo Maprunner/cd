@@ -1,10 +1,11 @@
 import _ from 'underscore';
 
-const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
-const CD_QUIZ_SETTINGS = 'cdquiz-settings';
+const CD_QUIZ_RESULTS_ITEM = 'ld-cdquiz-results';
+const CD_QUIZ_SETTINGS = 'ld-cdquiz-settings';
 
 const defaultSettings = {
-  name: "Player 1",
+  name: "",
+  number: "",
   language: "en",
   answersPerQuestion: 3,
   timerOption: 0,
