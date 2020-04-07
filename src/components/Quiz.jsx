@@ -65,7 +65,7 @@ class Quiz extends React.Component {
       type: NO_TYPE,
       name: settings.name,
       number: settings.number,
-      allTimeResults: loadAllTimeResults(),
+      allTimeResults: loadAllTimeResults(settings.name, settings.number),
       language: settings.language,
       answersPerQuestion: 3,
       canStart: this.canStart(settings.name, settings.number)
@@ -136,6 +136,7 @@ class Quiz extends React.Component {
 
   onSetName = (name) => {
     saveSettings("name", name);
+    loadAllTimeResults(name, this.state.number)
     this.setState({
       name: name,
       canStart: this.canStart(name, this.state.number)
@@ -144,6 +145,7 @@ class Quiz extends React.Component {
 
   onSetNumber = (number) => {
     saveSettings("number", number);
+    loadAllTimeResults(this.state.name, number)
     this.setState({
       number: number,
       canStart: this.canStart(this.state.name, number)
@@ -212,7 +214,8 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
-    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    // if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       this.saveResult(score, answered);
@@ -231,7 +234,6 @@ class Quiz extends React.Component {
       name: this.state.name,
       score: score,
       from: from,
-      percent: (score * 100 / from).toFixed(1),
       time: parseInt((this.state.elapsed / 1000), 10)
     });
     this.setState({
@@ -265,7 +267,7 @@ class Quiz extends React.Component {
       result,
       ALL_TIME_RESULTS_COUNT
     );
-    saveAllTimeResults(newAllTimeResults);
+    saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
     return ({
       allTime: newAllTimeResults
     });

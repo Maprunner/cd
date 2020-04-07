@@ -1,6 +1,5 @@
 import _ from 'underscore';
 
-const CD_QUIZ_RESULTS_ITEM = 'ld-cdquiz-results';
 const CD_QUIZ_SETTINGS = 'ld-cdquiz-settings';
 
 const defaultSettings = {
@@ -40,8 +39,8 @@ function saveItem(item, value) {
   }
 }
 
-export function loadAllTimeResults() {
-  const results = loadItem(CD_QUIZ_RESULTS_ITEM);
+export function loadAllTimeResults(name, number) {
+  const results = loadItem(nameHash(name, number));
   return (_.isEmpty(results) ? []: results);
 }
 
@@ -63,6 +62,10 @@ export function saveSettings(key, value) {
   saveItem(CD_QUIZ_SETTINGS, settings);
 }
 
-export function saveAllTimeResults(results) {
-  saveItem(CD_QUIZ_RESULTS_ITEM, results);
+export function saveAllTimeResults(results, name, number) {
+  saveItem(nameHash(name, number), results);
 }
+
+function nameHash(name, number) {
+  return number + "_:" + name + "_:results";
+} 

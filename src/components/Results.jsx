@@ -27,7 +27,6 @@ export class Results extends React.Component {
           <td>{result.name}</td>
           <td>{t(result.type)}</td>
           <td className='text-center'>{result.score}/{result.from}</td>
-          <td className='text-center'>{result.percent}</td>
           <td className='text-center'>{result.time}</td>
         </tr>
       );
