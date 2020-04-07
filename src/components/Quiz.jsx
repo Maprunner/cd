@@ -10,6 +10,7 @@ import Results from './Results.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import { MATCH_ITEMS, NO_TYPE, quizDefs } from './data.jsx'
 import cz from '../lang/cz.js';
+import de from '../lang/de.js';
 import fi from '../lang/fi.js';
 import fr from '../lang/fr.js';
 import hu from '../lang/hu.js';
@@ -18,9 +19,10 @@ import pl from '../lang/pl.js';
 
 export const ALL_TIME_RESULTS_COUNT = 10;
 
-export const availableLanguages = ['en', 'cz', 'fi', 'fr', 'hu', 'ja', 'pl'];
+export const availableLanguages = ['en', 'cz', 'de', 'fi', 'fr', 'hu', 'ja', 'pl'];
 const dictionaries = {
   'cz': cz,
+  'de': de,
   'fi': fi,
   'fr': fr,
   'hu': hu,
