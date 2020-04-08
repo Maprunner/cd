@@ -11,16 +11,17 @@ class Types extends React.Component {
     this.props.onStart(parseInt(event.currentTarget.value, 10));
   }
 
-  renderDetail = (btn, result) => {
-    const self = this;
+  renderDetail = (btn, result, canStart) => {
     if (_.isEmpty(result)) {
+      let disabled = (canStart? "": "disabled")
       return (
         <>
         <Card.Text>{t(btn.caption)}</Card.Text>
         <Button
           value={btn.value}
-          onClick={self.onStart}
+          onClick={this.onStart}
           variant="primary"
+          className={disabled}
         >
           {t('Start')}
         </Button>
@@ -38,7 +39,7 @@ class Types extends React.Component {
 
   render() {
     const types = this.props.quizDefs.map((btn, i) => {
-      let detail = this.renderDetail(btn, this.props.results[i]);
+      let detail = this.renderDetail(btn, this.props.results[i], this.props.canStart);
       return (
         <div className="col-md-4" key={i}>
           <Card className="my-2">

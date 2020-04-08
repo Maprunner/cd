@@ -216,8 +216,7 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
-    // if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-    if ((this.state.currentQuestionIdx + 1) === 5) {
+    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       this.saveResult(score, answered - score);

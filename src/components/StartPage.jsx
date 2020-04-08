@@ -140,11 +140,9 @@ class StartPage extends React.Component {
   }
 
   renderTypes(props) {
-    if (!props.canStart) {
-      return (<></>)
-    }
     return (
       <Types
+      canStart={props.canStart}
       onStart={this.onStart}
       results={props.results}
     />

@@ -1,6 +1,6 @@
 {
-  "short_name": "CD Quiz",
-  "name": "Maprunner IOF CD Quiz",
+  "short_name": "CD Lockdown Quiz",
+  "name": "Maprunner Lockdown IOF CD Quiz",
     "icons": [
         {
             "src": "./android-chrome-192x192.png",
