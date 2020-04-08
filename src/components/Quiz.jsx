@@ -1,4 +1,5 @@
 import React from 'react';
+import * as FirestoreService from '../services/firestore';
 import _ from 'underscore';
 import update from 'immutability-helper';
 import StartPage from './StartPage.jsx'
@@ -75,6 +76,8 @@ class Quiz extends React.Component {
   }
   componentDidMount() {
     this.onSelectLanguage(this.state.language);
+    FirestoreService.authenticateAnonymously();
+    FirestoreService.getWebResults(this.handleWebResults);
   }
 
   componentWillUnmount() {
@@ -82,6 +85,10 @@ class Quiz extends React.Component {
     clearInterval(this.timer);
     clearInterval(this.questionTimer);
   }
+
+  handleWebResults = (snapshot) => {
+    console.log(snapshot);
+  } 
 
   onTick = () => {
     if (this.state.quizRunning) {
@@ -138,19 +145,19 @@ class Quiz extends React.Component {
 
   onSetName = (name) => {
     saveSettings("name", name);
-    loadAllTimeResults(name, this.state.number)
     this.setState({
       name: name,
-      canStart: this.canStart(name, this.state.number)
+      canStart: this.canStart(name, this.state.number),
+      allTimeResults: loadAllTimeResults(name, this.state.number)
     });
   }
 
   onSetNumber = (number) => {
     saveSettings("number", number);
-    loadAllTimeResults(this.state.name, number)
     this.setState({
       number: number,
-      canStart: this.canStart(this.state.name, number)
+      canStart: this.canStart(this.state.name, number),
+      allTimeResults: loadAllTimeResults(this.state.name, number)
     });
   }
 
@@ -216,7 +223,8 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
-    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    // if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       this.saveResult(score, answered - score);
@@ -251,6 +259,7 @@ class Quiz extends React.Component {
     let newAllTimeResults = this.state.allTimeResults;
     newAllTimeResults[result.type] = result;
     saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
+    FirestoreService.saveWebResult(result)
     return ({
       allTime: newAllTimeResults
     });
