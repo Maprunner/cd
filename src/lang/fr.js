@@ -2,7 +2,7 @@ const fr = {
   "abbrev": "fr",
   "lang": "Français",
   "Language": "Langue",
-  "You scored #1 out #2 in #3 seconds": "Vous avez marqué #1 sur #2 à #3 secondes",
+  "You scored #1 out of #2 in #3 seconds": "Vous avez marqué #1 sur #2 à #3 secondes",
   "Congratulations": "Félicitations",
   "No results yet": "Pas encore de résultats",
   "This session": "Cette session",

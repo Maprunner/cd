@@ -2,7 +2,7 @@ const pl = {
   "abbrev": "pl",
   "lang": "Polish",
   "Language": "Język",
-  "You scored #1 out #2 in #3 seconds": "Zdobyłeś #1 na #2 w ciągu #3 sekund",
+  "You scored #1 out of #2 in #3 seconds": "Zdobyłeś #1 na #2 w ciągu #3 sekund",
   "Congratulations": "Gratulacje",
   "No results yet": "Na razie brak wyników",
   "This session": "Obecna sesja",

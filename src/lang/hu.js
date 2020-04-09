@@ -2,7 +2,7 @@
   "abbrev": "hu",
   "lang": "Magyar",
   "Language": "Nyelv",
-  "You scored #1 out #2 in #3 seconds": "Eltaláltál #1 választ #2 közül, #3 másodperc alatt.",
+  "You scored #1 out of #2 in #3 seconds": "Eltaláltál #1 választ #2 közül, #3 másodperc alatt.",
   "Congratulations": "Gratulálunk",
   "No results yet": "Még nincs eredmény",
   "This session": "Ez a menet",
