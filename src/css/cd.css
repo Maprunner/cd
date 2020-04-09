@@ -8,6 +8,11 @@ body {
   user-select: none;          /* Likely future */      
 }
 
+.this-is-me {
+  font-weight: bolder;
+  color: purple;
+}
+
 .large-text {
   font-size: 3em;
 }

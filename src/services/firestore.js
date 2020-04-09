@@ -20,6 +20,16 @@ export const saveWebResult = (result) => {
     })
 };
 
+export const saveError = (error) => {
+  return db.collection("errors").add(error)
+    .then((docRef) => {
+      //console.log("Error saved with ID: ", docRef.id);
+    })
+    .catch((error) => {
+      console.error("Error adding error: ", error);
+    })
+};
+
 export const registerForWebResults = (onChange) => {
   return db.collection('results')
     .orderBy("type", "asc")

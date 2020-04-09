@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { t } from './Quiz.jsx'
-import _ from 'underscore';
 import { quizDefs } from './data.jsx'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import WebResults from './WebResults.jsx';
 
+const MAX_RESULTS_TO_DISPLAY = 3;
+
 class Types extends React.Component {
+
   onStart = (event) => {
     this.props.onStart(parseInt(event.currentTarget.value, 10));
   }
 
-  renderDetail = (btn, result, canStart, pos) => {
-    if (_.isEmpty(result)) {
-      let disabled = (canStart? "": "disabled")
-      return (
-        <>
+  renderDetail = (btn, canStart) => {
+    let disabled = (canStart ? "" : "disabled")
+    return (
+      <>
         <Card.Text>{t(btn.caption)}</Card.Text>
         <Button
           value={btn.value}
@@ -26,26 +27,30 @@ class Types extends React.Component {
         >
           {t('Start')}
         </Button>
-        </>
-      )
-    }
-    return (
-      <>
-      <Card.Text>{t(btn.caption)}</Card.Text>
-      <Card.Text className="h4">{t("Position") + ": " + pos}</Card.Text>
-      <Card.Text className="h4">{t("Score") + ": " + result.score}</Card.Text>
-      <Card.Text className="h4">{t("Time") + ": " + result.time}</Card.Text>
       </>
     )
-
   }
 
   render() {
     const types = this.props.quizDefs.map((btn, i) => {
-      const filteredResults = this.props.webResults.filter(result => result.type === btn.value);
+      // get results for this quiz type
+      let filteredResults = this.props.webResults.filter(result => result.type === btn.value)
+      // find my result
       let idx = filteredResults.findIndex(result => ((result.name === this.props.name) && (result.number === this.props.number)))
-      const myPosition = (idx === undefined) ? "" : idx + 1;
-      let detail = this.renderDetail(btn, this.props.results[i], this.props.canStart, myPosition);
+      if (idx !== -1) {
+        const myResult = filteredResults[idx];
+        filteredResults = filteredResults.slice(0, MAX_RESULTS_TO_DISPLAY);
+        if (idx >= MAX_RESULTS_TO_DISPLAY) {
+          myResult.thisIsMe = true;
+          filteredResults.push(myResult);
+        } else {
+          filteredResults[idx]["thisIsMe"] = true;
+        }
+      } else {
+        filteredResults = filteredResults.slice(0, MAX_RESULTS_TO_DISPLAY);
+      }
+
+      let detail = this.renderDetail(btn, this.props.canStart);
       return (
         <div className="col-md-4" key={i}>
           <Card className="my-2">
@@ -57,7 +62,7 @@ class Types extends React.Component {
             </Card.Body>
             <Card.Footer>
               <WebResults
-                results={filteredResults.slice(0,10)}
+                results={filteredResults}
               />
             </Card.Footer>
           </Card>

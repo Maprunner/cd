@@ -100,6 +100,17 @@ class Quiz extends React.Component {
       results.push(doc.data())
     })
     results.sort(this.sortWebResults)
+    // add positions
+    let oldType = 0;
+    let pos = 1;
+    for (let i = 0; i < results.length; i = i + 1) {
+      if (results[i].type !== oldType) {
+        oldType = results[i].type;
+        pos = 1
+      }
+      results[i].pos = pos;
+      pos = pos + 1
+    }
     this.setState({
       webResults: results
     });
@@ -241,6 +252,12 @@ class Quiz extends React.Component {
     if (answer === this.state.questions[idx].question.desc) {
       score = score + 1;
       gotIt = true;
+    } else {
+      FirestoreService.saveError({
+        right: this.state.questions[idx].question.desc, 
+        wrong: answer,
+        type: this.state.type
+      });
     }
     let q = this.state.questions[idx];
     q.gotIt = gotIt;
@@ -251,8 +268,8 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
-    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-    //if ((this.state.currentQuestionIdx + 1) === 5) {
+    //if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       let time = new Date() - this.state.start;
@@ -289,7 +306,11 @@ class Quiz extends React.Component {
     let newAllTimeResults = this.state.allTimeResults;
     newAllTimeResults[result.type] = result;
     saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
-    FirestoreService.saveWebResult(result)
+    if (this.state.webResults.findIndex(result => ((result.name === this.state.name) && (result.number === this.state.number) && result.type === this.state.type)) === -1) {
+      const now = new Date();
+      result.saved = now.toUTCString();
+      FirestoreService.saveWebResult(result);
+    }
     return ({
       allTime: newAllTimeResults
     });

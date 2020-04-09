@@ -3,6 +3,7 @@ import MatchCard from './MatchCard.jsx';
 import { t } from './Quiz.jsx';
 import Modal from 'react-bootstrap/Modal';
 import update from 'immutability-helper';
+import * as FirestoreService from '../services/firestore';
 
 class MatchCards extends React.Component {
   constructor(props) {
@@ -60,6 +61,11 @@ class MatchCards extends React.Component {
         // not a match
         a2.selected = false;
         wrong = wrong + 1;
+        FirestoreService.saveError({
+          right: a1.desc, 
+          wrong: a2.desc,
+          type: 2
+        });
       }
       selected = null;
     } else {

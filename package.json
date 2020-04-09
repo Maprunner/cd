@@ -1,6 +1,6 @@
 {
   "name": "cd",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "private": true,
   "homepage": "https://www.maprunner.co.uk/lockdown-cd-test",
   "dependencies": {
@@ -10,7 +10,8 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "underscore": "^1.10.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,7 +20,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "underscore": "^1.10.2"
   },
   "browserslist": [
     ">0.2%",

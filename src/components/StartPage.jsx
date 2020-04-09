@@ -10,7 +10,6 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { t } from './Quiz.jsx';
 import _ from 'underscore';
-import SmallCDIcon from './SmallCDIcon.jsx';
 
 class StartPage extends React.Component {
   constructor(props) {

@@ -12,22 +12,26 @@ function getFormattedResults(results) {
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
         </tr>
       );
     }
+    
+    let highlight = (result.hasOwnProperty("thisIsMe")) ? "this-is-me" : "";
     return (
-      <tr key={idx}>
-        <td>{idx + 1}</td>
+      <tr key={idx} className={highlight}>
+        <td>{result.pos}</td>
         <td>{result.name}</td>
+        <td>{result.number}</td>
         <td className='text-center'>{result.score}/{result.score + result.wrong}</td>
-        <td className='text-center'>{result.time}</td>
+        <td className='text-center'>{result.time.toFixed(1)}</td>
       </tr>
     );
   })
   return formatted;
 }
 
-function formatResults(results) {
+function formatResults(results, index) {
     const formattedResults = getFormattedResults(results)
     return (
         <div>
@@ -36,6 +40,7 @@ function formatResults(results) {
               <tr>
                 <th className='text-center'>#</th>
                 <th>{t('Name')}</th>
+                <th>{t('Number')}</th>
                 <th className='text-center'>{t('Score')}</th>
                 <th className='text-center'>{t('Time')}</th>
               </tr>
@@ -51,7 +56,7 @@ function formatResults(results) {
 function WebResults(props) {
   return (
     <div>
-      {formatResults(props.results, props.title)}
+      {formatResults(props.results)}
     </div>
   );
 }
