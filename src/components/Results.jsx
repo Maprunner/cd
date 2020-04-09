@@ -70,9 +70,6 @@ export class Results extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Container>
-            <Row className="py-2">
-              {this.renderResults(this.props.allTimeResults, t('My results'))}
-            </Row>
             <Row><h4>{t("Symbols")}</h4></Row>
             <Row className="py-2">
               <WebResults

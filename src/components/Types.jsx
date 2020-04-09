@@ -41,10 +41,7 @@ class Types extends React.Component {
         const myResult = filteredResults[idx];
         filteredResults = filteredResults.slice(0, MAX_RESULTS_TO_DISPLAY);
         if (idx >= MAX_RESULTS_TO_DISPLAY) {
-          myResult.thisIsMe = true;
           filteredResults.push(myResult);
-        } else {
-          filteredResults[idx]["thisIsMe"] = true;
         }
       } else {
         filteredResults = filteredResults.slice(0, MAX_RESULTS_TO_DISPLAY);

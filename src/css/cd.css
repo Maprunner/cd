@@ -10,7 +10,8 @@ body {
 
 .this-is-me {
   font-weight: bolder;
-  color: purple;
+  color: black;
+  background-color: goldenrod !important; 
 }
 
 .large-text {

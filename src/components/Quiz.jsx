@@ -99,7 +99,9 @@ class Quiz extends React.Component {
     snapshot.forEach((doc) => {
       results.push(doc.data())
     })
-    results.sort(this.sortWebResults)
+    results = this.adjustWebResults(results, this.state.name, this.state.number)
+    // query includes sort
+    //results.sort(this.sortWebResults)
     // add positions
     let oldType = 0;
     let pos = 1;
@@ -186,8 +188,20 @@ class Quiz extends React.Component {
     this.setState({
       name: name,
       canStart: this.canStart(name, this.state.number),
-      allTimeResults: loadAllTimeResults(name, this.state.number)
+      allTimeResults: loadAllTimeResults(name, this.state.number),
+      webResults: this.adjustWebResults(this.state.webResults, name, this.state.number)
     });
+  }
+
+  adjustWebResults = (results, name, number) => {
+    results.forEach(result => {
+      if ((result.name === name) && (result.number === number)) {
+        result.thisIsMe = true;
+      } else {
+        delete result.thisIsMe;
+      }
+    })
+    return results;
   }
 
   onSetNumber = (number) => {
@@ -195,7 +209,8 @@ class Quiz extends React.Component {
     this.setState({
       number: number,
       canStart: this.canStart(this.state.name, number),
-      allTimeResults: loadAllTimeResults(this.state.name, number)
+      allTimeResults: loadAllTimeResults(this.state.name, number),
+      webResults: this.adjustWebResults(this.state.webResults, this.state.name, number)
     });
   }
 
