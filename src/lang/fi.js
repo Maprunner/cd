@@ -2,7 +2,7 @@ const fi = {
   "abbrev": "fi",
   "lang": "Suomi",
   "Language": "Kieli",
-  "You scored #1 out #2 in #3 seconds": "Sait #1 oikein #2 kysymyksestä #3 sekunnissa",
+  "You scored #1 out of #2 in #3 seconds": "Sait #1 oikein #2 kysymyksestä #3 sekunnissa",
   "Congratulations": "Onnittelut",
   "No results yet": "Ei tuloksia",
   "This session": "Tässä istunnossa",

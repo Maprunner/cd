@@ -2,7 +2,7 @@ const cz = {
   "abbrev": "cz",
   "lang": "Čeština",
   "Language": "Jazyk",
-  "You scored #1 out #2 in #3 seconds": "Dostali jste #1 z #2 bodů za #3 sekund",
+  "You scored #1 out of #2 in #3 seconds": "Dostali jste #1 z #2 bodů za #3 sekund",
   "Congratulations": "Gratuluji",
   "No results yet": "Žádný výsledky nejsou ještě k dispozicí",
   "This session": "Tato hra",

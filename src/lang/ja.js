@@ -2,7 +2,7 @@ const ja = {
   "abbrev": "ja",
   "lang": "日本語",
   "Language": "言語設定",
-  "You scored #1 out #2 in #3 seconds": "#2 / #1 問正解。 #3 秒",
+  "You scored #1 out of #2 in #3 seconds": "#2 / #1 問正解。 #3 秒",
   "Congratulations": "おめでとうございます",
   "No results yet": "まだ結果がありません",
   "This session": "今回のセッション",

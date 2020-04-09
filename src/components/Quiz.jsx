@@ -336,7 +336,7 @@ class Quiz extends React.Component {
   }
 
   renderNewResult() {
-    let message = t('You scored #1 out #2 in #3 seconds');
+    let message = t('You scored #1 out of #2 in #3 seconds');
     // eslint-disable-next-line
     message = message.replace(/\#1/, this.state.score);
     // eslint-disable-next-line

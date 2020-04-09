@@ -2,7 +2,7 @@ const xx = {
   "abbrev": "xx",
   "lang": "Example",
   "Language": "",
-  "You scored #1 out #2 in #3 seconds": "",
+  "You scored #1 out of #2 in #3 seconds": "",
   "Congratulations": "",
   "No results yet": "",
   "This session": "",
