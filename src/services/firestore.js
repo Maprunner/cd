@@ -7,11 +7,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 export const authenticateAnonymously = () => {
-    firebase.auth().signInAnonymously().then(
-        console.log("Logged in")
-    ).catch((error) => {
-        console.error("Anonymous auth failed: ", error);
-    });
+    return firebase.auth().signInAnonymously();
 };
 
 export const saveWebResult = (result) => {
@@ -25,7 +21,15 @@ export const saveWebResult = (result) => {
 }
 
 export const getWebResults = (updater) => {
-  db.collection('results')
+  authenticateAnonymously().then(() => {
+    console.log("Logged in")
+    db.collection('results')
     .orderBy("type", "asc")
+    .orderBy("score", "desc")
+    .orderBy("time", "asc")
     .onSnapshot(updater);
+  }
+  ).catch((error) => {
+    console.error("Anonymous auth failed: ", error);
+  });
 };

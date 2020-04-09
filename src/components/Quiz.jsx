@@ -61,6 +61,7 @@ class Quiz extends React.Component {
       score: 0,
       start: 0,
       elapsed: 1,
+      time: 0,
       quizRunning: false,
       displayResultsTable: false,
       displayNewResult: false,
@@ -87,7 +88,9 @@ class Quiz extends React.Component {
   }
 
   handleWebResults = (snapshot) => {
-    console.log(snapshot);
+    snapshot.forEach((doc) => {
+      console.log(doc.data())
+    })
   } 
 
   onTick = () => {
@@ -194,7 +197,8 @@ class Quiz extends React.Component {
         answered: attempts,
         score: score
       })
-      this.saveResult(score, attempts);
+      let time = new Date() - this.state.start;
+      this.saveResult(score, attempts, time);
     } else {
       this.setState({
         quizRunning: false,
@@ -227,7 +231,8 @@ class Quiz extends React.Component {
     if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
-      this.saveResult(score, answered - score);
+      let time = new Date() - this.state.start;
+      this.saveResult(score, answered - score, time);
     } else {
       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 });
       if ((this.state.timerOption > 0) && (this.state.type !== MATCH_ITEMS)) {
@@ -237,21 +242,22 @@ class Quiz extends React.Component {
     }
   }
 
-  saveResult(score, wrong) {
+  saveResult(score, wrong, time) {
     const newResults = this.addNewResult({
       type: this.state.type,
       name: this.state.name,
       number: this.state.number,
       score: score,
       wrong: wrong,
-      time: parseInt((this.state.elapsed / 1000), 10)
+      time: +(time / 1000).toFixed(1)
     });
     this.setState({
       allTimeResults: newResults.allTime,
       quizRunning: false,
       displayNewResult: true,
       newResultType: this.state.type,
-      type: NO_TYPE
+      type: NO_TYPE,
+      time: +(time / 1000).toFixed(1)
     });
   }
 
@@ -329,13 +335,13 @@ class Quiz extends React.Component {
   }
 
   renderNewResult() {
-    let message = t('You scored #1 out #2 in #3 seconds');
+    let message = t('You scored #1 out of #2 in #3 seconds');
     // eslint-disable-next-line
     message = message.replace(/\#1/, this.state.score);
     // eslint-disable-next-line
     message = message.replace(/\#2/, this.state.answered);
     // eslint-disable-next-line
-    message = message.replace(/\#3/, parseInt((this.state.elapsed / 1000), 10));
+    message = message.replace(/\#3/, this.state.time);
     return (
       <ResultMessage
         handleClose={this.onCloseNewResult}
