@@ -70,15 +70,22 @@ class Quiz extends React.Component {
       name: settings.name,
       number: settings.number,
       allTimeResults: loadAllTimeResults(settings.name, settings.number),
+      webResults: [],
       language: settings.language,
       answersPerQuestion: 3,
       canStart: this.canStart(settings.name, settings.number)
     }
   }
+
   componentDidMount() {
     this.onSelectLanguage(this.state.language);
-    FirestoreService.authenticateAnonymously();
-    FirestoreService.getWebResults(this.handleWebResults);
+    FirestoreService.authenticateAnonymously().then(() => {
+      //console.log("Logged in")
+      FirestoreService.registerForWebResults(this.handleWebResults)
+    })
+    .catch((error) => {
+       console.error("Error logging in: ", error);
+    })
   }
 
   componentWillUnmount() {
@@ -88,10 +95,27 @@ class Quiz extends React.Component {
   }
 
   handleWebResults = (snapshot) => {
+    let results = []
     snapshot.forEach((doc) => {
-      console.log(doc.data())
+      results.push(doc.data())
     })
+    results.sort(this.sortWebResults)
+    this.setState({
+      webResults: results
+    });
   } 
+
+  sortWebResults = (a, b) => {
+    if (a.type === b.type) {
+        if (a.score === b.score) {
+          return a.time - b.time
+        } else {
+          return b.score - a.score
+        }
+    } else {
+      return a.type - b.type;
+    }
+  }
 
   onTick = () => {
     if (this.state.quizRunning) {
@@ -191,14 +215,14 @@ class Quiz extends React.Component {
     return ((name !== "") && (number !== "") ? true: false);
   }
 
-  onMatchFinished = (validFinish, score, attempts) => {
+  onMatchFinished = (validFinish, score, wrong) => {
     if (validFinish) {
       this.setState({
-        answered: attempts,
+        answered: score + wrong,
         score: score
       })
       let time = new Date() - this.state.start;
-      this.saveResult(score, attempts, time);
+      this.saveResult(score, wrong, time);
     } else {
       this.setState({
         quizRunning: false,
@@ -227,8 +251,8 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
-    // if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-    if ((this.state.currentQuestionIdx + 1) === 5) {
+    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    //if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       let time = new Date() - this.state.start;
@@ -290,6 +314,7 @@ class Quiz extends React.Component {
       return (
         <Results
           allTimeResults={this.state.allTimeResults}
+          webResults={this.state.webResults}
           handleClose={this.onCloseResultsTable}
           open={true}
         />
@@ -309,6 +334,7 @@ class Quiz extends React.Component {
           number={this.state.number}
           canStart={this.state.canStart}
           results={this.state.allTimeResults}
+          webResults={this.state.webResults}
         />
       );
     }

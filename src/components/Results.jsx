@@ -1,5 +1,6 @@
 import React from 'react';
 import { t } from './Quiz.jsx';
+import WebResults from './WebResults.jsx';
 import { quizDefs } from './data.jsx'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -41,6 +42,7 @@ export class Results extends React.Component {
 
     return (
       <div>
+        <h4>{title}</h4>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
@@ -69,7 +71,25 @@ export class Results extends React.Component {
         <Modal.Body>
           <Container>
             <Row className="py-2">
-              {this.renderResults(this.props.allTimeResults, t('All time'))}
+              {this.renderResults(this.props.allTimeResults, t('My results'))}
+            </Row>
+            <Row><h4>{t("Symbols")}</h4></Row>
+            <Row className="py-2">
+              <WebResults
+                results={this.props.webResults.filter(result => result.type === 0)}
+              />
+            </Row>
+            <Row><h4>{t("Text")}</h4></Row>
+            <Row className="py-2">
+              <WebResults
+                results={this.props.webResults.filter(result => result.type === 1)}
+              />
+            </Row>
+            <Row><h4>{t("Match")}</h4></Row>
+            <Row className="py-2">
+              <WebResults
+                results={this.props.webResults.filter(result => result.type === 2)}
+              />
             </Row>
           </Container>
         </Modal.Body>

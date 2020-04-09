@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { t } from './Quiz.jsx';
 import _ from 'underscore';
+import SmallCDIcon from './SmallCDIcon.jsx';
 
 class StartPage extends React.Component {
   constructor(props) {
@@ -142,9 +143,12 @@ class StartPage extends React.Component {
   renderTypes(props) {
     return (
       <Types
+      name={props.name}
+      number={props.number}
       canStart={props.canStart}
       onStart={this.onStart}
       results={props.results}
+      webResults={props.webResults}
     />
     )
   }
@@ -153,7 +157,6 @@ class StartPage extends React.Component {
     let types = this.renderTypes(this.props);
     return (
       <div>
-        {types}
         <Card className="m-1">
           <Card.Header className="font-weight-bold">
             {t('Settings')}
@@ -177,6 +180,7 @@ class StartPage extends React.Component {
             </Form>
           </Card.Body>
         </Card>
+        {types}
       </div >
     );
   }

@@ -1,20 +1,25 @@
 import React from 'react';
 import MatchCard from './MatchCard.jsx';
 import { t } from './Quiz.jsx';
-import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import update from 'immutability-helper';
 
 class MatchCards extends React.Component {
   constructor(props) {
     super(props);
+    // fix for Lockdown only
     this.state = {
       // use what we get as a basis for our own set of questions
       // which we track ourselves
-      questions: this.props.questions,
+      questions: props.questions.map(q => {
+        q.gotIt = false;
+        q.selected = false;
+        return q;
+      }),
       selectedIdx: null,
       matched: 0,
       attempts: 0,
+      wrong: 0,
       elapsed: 0
     };
   }
@@ -37,6 +42,7 @@ class MatchCards extends React.Component {
     let a1 = this.state.questions[idx];
     let matched = this.state.matched;
     let attempts = this.state.attempts;
+    let wrong = this.state.wrong;
     let selected;
     let a2;
     if (this.state.selectedIdx !== null) {
@@ -53,6 +59,7 @@ class MatchCards extends React.Component {
       } else {
         // not a match
         a2.selected = false;
+        wrong = wrong + 1;
       }
       selected = null;
     } else {
@@ -68,15 +75,16 @@ class MatchCards extends React.Component {
       questions: newQuestions,
       selectedIdx: selected,
       matched: matched,
+      wrong: wrong,
       attempts: attempts
     })
     if (matched === (newQuestions.length / 2)) {
-      this.props.onFinished(true, matched, attempts);
+      this.props.onFinished(true, matched, wrong);
     }
   }
 
   handleClose = () => {
-    this.props.onFinished(false);
+    this.props.onFinished(true, this.state.matched, this.state.wrong);
   }
 
   render() {
@@ -106,9 +114,6 @@ class MatchCards extends React.Component {
         <Modal.Body>
           {cards}
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.handleClose}>Close</Button>
-        </Modal.Footer>
       </Modal >
     );
   }
