@@ -10,7 +10,7 @@ body {
 
 .this-is-me {
   font-weight: bolder;
-  color: purple;
+  color: violet;
 }
 
 .large-text {
@@ -84,6 +84,12 @@ body {
   text-align: center;
   width: 90px;
   color: darkviolet;
+}
+
+.icon-list {
+  color: darkviolet;
+  font-size: larger;
+  font-weight: bolder;
 }
 
 .text-center {

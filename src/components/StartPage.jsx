@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MATCH_ITEMS, TEXT_TO_SYMBOLS, baseCategories, baseData, matchQuestions, matchSymbols, matchText } from './data.jsx';
+import { MATCH_ITEMS, TEXT_TO_SYMBOLS, baseCategories, baseData, matchSymbols, matchText } from './data.jsx';
+import matchQuestions from './dataMatchQuestions1.jsx';
 import NameInput from './NameInput.jsx';
+import Icons from './Icons.jsx';
 import NumberInput from './NumberInput.jsx';
 import LanguageList from './LanguageList.jsx';
 import Types from './Types.jsx'
@@ -160,7 +162,7 @@ class StartPage extends React.Component {
           <Card.Header className="font-weight-bold">
             {t('Settings')}
           </Card.Header>
-          <Card.Body>
+          <Card.Body className="pb-0">
             <Form>
               <Form.Group as={Row}>
                 <NameInput
@@ -178,6 +180,9 @@ class StartPage extends React.Component {
               </Form.Group>
             </Form>
           </Card.Body>
+          <Card.Footer>
+            <Icons />
+          </Card.Footer>
         </Card>
         {types}
       </div >

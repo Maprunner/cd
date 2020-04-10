@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import WebResults from './WebResults.jsx';
 
+// TODO
 const MAX_RESULTS_TO_DISPLAY = 3;
 
 class Types extends React.Component {

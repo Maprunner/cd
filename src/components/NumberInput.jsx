@@ -5,6 +5,13 @@ import Form from 'react-bootstrap/Form';
 class NumberInput extends React.Component {
   onNumberChange = (event) => {
     let number = event.target.value;
+    // eslint-disable-next-line
+    const validChars = /^[0-9]{0,4}$/;
+    if (number.match(validChars) === null) {
+
+      // invalid name so stick with what we had previously
+      number = this.props.number;
+    }
     this.props.onSetNumber(number);
   }
   render() {

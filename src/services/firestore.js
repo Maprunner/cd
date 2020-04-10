@@ -11,6 +11,9 @@ export const authenticateAnonymously = () => {
 };
 
 export const saveWebResult = (result) => {
+  // TODO
+  console.log("Saving result: " + JSON.stringify(result))
+  return;
   return db.collection("results").add(result)
     .then((docRef) => {
       console.log("Result added with ID: ", docRef.id);
@@ -21,6 +24,9 @@ export const saveWebResult = (result) => {
 };
 
 export const saveError = (error) => {
+  // TODO
+  console.log("Saving error: " + error);
+  return;
   return db.collection("errors").add(error)
     .then((docRef) => {
       //console.log("Error saved with ID: ", docRef.id);
@@ -31,6 +37,8 @@ export const saveError = (error) => {
 };
 
 export const registerForWebResults = (onChange) => {
+  // TODO
+  return;
   return db.collection('results')
     .orderBy("type", "asc")
     .orderBy("score", "desc")

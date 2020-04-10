@@ -10,6 +10,7 @@ import {loadAllTimeResults, saveAllTimeResults, loadSettings, saveSettings} from
 import Results from './Results.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import { MATCH_ITEMS, NO_TYPE, quizDefs } from './data.jsx'
+import entries from './entries.js'
 import cz from '../lang/cz.js';
 import de from '../lang/de.js';
 import fi from '../lang/fi.js';
@@ -182,21 +183,41 @@ class Quiz extends React.Component {
   }
 
   onSetName = (name) => {
-    saveSettings("name", name);
+    console.log ("Setting name: why? " + name)
+    return;
+    // saveSettings("name", name);
+    // this.setState({
+    //   name: name,
+    //   canStart: this.canStart(name, this.state.number),
+    //   allTimeResults: loadAllTimeResults(name, this.state.number)
+    // });
+  }
+
+  onSetNumber = (num) => {
+    // input limits number to 0 to 4 digits
+    let number = parseInt(num, 10);
+    const entry = this.getNameForNumber(number);
+    if (entry === undefined) {
+      this.setState({
+        number: num,
+        name: "",
+        canStart: false
+      });
+      return;
+    }
+    //console.log("Entry: " + entry.name + ", " + entry.number);
+    saveSettings("number", number);
+    saveSettings("name", entry.name);
     this.setState({
-      name: name,
-      canStart: this.canStart(name, this.state.number),
-      allTimeResults: loadAllTimeResults(name, this.state.number)
+      number: number,
+      name: entry.name,
+      canStart: true,
+      allTimeResults: loadAllTimeResults(entry.name, number)
     });
   }
 
-  onSetNumber = (number) => {
-    saveSettings("number", number);
-    this.setState({
-      number: number,
-      canStart: this.canStart(this.state.name, number),
-      allTimeResults: loadAllTimeResults(this.state.name, number)
-    });
+  getNameForNumber = number => {
+    return entries.find(entry => (entry.number === number));
   }
 
   onStartNewQuiz = (questions, type) => {
@@ -253,11 +274,11 @@ class Quiz extends React.Component {
       score = score + 1;
       gotIt = true;
     } else {
-      FirestoreService.saveError({
-        right: this.state.questions[idx].question.desc, 
-        wrong: answer,
-        type: this.state.type
-      });
+       FirestoreService.saveError({
+         right: this.state.questions[idx].question.desc, 
+         wrong: answer,
+         type: this.state.type
+       });
     }
     let q = this.state.questions[idx];
     q.gotIt = gotIt;
@@ -268,6 +289,7 @@ class Quiz extends React.Component {
       score: score,
       secsForThisQuestion: 0
     })
+    // TODO
     //if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
     if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
@@ -309,6 +331,9 @@ class Quiz extends React.Component {
     if (this.state.webResults.findIndex(result => ((result.name === this.state.name) && (result.number === this.state.number) && result.type === this.state.type)) === -1) {
       const now = new Date();
       result.saved = now.toUTCString();
+      if (this.state.language !== "en") {
+        result.lang = this.state.language
+      }
       FirestoreService.saveWebResult(result);
     }
     return ({

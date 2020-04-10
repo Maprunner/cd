@@ -12,7 +12,8 @@ class NameInput extends React.Component {
       // invalid name so stick with what we had previously
       name = this.props.name;
     }
-    this.props.onSetName(name);
+    // name is looked up from number
+    //this.props.onSetName(name);
   }
 
   render() {
@@ -25,6 +26,7 @@ class NameInput extends React.Component {
         <Form.Control
           type="text"
           value={this.props.name}
+          readOnly={true}
           placeholder={this.props.name}
           onChange={this.onNameChange}
         />
