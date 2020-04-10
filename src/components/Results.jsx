@@ -91,7 +91,7 @@ export class Results extends React.Component {
             </Tab>
             <Tab eventKey="match" title={t('Match')}>
             <WebResults
-                results={this.props.webResults[1]}
+                results={this.props.webResults[2]}
                 name={this.props.name}
                 number={this.props.number}
               />

@@ -36,6 +36,7 @@ export const registerForWebResults = (type, onChange) => {
   return db.collection('results')
     .where("type", "==", type)
     .orderBy("score", "desc")
+    .orderBy("wrong", "asc")
     .orderBy("time", "asc")
     .onSnapshot(onChange)
-};
+}
