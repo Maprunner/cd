@@ -303,8 +303,8 @@ class Quiz extends React.Component {
       secsForThisQuestion: 0
     })
     // TODO
-    //if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-    if ((this.state.currentQuestionIdx + 1) === 5) {
+    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+    //if ((this.state.currentQuestionIdx + 1) === 5) {
       clearInterval(this.timer);
       clearInterval(this.questionTimer);
       let time = new Date() - this.state.start;

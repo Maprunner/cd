@@ -5,7 +5,8 @@ import { quizDefs } from './data.jsx'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import Row from 'react-bootstrap/Row';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import Container from 'react-bootstrap/Container';
 import _ from 'underscore';
 
@@ -70,33 +71,32 @@ export class Results extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Container>
-            <Row className="py-2">
-              {this.renderResults(this.props.allTimeResults, t('My results'))}
-            </Row>
-            <Row><h4>{t("Symbols")}</h4></Row>
-            <Row className="py-2">
-              <WebResults
+          <Tabs defaultActiveKey="myResults" id="uncontrolled-tab-example">
+            <Tab eventKey="myResults" title={t('My results')}>
+             {this.renderResults(this.props.allTimeResults, t('My results'))}
+            </Tab>
+            <Tab eventKey="symbols" title={t('Symbols')}>
+            <WebResults
                 results={this.props.webResults[0]}
                 name={this.props.name}
                 number={this.props.number}
               />
-            </Row>
-            <Row><h4>{t("Text")}</h4></Row>
-            <Row className="py-2">
-              <WebResults
+            </Tab>
+            <Tab eventKey="text" title={t('Text')}>
+            <WebResults
                 results={this.props.webResults[1]}
                 name={this.props.name}
                 number={this.props.number}
               />
-            </Row>
-            <Row><h4>{t("Match")}</h4></Row>
-            <Row className="py-2">
-              <WebResults
-                results={this.props.webResults[2]}
+            </Tab>
+            <Tab eventKey="match" title={t('Match')}>
+            <WebResults
+                results={this.props.webResults[1]}
                 name={this.props.name}
                 number={this.props.number}
               />
-            </Row>
+            </Tab>
+            </Tabs>
           </Container>
         </Modal.Body>
         <Modal.Footer>

@@ -2,7 +2,7 @@
   "name": "cd",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://www.maprunner.co.uk/lockdown-cd-test",
+  "homepage": "https://www.maprunner.co.uk/lockdown-cd",
   "dependencies": {
     "bootstrap": "^4.4.1",
     "firebase": "^7.13.2",

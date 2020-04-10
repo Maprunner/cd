@@ -11,7 +11,7 @@ import WebResults from './WebResults.jsx';
 import _ from 'underscore';
 
 // TODO
-const MAX_RESULTS_TO_DISPLAY = 3;
+const MAX_RESULTS_TO_DISPLAY = 10;
 
 class Types extends React.Component {
 
