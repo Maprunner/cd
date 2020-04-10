@@ -3,7 +3,7 @@ import { t } from './Quiz.jsx';
 import Table from 'react-bootstrap/Table';
 import _ from 'underscore';
 
-function getFormattedResults(results) {
+function getFormattedResults(results, name, number) {
   const formatted = results.map(function (result, idx) {
     if (_.isEmpty(result)) {
       return (
@@ -17,7 +17,7 @@ function getFormattedResults(results) {
       );
     }
     
-    let highlight = (result.hasOwnProperty("thisIsMe")) ? "this-is-me" : "";
+    let highlight = (result.name === name && result.number === number) ? "this-is-me" : "";
     return (
       <tr key={idx} className={highlight}>
         <td>{result.pos}</td>
@@ -31,8 +31,8 @@ function getFormattedResults(results) {
   return formatted;
 }
 
-function formatResults(results, index) {
-    const formattedResults = getFormattedResults(results)
+function formatResults(results, name, number) {
+    const formattedResults = getFormattedResults(results, name, number)
     return (
         <div>
           <Table striped bordered hover size="sm">
@@ -54,9 +54,10 @@ function formatResults(results, index) {
 }
 
 function WebResults(props) {
+  // results are everything to display for a given type
   return (
     <div>
-      {formatResults(props.results)}
+      {formatResults(props.results, props.name, props.number)}
     </div>
   );
 }

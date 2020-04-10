@@ -147,6 +147,48 @@ const matchQuestions = [
         "selected": false
     },
     {
+        "type": "symbol",
+        "code": 59716,
+        "desc": "Stairway",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "text",
+        "code": 59709,
+        "desc": "Tower",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "symbol",
+        "code": 59706,
+        "desc": "Paved area",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "text",
+        "code": 59649,
+        "desc": "Spur",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "text",
+        "code": 59689,
+        "desc": "Thicket",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "symbol",
+        "code": 59667,
+        "desc": "Boulder",
+        "gotIt": false,
+        "selected": false
+    },
+    {
         "type": "text",
         "code": 59678,
         "desc": "Ditch",
@@ -743,8 +785,8 @@ const matchQuestions = [
     },
     {
         "type": "symbol",
-        "code": 59679,
-        "desc": "Narrow marsh",
+        "code": 59719,
+        "desc": "Special item",
         "gotIt": false,
         "selected": false
     },
@@ -792,8 +834,8 @@ const matchQuestions = [
     },
     {
         "type": "text",
-        "code": 59664,
-        "desc": "Cliff, crag",
+        "code": 59719,
+        "desc": "Special item",
         "gotIt": false,
         "selected": false
     },
@@ -911,48 +953,6 @@ const matchQuestions = [
     },
     {
         "type": "symbol",
-        "code": 59716,
-        "desc": "Stairway",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "text",
-        "code": 59709,
-        "desc": "Tower",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "symbol",
-        "code": 59706,
-        "desc": "Paved area",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "text",
-        "code": 59649,
-        "desc": "Spur",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "symbol",
-        "code": 59667,
-        "desc": "Boulder",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "text",
-        "code": 59689,
-        "desc": "Thicket",
-        "gotIt": false,
-        "selected": false
-    },
-    {
-        "type": "symbol",
         "code": 59674,
         "desc": "Lake",
         "gotIt": false,
@@ -990,6 +990,20 @@ const matchQuestions = [
         "type": "text",
         "code": 59671,
         "desc": "Bare rock",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "symbol",
+        "code": 59679,
+        "desc": "Narrow marsh",
+        "gotIt": false,
+        "selected": false
+    },
+    {
+        "type": "text",
+        "code": 59664,
+        "desc": "Cliff, crag",
         "gotIt": false,
         "selected": false
     }

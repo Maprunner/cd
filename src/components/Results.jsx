@@ -14,7 +14,7 @@ export class Results extends React.Component {
     this.props.handleClose();
   }
 
-  renderResults(results, title) {
+  renderResults(results, title, name, number) {
     const formattedResults = results.map(function (result, idx) {
       if (_.isEmpty(result)) {
         return (
@@ -76,19 +76,25 @@ export class Results extends React.Component {
             <Row><h4>{t("Symbols")}</h4></Row>
             <Row className="py-2">
               <WebResults
-                results={this.props.webResults.filter(result => result.type === 0)}
+                results={this.props.webResults[0]}
+                name={this.props.name}
+                number={this.props.number}
               />
             </Row>
             <Row><h4>{t("Text")}</h4></Row>
             <Row className="py-2">
               <WebResults
-                results={this.props.webResults.filter(result => result.type === 1)}
+                results={this.props.webResults[1]}
+                name={this.props.name}
+                number={this.props.number}
               />
             </Row>
             <Row><h4>{t("Match")}</h4></Row>
             <Row className="py-2">
               <WebResults
-                results={this.props.webResults.filter(result => result.type === 2)}
+                results={this.props.webResults[2]}
+                name={this.props.name}
+                number={this.props.number}
               />
             </Row>
           </Container>

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MATCH_ITEMS, TEXT_TO_SYMBOLS, baseCategories, baseData, matchSymbols, matchText } from './data.jsx';
+// TODO
+//import matchQuestions from './dataMatchQuestions.jsx';
 import matchQuestions from './dataMatchQuestions1.jsx';
 import NameInput from './NameInput.jsx';
 import Icons from './Icons.jsx';

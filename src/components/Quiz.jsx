@@ -71,7 +71,7 @@ class Quiz extends React.Component {
       name: settings.name,
       number: settings.number,
       allTimeResults: loadAllTimeResults(settings.name, settings.number),
-      webResults: [],
+      webResults: [[], [], []],
       language: settings.language,
       answersPerQuestion: 3,
       canStart: this.canStart(settings.name, settings.number)
@@ -82,10 +82,12 @@ class Quiz extends React.Component {
     this.onSelectLanguage(this.state.language);
     FirestoreService.authenticateAnonymously().then(() => {
       //console.log("Logged in")
-      FirestoreService.registerForWebResults(this.handleWebResults)
+      FirestoreService.registerForWebResults(0, this.handleWebResults)
+      FirestoreService.registerForWebResults(1, this.handleWebResults)
+      FirestoreService.registerForWebResults(2, this.handleWebResults)
     })
     .catch((error) => {
-       console.error("Error logging in: ", error);
+       console.error("Error reading results: ", error);
     })
   }
 
@@ -96,38 +98,42 @@ class Quiz extends React.Component {
   }
 
   handleWebResults = (snapshot) => {
+    // webResults[type][results for type]
+    // assumes Firestore is sending snapshots for a single
+    // type and already ordered as we need
     let results = []
     snapshot.forEach((doc) => {
       results.push(doc.data())
     })
-    results.sort(this.sortWebResults)
-    // add positions
-    let oldType = 0;
+    if (results.length === 0) {
+      // nothing to see here
+      return;
+    }
+    // add positions and me flag
     let pos = 1;
     for (let i = 0; i < results.length; i = i + 1) {
-      if (results[i].type !== oldType) {
-        oldType = results[i].type;
-        pos = 1
-      }
       results[i].pos = pos;
       pos = pos + 1
     }
+    const webResults = this.state.webResults;
+    // we know there must be at least one result so we can get type from it
+    webResults[results[0].type] = results;
     this.setState({
-      webResults: results
+      webResults: webResults
     });
   } 
 
-  sortWebResults = (a, b) => {
-    if (a.type === b.type) {
-        if (a.score === b.score) {
-          return a.time - b.time
-        } else {
-          return b.score - a.score
-        }
-    } else {
-      return a.type - b.type;
-    }
-  }
+  // sortWebResults = (a, b) => {
+  //   if (a.type === b.type) {
+  //       if (a.score === b.score) {
+  //         return a.time - b.time
+  //       } else {
+  //         return b.score - a.score
+  //       }
+  //   } else {
+  //     return a.type - b.type;
+  //   }
+  // }
 
   onTick = () => {
     if (this.state.quizRunning) {
@@ -196,7 +202,7 @@ class Quiz extends React.Component {
   onSetNumber = (num) => {
     // input limits number to 0 to 4 digits
     let number = parseInt(num, 10);
-    const entry = this.getNameForNumber(number);
+    const entry = this.getEntryForNumber(number);
     if (entry === undefined) {
       this.setState({
         number: num,
@@ -216,7 +222,7 @@ class Quiz extends React.Component {
     });
   }
 
-  getNameForNumber = number => {
+  getEntryForNumber = number => {
     return entries.find(entry => (entry.number === number));
   }
 
@@ -244,7 +250,14 @@ class Quiz extends React.Component {
   }
 
   canStart = (name, number) => {
-    return ((name !== "") && (number !== "") ? true: false);
+    const entry = this.getEntryForNumber(number);
+    if (entry === undefined) {
+      return false
+    }
+    if (entry.name !== name) {
+      return false
+    }
+    return true;
   }
 
   onMatchFinished = (validFinish, score, wrong) => {
@@ -326,9 +339,14 @@ class Quiz extends React.Component {
 
  addNewResult(result) {
     let newAllTimeResults = this.state.allTimeResults;
-    newAllTimeResults[result.type] = result;
-    saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
-    if (this.state.webResults.findIndex(result => ((result.name === this.state.name) && (result.number === this.state.number) && result.type === this.state.type)) === -1) {
+    // save locally if this is first go
+    if (_.isEmpty(this.state.allTimeResults[result.type])) {
+      newAllTimeResults[result.type] = result;
+      saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
+    }
+    // save to web if this is first go
+    // could rely on local check, but some people might not have it...
+    if (this.state.webResults[result.type].findIndex(result => ((result.name === this.state.name) && (result.number === this.state.number))) === -1) {
       const now = new Date();
       result.saved = now.toUTCString();
       if (this.state.language !== "en") {
@@ -363,6 +381,8 @@ class Quiz extends React.Component {
           webResults={this.state.webResults}
           handleClose={this.onCloseResultsTable}
           open={true}
+          name={this.state.name}
+          number={this.state.number}
         />
       );
     }

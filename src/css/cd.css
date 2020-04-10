@@ -10,7 +10,7 @@ body {
 
 .this-is-me {
   font-weight: bolder;
-  color: violet;
+  color: darkviolet;
 }
 
 .large-text {
@@ -118,6 +118,10 @@ body {
 
 .cd {
   font-family: "orienteering-maprunner";
+}
+
+.disabled-button {
+  cursor: no-drop !important;
 }
 
 /* CSS from IcoMoon font generation [process */
