@@ -26,7 +26,7 @@ class Types extends React.Component {
   render() {
     const types = this.props.quizDefs.map((btn, i) => {
       // get results for this quiz type
-      let filteredResults = this.props.webResults[btn.value];
+      let filteredResults = this.props.webResults[btn.value].slice();
       // find my result
       let idx = filteredResults.findIndex(result => ((result.name === this.props.name) && (result.number === this.props.number)))
       if (idx !== -1) {
@@ -78,6 +78,7 @@ class Types extends React.Component {
                 results={filteredResults}
                 name={this.props.name}
                 number={this.props.number}
+                count={this.props.webResults[btn.value].length}
               />
             </Card.Footer>
           </Card>

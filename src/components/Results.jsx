@@ -80,6 +80,7 @@ export class Results extends React.Component {
                 results={this.props.webResults[0]}
                 name={this.props.name}
                 number={this.props.number}
+                count={this.props.webResults[0].length}
               />
             </Tab>
             <Tab eventKey="text" title={t('Text')}>
@@ -87,13 +88,15 @@ export class Results extends React.Component {
                 results={this.props.webResults[1]}
                 name={this.props.name}
                 number={this.props.number}
-              />
+                count={this.props.webResults[1].length}
+            />
             </Tab>
             <Tab eventKey="match" title={t('Match')}>
             <WebResults
                 results={this.props.webResults[2]}
                 name={this.props.name}
                 number={this.props.number}
+                count={this.props.webResults[2].length}
               />
             </Tab>
             </Tabs>

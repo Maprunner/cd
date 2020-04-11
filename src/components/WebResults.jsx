@@ -18,10 +18,14 @@ function getFormattedResults(results, name, number) {
     }
     
     let highlight = (result.name === name && result.number === number) ? "this-is-me" : "";
+    let displayName = result.name
+    if (result.hasOwnProperty("lang")) {
+      displayName = displayName + " (" + result.lang + ")"
+    }
     return (
       <tr key={idx} className={highlight}>
         <td>{result.pos}</td>
-        <td>{result.name}</td>
+        <td>{displayName}</td>
         <td>{result.number}</td>
         <td className='text-center'>{result.score}/{result.score + result.wrong}</td>
         <td className='text-center'>{result.time.toFixed(1)}</td>
@@ -31,10 +35,11 @@ function getFormattedResults(results, name, number) {
   return formatted;
 }
 
-function formatResults(results, name, number) {
+function formatResults(results, name, number, count) {
     const formattedResults = getFormattedResults(results, name, number)
     return (
         <div>
+          <h5>{t("Results") + ": " + count}</h5>
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
@@ -57,7 +62,7 @@ function WebResults(props) {
   // results are everything to display for a given type
   return (
     <div>
-      {formatResults(props.results, props.name, props.number)}
+      {formatResults(props.results, props.name, props.number, props.count)}
     </div>
   );
 }

@@ -109,6 +109,8 @@ class Quiz extends React.Component {
       // nothing to see here
       return;
     }
+    const now = new Date();
+    console.log("New results for type " + results[0].type + " at " + now.toUTCString())
     // add positions and me flag
     let pos = 1;
     for (let i = 0; i < results.length; i = i + 1) {
