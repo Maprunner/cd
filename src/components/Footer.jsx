@@ -8,7 +8,7 @@ function Footer() {
     <Navbar bg="dark" variant="dark" className="mt-2">
       <div className="container">
         <Navbar.Text>
-          Version 2.0.5
+          Version 2.0.6
         </Navbar.Text>
       </div>
     </Navbar>
