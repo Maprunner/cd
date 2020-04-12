@@ -43,8 +43,8 @@ class MatchCards extends React.Component {
       // card already selected: is this a match?
       attempts = attempts + 1;
       a2 = this.state.questions[this.state.selectedIdx];
-      // match if same code and different card types
-      if ((a1.code === a2.code) && (a1.type !== a2.type)) {
+      // match if same description and different card types
+      if ((a1.desc === a2.desc) && (a1.type !== a2.type)) {
         // correct match
         a2.selected = false;
         a1.gotIt = true;

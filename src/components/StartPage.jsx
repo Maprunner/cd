@@ -75,23 +75,20 @@ class StartPage extends React.Component {
     let text = [];
     let symbols = [];
     for (let i = 0; i < shuffled.length; i = i + 1) {
-      // only use one 'special symbol' to avoid confusion
-      if (shuffled[i].code !== 59719) {
-        text.push({
-          type: 'text',
-          code: shuffled[i].code,
-          desc: shuffled[i].desc,
-          gotIt: false,
-          selected: false
-        });
-        symbols.push({
-          type: 'symbol',
-          code: shuffled[i].code,
-          desc: shuffled[i].desc,
-          gotIt: false,
-          selected: false
-        });
-      }
+      text.push({
+        type: 'text',
+        code: shuffled[i].code,
+        desc: shuffled[i].desc,
+        gotIt: false,
+        selected: false
+      });
+      symbols.push({
+        type: 'symbol',
+        code: shuffled[i].code,
+        desc: shuffled[i].desc,
+        gotIt: false,
+        selected: false
+      });
     }
     // move correct pairs apart
     symbols = _.shuffle(symbols);
