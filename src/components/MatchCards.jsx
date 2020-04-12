@@ -97,6 +97,7 @@ class MatchCards extends React.Component {
     return (
       <Modal
         show={this.props.open}
+        backdrop="static"
         onHide={this.handleClose}
         dialogClassName="match-cards"
       >
