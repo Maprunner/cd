@@ -1,481 +1,290 @@
 import React from 'react';
-//import * as FirestoreService from '../services/firestore';
-//import _ from 'underscore';
-//import update from 'immutability-helper';
-//import StartPage from './StartPage.jsx'
-//import QuestionPage from './QuestionPage.jsx'
+import * as FirestoreService from '../services/firestore';
+// import _ from 'underscore';
 import Header from './Header.jsx'
-//import Footer from './Footer.jsx'
-//import {loadAllTimeResults, saveAllTimeResults, loadSettings, saveSettings} from './Persist.jsx'
-//import Results from './Results.jsx'
-//import ResultMessage from './ResultMessage.jsx'
-//import { MATCH_ITEMS, NO_TYPE, quizDefs } from './data.jsx'
 //import entries from './entries.js'
- import Alert from 'react-bootstrap/Alert';
-// import cz from '../lang/cz.js';
-// import de from '../lang/de.js';
-// import fi from '../lang/fi.js';
-// import fr from '../lang/fr.js';
-// import hu from '../lang/hu.js';
-// import ja from '../lang/ja.js';
-// import pl from '../lang/pl.js';
-
-// export const ALL_TIME_RESULTS_COUNT = 10;
-
-// export const availableLanguages = ['en', 'cz', 'de', 'fi', 'fr', 'hu', 'ja', 'pl'];
-// const dictionaries = {
-//   'cz': cz,
-//   'de': de,
-//   'fi': fi,
-//   'fr': fr,
-//   'hu': hu,
-//   'ja': ja,
-//   'pl': pl
-// };
-
-// let dictionary = {};
-
-// // translation function
-// export function t(str) {
-//   if (dictionary.hasOwnProperty(str)) {
-//     return dictionary[str];
-//   }
-//   // default to hard-coded English
-//   return str;
-// }
-
-// function setDictionary(dict) {
-//   dictionary = dict;
-// }
-
+import stageRes from './stageRes.js'
+import res from './res.js'
+import e1stages001 from './e1stages001.js'
+// import Alert from 'react-bootstrap/Alert';
+// import runners from './runners';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
 class Quiz extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     const settings = loadSettings();
-//     this.state = {
-//       questions: {},
-//       currentQuestionIdx: 0,
-//       // how long you have to answer question
-//       timerOption: 0,
-//       // how long you have left for this question
-//       countdown: 0,
-//       answered: 0,
-//       score: 0,
-//       start: 0,
-//       elapsed: 1,
-//       time: 0,
-//       quizRunning: false,
-//       displayResultsTable: false,
-//       displayNewResult: false,
-//       newResultType: NO_TYPE,
-//       type: NO_TYPE,
-//       name: settings.name,
-//       number: settings.number,
-//       allTimeResults: loadAllTimeResults(settings.name, settings.number),
-//       webResults: [[], [], []],
-//       language: settings.language,
-//       answersPerQuestion: 3,
-//       canStart: this.canStart(settings.name, settings.number)
-//     }
-//   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      events: [],
+      results: {},
+      stages: [],
+      stageResults: []
+    }
+  }
+  componentDidMount() {
+    FirestoreService.authenticateAnonymously().then(() => {
+      console.log("Logged in")
+      let events = []
+      let stages = []
+      FirestoreService.getEvents().then((data) => {
+        data.forEach((doc) => {
+          let event = doc.data()
+          delete event.resultsId
+          events.push(event)
+          stages.push(event.stages)
+        })
+        console.log("Events: " + events.length)
+        this.setState({
+          stages: stages,
+          events: events
+        })
+      })
+      .catch((error) => {
+        console.error("Error getting events: ", error);
+      })
+    })
+    .catch((error) => {
+      console.error("Error logging in: ", error);
+    })
+  }
 
-//   // componentDidMount() {
-//   //   this.onSelectLanguage(this.state.language);
-//   //   FirestoreService.authenticateAnonymously().then(() => {
-//   //     //console.log("Logged in")
-//   //     FirestoreService.registerForWebResults(0, this.handleWebResults)
-//   //     FirestoreService.registerForWebResults(1, this.handleWebResults)
-//   //     FirestoreService.registerForWebResults(2, this.handleWebResults)
-//   //   })
-//   //   .catch((error) => {
-//   //      console.error("Error reading results: ", error);
-//   //   })
-//   // }
+  getResultsForEvent = (event) => {
+    const id = event.target.value
+    FirestoreService.getResultsByEvent(id).then((rawResults) =>{
+      const r = rawResults.data()
+      const results = JSON.parse(r.data)
+      console.log("Got results")
+      this.setState({
+        results: results
+        })
+    })
+    .catch((error) => {
+      console.error("Error getting results: ", error);
+    })
+  }
 
-//   componentWillUnmount() {
-//     // shouldn't need this...
-//     clearInterval(this.timer);
-//     clearInterval(this.questionTimer);
-//   }
-
-//   handleWebResults = (snapshot) => {
-//     // webResults[type][results for type]
-//     // assumes Firestore is sending snapshots for a single
-//     // type and already ordered as we need
-//     let results = []
-//     snapshot.forEach((doc) => {
-//       results.push(doc.data())
-//     })
-//     if (results.length === 0) {
-//       // nothing to see here
-//       return;
-//     }
-//     const now = new Date();
-//     console.log("New results for type " + results[0].type + " at " + now.toUTCString())
-//     // add positions and me flag
-//     let pos = 1;
-//     for (let i = 0; i < results.length; i = i + 1) {
-//       results[i].pos = pos;
-//       pos = pos + 1
-//     }
-//     const webResults = this.state.webResults;
-//     // we know there must be at least one result so we can get type from it
-//     webResults[results[0].type] = results;
-//     this.setState({
-//       webResults: webResults
-//     });
-//   } 
-
-//   sortWebResults = (a, b) => {
-//     if (a.type === b.type) {
-//         if (a.score === b.score) {
-//           return a.time - b.time
-//         } else {
-//           return b.score - a.score
-//         }
-//     } else {
-//       return a.type - b.type;
-//     }
-//   }
-
-//   onTick = () => {
-//     if (this.state.quizRunning) {
-//       this.setState({ 
-//         elapsed: new Date() - this.state.start,
-//       });
-//     }
-//   }
-
-//   onQuestionTimer = () => {
-//     if (this.state.quizRunning) {
-//       let secsForThisQuestion = this.state.secsForThisQuestion + 1;
-//       if (secsForThisQuestion >= this.state.timerOption) {
-//         // simulate an incorrect answer
-//         this.onCheckAnswer("");
-//         secsForThisQuestion = 0;
-//       }
-//       this.setState({ 
-//         secsForThisQuestion: secsForThisQuestion
-//       });
-//     }
-//   }
-
-//   onCloseNewResult = () => {
-//     this.setState({
-//       displayNewResult: false
-//     });
-//   }
-
-//   onShowResultsTable = () => {
-//     this.setState({
-//       displayResultsTable: true
-//     });
-//   }
-
-//   onCloseResultsTable = () => {
-//     this.setState({
-//       displayResultsTable: false
-//     });
-//   }
-
-//   onSelectLanguage = (lang) => {
-//     if (dictionaries.hasOwnProperty(lang)) {
-//       setDictionary(dictionaries[lang][lang]);
-//     } else {
-//       setDictionary({});
-//       lang = 'en'
-//     }
-//     saveSettings("language", lang);
-//     this.setState({
-//       language: lang
-//     });
-//   }
-
-//   onSetName = (name) => {
-//     console.log ("Setting name: why? " + name)
-//     return;
-//     saveSettings("name", name);
-//     this.setState({
-//       name: name,
-//       canStart: this.canStart(name, this.state.number),
-//       allTimeResults: loadAllTimeResults(name, this.state.number)
-//     });
-//   }
-
-//   onSetNumber = (num) => {
-//     // input limits number to 0 to 4 digits
-//     let number = parseInt(num, 10);
-//     const entry = this.getEntryForNumber(number);
-//     if (entry === undefined) {
-//       this.setState({
-//         number: num,
-//         name: "",
-//         canStart: false
-//       });
-//       return;
-//     }
-//     //console.log("Entry: " + entry.name + ", " + entry.number);
-//     saveSettings("number", number);
-//     saveSettings("name", entry.name);
-//     this.setState({
-//       number: number,
-//       name: entry.name,
-//       canStart: true,
-//       allTimeResults: loadAllTimeResults(entry.name, number)
-//     });
-//   }
-
-//   getEntryForNumber = number => {
-//     return entries.find(entry => (entry.number === number));
-//   }
-
-//   onStartNewQuiz = (questions, type) => {
-//     if (!this.state.canStart) {
-//       return;
-//     }
-//     if (questions.length > 0) {
-//       this.setState({
-//         questions: questions,
-//         type: type,
-//         currentQuestionIdx: 0,
-//         quizRunning: true,
-//         start: new Date().getTime(),
-//         elapsed: 0,
-//         answered: 0,
-//         score: 0,
-//         secsForThisQuestion: 0
-//       });
-//     }
-//     this.timer = setInterval(this.onTick, 1000);
-//     if ((this.state.timerOption > 0) && (type !== MATCH_ITEMS)) {
-//       this.questionTimer = setInterval(this.onQuestionTimer, 1000);
-//     }
-//   }
-
-//   canStart = (name, number) => {
-//     const entry = this.getEntryForNumber(number);
-//     if (entry === undefined) {
-//       return false
-//     }
-//     if (entry.name !== name) {
-//       return false
-//     }
-//     return true;
-//   }
-
-//   onMatchFinished = (validFinish, score, wrong) => {
-//     if (validFinish) {
-//       this.setState({
-//         answered: score + wrong,
-//         score: score
-//       })
-//       let time = new Date() - this.state.start;
-//       this.saveResult(score, wrong, time);
-//     } else {
-//       this.setState({
-//         quizRunning: false,
-//         type: NO_TYPE
-//       });
-//     }
-//   }
-
-//   onCheckAnswer = (answer) => {
-//     if (!this.state.quizRunning) {
-//       return;
-//     }
-//     const idx = this.state.currentQuestionIdx;
-//     let score = this.state.score;
-//     let gotIt = false;
-//     if (answer === this.state.questions[idx].question.desc) {
-//       score = score + 1;
-//       gotIt = true;
-//     } else {
-//        FirestoreService.saveError({
-//          right: this.state.questions[idx].question.desc, 
-//          wrong: answer,
-//          type: this.state.type
-//        });
-//     }
-//     let q = this.state.questions[idx];
-//     q.gotIt = gotIt;
-//     const answered = this.state.answered + 1;
-//     this.setState({
-//       questions: update(this.state.questions, { [idx]: { $set: q } }),
-//       answered: answered,
-//       score: score,
-//       secsForThisQuestion: 0
-//     })
-//     // TODO
-//     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-//     //if ((this.state.currentQuestionIdx + 1) === 5) {
-//       clearInterval(this.timer);
-//       clearInterval(this.questionTimer);
-//       let time = new Date() - this.state.start;
-//       this.saveResult(score, answered - score, time);
-//     } else {
-//       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 });
-//       if ((this.state.timerOption > 0) && (this.state.type !== MATCH_ITEMS)) {
-//         clearInterval(this.questionTimer);
-//         this.questionTimer = setInterval(this.onQuestionTimer, 1000);
-//       }
-//     }
-//   }
-
-//   saveResult(score, wrong, time) {
-//     const newResults = this.addNewResult({
-//       type: this.state.type,
-//       name: this.state.name,
-//       number: this.state.number,
-//       score: score,
-//       wrong: wrong,
-//       time: +(time / 1000).toFixed(1)
-//     });
-//     this.setState({
-//       allTimeResults: newResults.allTime,
-//       quizRunning: false,
-//       displayNewResult: true,
-//       newResultType: this.state.type,
-//       type: NO_TYPE,
-//       time: +(time / 1000).toFixed(1)
-//     });
-//   }
-
-//  addNewResult(result) {
-//     let newAllTimeResults = this.state.allTimeResults;
-//     // save locally if this is first go
-//     if (_.isEmpty(this.state.allTimeResults[result.type])) {
-//       newAllTimeResults[result.type] = result;
-//       saveAllTimeResults(newAllTimeResults, this.state.name, this.state.number);
-//     }
-//     // save to web if this is first go
-//     // could rely on local check, but some people might not have it...
-//     if (this.state.webResults[result.type].findIndex(result => ((result.name === this.state.name) && (result.number === this.state.number))) === -1) {
-//       const now = new Date();
-//       result.saved = now.toUTCString();
-//       if (this.state.language !== "en") {
-//         result.lang = this.state.language
-//       }
-//       FirestoreService.saveWebResult(result);
-//     }
-//     return ({
-//       allTime: newAllTimeResults
-//     });
-//   }
-
-//   getTypeText(type) {
-//     return _.chain(quizDefs)
-//       .where({ value: type })
-//       .pluck('text')
-//       .value();
-//   }
-
-//   getCaptionText(type) {
-//     return _.chain(quizDefs)
-//       .where({ value: type })
-//       .pluck('caption')
-//       .value();
-//   }
-
-//   renderBody() {
-//     if (this.state.displayResultsTable) {
-//       return (
-//         <Results
-//           allTimeResults={this.state.allTimeResults}
-//           webResults={this.state.webResults}
-//           handleClose={this.onCloseResultsTable}
-//           open={true}
-//           name={this.state.name}
-//           number={this.state.number}
-//         />
-//       );
-//     }
-//     if (!this.state.quizRunning) {
-//       return (
-//         <StartPage
-//           onStart={this.onStartNewQuiz}
-//           onSetName={this.onSetName}
-//           onSetNumber={this.onSetNumber}
-//           onSelectLanguage={this.onSelectLanguage}
-//           timerOption={this.state.timerOption}
-//           language={this.state.language}
-//           answersPerQuestion={this.state.answersPerQuestion}
-//           name={this.state.name}
-//           number={this.state.number}
-//           canStart={this.state.canStart}
-//           results={this.state.allTimeResults}
-//           webResults={this.state.webResults}
-//         />
-//       );
-//     }
-//     return (
-//       <QuestionPage
-//         idx={this.state.currentQuestionIdx}
-//         type={this.state.type}
-//         title={this.getTypeText(this.state.type)}
-//         caption={this.getCaptionText(this.state.type)}
-//         questions={this.state.questions}
-//         score={this.state.score}
-//         answered={this.state.answered}
-//         canStart={this.state.canStart}
-//         elapsed={parseInt((this.state.elapsed / 1000), 10)}
-//         timerOption={this.state.timerOption}
-//         countdown={this.state.timerOption - this.state.secsForThisQuestion}
-//         onCheckAnswer={this.state.type === MATCH_ITEMS ?
-//           this.onMatchFinished
-//           :
-//           this.onCheckAnswer
-//         }
-//       />
-//     );
-//   }
-
-//   renderNewResult() {
-//     let message = t('You scored #1 out of #2 in #3 seconds');
-//     // eslint-disable-next-line
-//     message = message.replace(/\#1/, this.state.score);
-//     // eslint-disable-next-line
-//     message = message.replace(/\#2/, this.state.answered);
-//     // eslint-disable-next-line
-//     message = message.replace(/\#3/, this.state.time);
-//     return (
-//       <ResultMessage
-//         handleClose={this.onCloseNewResult}
-//         open={true}
-//         type={this.state.newResultType}
-//         name={this.state.name}
-//         questions={this.state.questions}
-//       >
-//         {message}
-//       </ResultMessage>
-//     );
-//   }
-
-  render() {
-
-    //let body = this.renderBody();
-    //let message = this.state.displayNewResult ? this.renderNewResult() : null;
+  render = () => {
 
     return (
       <div>
         <Header
           onShowResultsTable={this.onShowResultsTable}
         />
-        <div className='container p-5'>
-        <Alert variant={"primary"}>
-          Results are now available on the{' '}
-          <Alert.Link href="https://lockdownorienteering.wordpress.com/easter/">Lockdown Orienteering website</Alert.Link>.
-        </Alert>
-        <Alert variant={"warning"}>
-          You can try the control description quiz again on the{' '}
-          <Alert.Link href="https://www.maprunner.co.uk/cd/">Maprunner website</Alert.Link>.
-        </Alert>
-          {/* {body}
-          {message} */}
-        </div>
+        <Card>
+          <Button
+            value = "e001"
+            onClick={this.getResultsForEvent}
+            variant="primary"
+          >
+            Load results
+          </Button>
+          <Button
+            value="e001"
+            onClick={this.getSavedStageResults}
+            variant="primary"
+          >
+            Load saved stage results
+          </Button>
+          <Button
+            value="e001"
+            onClick={this.getStageResults}
+            variant="primary"
+          >
+            Get stage results
+          </Button>
+          <Button
+            value="e001"
+            onClick={this.calculateOverallResults}
+            variant="primary"
+          >
+            Calculate stage results
+          </Button>
+          <Button
+            onClick={this.createDummyResults}
+            variant="primary"
+          >
+            Create dummy results
+          </Button>
+          </Card>
         {/* <Footer /> */}
       </div>
     );
   }
-}
 
-export default Quiz;
+  getSavedStageResults = () => {
+    console.log("Loading stageResults from file")
+    this.setState({
+      stageResults: stageRes
+    })    
+  }
+
+  getStageResults = (btnEvent) => {
+    const eventid = btnEvent.target.value
+    FirestoreService.getStageResultsForEvent(eventid).then((snapshot) => {
+      let results = []
+       snapshot.forEach((doc) => {
+        let result = doc.data()
+        result.id = parseInt(doc.id, 10) 
+        results.push(result)
+       })
+       this.setState({
+        stageResults: results
+      })
+    })         
+  }
+
+  calculateStageResults = (btnEvent) => {
+    for (let i = 0; i < e1stages001.length; i = i + 1) {
+      let result = {}
+      const runnerid = e1stages001[i][0].toString()
+      result.score = e1stages001[i][1]
+      //console.log(runnerid, result)
+      //FirestoreService.saveResultForEvent(eventid, runnerid, {s001: result})    
+    }
+  }
+
+  getStageId = (id) => {
+    // convert number to sxxx
+    // padStart not supported by IE...
+    let n = id.toString()
+    while (n.length < 3) {
+      n = "0" + n
+    }
+    return "s" + n 
+  }
+
+  calculateOverallResults = (btnEvent) =>  {
+    let results = this.state.results
+    const eventid = btnEvent.target.value
+    // 0 accesses e001: need to decide how to pick this up...
+    const stages = this.state.stages[0]
+    for (let i = 0; i < stages.length; i = i + 1) {
+      let extract = []
+      const stage = stages[i]
+      const stageId = this.getStageId(stage.id)
+      // need to determine sort order from stage record
+      // scoring is an array of fields used for scoring
+      const scoring = stage.scoring ? stage.scoring: []
+      //scoreOrder shows how to sort each field
+      const scoreOrder = stage.scoreOrder ? stage.scoreOrder: []
+      this.state.stageResults.forEach((result) => {
+        if (result[stageId]) {
+          let res = {}
+          res.id = result.id
+          // extract required fields for scoring
+          scoring.forEach((method) => {
+            if (result[stageId][method]) {
+              res[method] = result[stageId][method]
+            }
+          })
+          extract.push(res)
+        }
+      })
+
+      // sort extracted results for this stage
+      for (let i = scoring.length - 1; i >= 0; i = i - 1) {
+        switch (scoring[i]) {
+          case "score":
+            if (scoreOrder[i] === "desc") {
+              extract.sort((a, b) => b.score - a.score)
+              console.log("Score desc")
+            } else {
+              extract.sort((a, b) => a.score - b.score)
+              console.log("Score asc")
+            }
+            break
+          case "time":
+            if (scoreOrder[i] === "desc") {
+              extract.sort((a, b) => b.time - a.time)
+              console.log("Time desc")
+            } else {
+              extract.sort((a, b) => a.time - b.time)
+              console.log("Time asc")
+            }
+            break
+          default: console.log("Unknown sort method " + scoring[i])
+        }
+      }
+
+      // add positions
+      // need to allow for ties...
+      let pos = 1
+      extract.forEach((res) => {
+        res.pos = pos
+        pos = pos + 1
+      })
+      
+      console.log(extract)
+      // add to overall results
+      extract.forEach((res) => {
+        results[res.id]["stagePos"][i] = res.pos
+        results[res.id]["stageScore"][i] = res.pos
+      })
+
+    }
+    // update overall results
+    const keys = results.keys
+    keys.forEach((result) => {
+      const scores = result.stageScore
+      let score = 0
+      for (let i = 0; i < scores.length; i = i + 1) {
+        score = scores[i]
+      }
+      result.score = score
+    })
+    results.sort((a, b) => a.score - b.score)
+    let pos = 1
+    results.forEach((res) => {
+      res.pos = pos
+      pos = pos + 1
+    })
+    //FirestoreService.saveResultsForEvent(event, results)
+  }
+
+  createDummyResults = () => {
+    let pos = 1;
+    let id = 0;
+    let newResults = []
+    res.forEach((r) => {
+      let result = {}
+      // pos = pos + 1
+      let f = r.split(",")
+      result.pos = pos
+      result.id = f[0]
+      result.name = f[1]
+      result.club = f[3]
+      result.class = f[2] 
+      result.country = f[4]
+      result.score = parseInt(f[5], 10)
+      result.stageScore= []
+      result.stagePos = []
+      for (let i = 7; i < 19; i = i + 1) {
+        //result.stageScore.push(parseInt(f[i],10))
+        result.stageScore.push(0)
+        result.stagePos.push(0)
+      }
+      newResults.push(result)
+    })
+    FirestoreService.addEventResults("e001", newResults)
+  }
+
+// runners.forEach((runner) => {
+//   const id = runner.id.toString()
+//   delete runner.id
+//   FirestoreService.addRunner(id, runner)
+// })  
+
+// e1stages.forEach((s) => {
+//   let stage = {}
+//   let f = s.split(",")
+//   stage.id = parseInt(f[0], 10)
+//   stage.name = f[1]
+//   stage.isOpen = (Math.random() > 0.5)
+//   stage.isAuto = (Math.random() > 0.5)
+//   stage.url = f[3]
+//   stage.fields = f[2].split(";")
+//   stages.push(stage)
+// })
+  }
+
+export default Quiz
