@@ -170,7 +170,7 @@ class Quiz extends React.Component {
       this.state.stageResults.forEach((result) => {
         if (result[stageId]) {
           let res = {}
-          res.id = result.id
+          res.id = result.id.toString()
           // extract required fields for scoring
           scoring.forEach((method) => {
             if (result[stageId][method]) {
@@ -217,20 +217,23 @@ class Quiz extends React.Component {
       console.log(extract)
       // add to overall results
       extract.forEach((res) => {
-        results[res.id]["stagePos"][i] = res.pos
-        results[res.id]["stageScore"][i] = res.pos
+        const idx = results.findIndex((result) => result.id === res.id)
+        if (idx !== -1) {
+          results[idx]["stagePos"][i] = res.pos
+          results[idx]["stageScore"][i] = res.pos
+        } else {
+          console.log("Cannot find id " + res.id)
+        }
       })
-
     }
     // update overall results
-    const keys = results.keys
-    keys.forEach((result) => {
-      const scores = result.stageScore
-      let score = 0
-      for (let i = 0; i < scores.length; i = i + 1) {
-        score = scores[i]
-      }
-      result.score = score
+    let resultsToCount = 1
+    results.forEach((result) => {
+      result.score = result.stageScore
+        .slice()
+        .sort((a, b) => a - b)
+        .slice(0, resultsToCount)
+        .reduce((acc, cur) => acc + cur)
     })
     results.sort((a, b) => a.score - b.score)
     let pos = 1
@@ -238,6 +241,7 @@ class Quiz extends React.Component {
       res.pos = pos
       pos = pos + 1
     })
+    this.setState({results: results})
     //FirestoreService.saveResultsForEvent(event, results)
   }
 
