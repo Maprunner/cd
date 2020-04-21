@@ -158,13 +158,22 @@ class Quiz extends React.Component {
     }
     return "s" + n 
   }
-
+  
   calculateOverallResults = (btnEvent) =>  {
-    let results = this.state.results
     const eventid = btnEvent.target.value
     console.log("Generating results for event " + eventid)
+    let newResults = JSON.parse(JSON.stringify(this.state.results))
     // 0 accesses e001: need to decide how to pick this up...
     const stages = this.state.stages[0]
+    let emptyResults = []
+    stages.forEach(() => {
+      emptyResults.push({})
+    })
+    newResults.forEach((res) => {
+      if (!res.stageResult) {
+        res.stageResult = emptyResults
+      }
+    })
     for (let i = 0; i < stages.length; i = i + 1) {
       let extract = []
       const stage = stages[i]
@@ -179,9 +188,9 @@ class Quiz extends React.Component {
         if (result[stageId]) {
           let res = {}
           res.id = result.id.toString()
-          // extract required fields for scoring
+          // extract required fields for each scoring method e.g. ["score", "time"]
           scoring.forEach((method) => {
-            if (result[stageId][method]) {
+            if (method in result[stageId]) {
               res[method] = result[stageId][method]
             }
           })
@@ -191,32 +200,17 @@ class Quiz extends React.Component {
 
       // sort extracted results for this stage
       for (let i = scoring.length - 1; i >= 0; i = i - 1) {
+        // depending on what is to be sorted...
         switch (scoring[i]) {
           case "score":
           case "time":
-          case "course": 
+          case "course":
+            // scoreOrder tells you how to sort each method e.g. ["asc", "desc"]
             if (scoreOrder[i] === "desc") {
               extract.sort((a, b) => b[scoring[i]] - a[scoring[i]])
             } else {
               extract.sort((a, b) => a[scoring[i]] - b[scoring[i]])
             }          
-          // case "score":
-          //   if (scoreOrder[i] === "desc") {
-          //     extract.sort((a, b) => b.score - a.score)
-          //     console.log("Score desc")
-          //   } else {
-          //     extract.sort((a, b) => a.score - b.score)
-          //     console.log("Score asc")
-          //   }
-          //   break
-          // case "time":
-          //   if (scoreOrder[i] === "desc") {
-          //     extract.sort((a, b) => b.time - a.time)
-          //     console.log("Time desc")
-          //   } else {
-          //     extract.sort((a, b) => a.time - b.time)
-          //     console.log("Time asc")
-          //   }
             break
           default: console.log("Unknown sort method " + scoring[i])
         }
@@ -225,29 +219,39 @@ class Quiz extends React.Component {
       // add positions
       // need to allow for ties...
       let pos = 1
-      extract.forEach((res) => {
+      let ties = 0
+      extract.forEach((res, idx, data) => {
+        let tied = true
+        for (let i = scoring.length - 1; i >= 0; i = i - 1) {
+          if (idx === 0) {
+            tied = false
+            break
+          }
+          if (res[scoring[i]] !== data[idx -1][scoring[i]]) {
+            tied = false
+            break
+          }
+        }
+        if (tied) {
+          ties = ties + 1
+        } else {
+          pos = pos + ties + 1
+          ties = 0
+        }
         res.pos = pos
-        pos = pos + 1
       })
       
       console.log(extract)
-      let emptyResults = []
-      stages.forEach(() => {
-        emptyResults.push({})
-      })
       // add to overall results
       extract.forEach((res) => {
-        const idx = results.findIndex((result) => result.id === res.id)
+        const idx = newResults.findIndex((result) => result.id === res.id)
         if (idx !== -1) {
-          results[idx]["stagePos"][i] = res.pos
-          results[idx]["stageScore"][i] = res.pos
+          newResults[idx]["stagePos"][i] = res.pos
+          newResults[idx]["stageScore"][i] = res.pos
           // delete unneeded fields and then save stage results to runner record
-          delete res.pos
-          delete res.id
-          if (!results[idx]["stageResult"]) {
-            results[idx]["stageResult"] = emptyResults
-          }
-          results[idx]["stageResult"][i] = res
+          //delete res.pos
+          //delete res.id
+          newResults[idx]["stageResult"][i] = res
         } else {
           console.log("Cannot find id " + res.id)
         }
@@ -256,21 +260,39 @@ class Quiz extends React.Component {
     }
     // update overall results
     let resultsToCount = 1
-    results.forEach((result) => {
-      result.score = result.stageScore
-        .slice()
-        .sort((a, b) => a - b)
-        .slice(0, resultsToCount)
-        .reduce((acc, cur) => acc + cur)
+    newResults.forEach((result) => {
+        // create copy of stageScores for this runner
+        let a = result.stageScore.slice()
+        // sort in ascending order
+        let b = a.sort((a, b) => a - b)
+        // remove all 0 entries
+        let c = b.filter((score) => score > 0)
+        // limit to number of counting scores
+        let d = c.slice(0, resultsToCount)
+        // add up scores
+        result.score= d.reduce((acc, cur) => acc + cur, 0)
     })
-    results.sort((a, b) => a.score - b.score)
-    let pos = 1
-    results.forEach((res) => {
+    newResults.sort((a, b) => {
+      if (a.score === 0) {
+        return 1
+      }
+      return a.score - b.score
+    })
+    let pos = 0
+    let ties = 0
+    let oldScore = -1
+    newResults.forEach((res) => {
+      if (oldScore === res.score) {
+        ties = ties + 1
+      } else {
+        pos = pos + ties + 1
+        ties = 0
+        oldScore = res.score  
+      }
       res.pos = pos
-      pos = pos + 1
     })
-    this.setState({results: results})
-    //FirestoreService.saveResultsForEvent(event, results)
+    this.setState({results: newResults})
+    FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = () => {
@@ -297,7 +319,7 @@ class Quiz extends React.Component {
       }
       newResults.push(result)
     })
-    FirestoreService.addEventResults("e001", newResults)
+    FirestoreService.saveResultsForEvent("e005", newResults)
   }
 
 // runners.forEach((runner) => {

@@ -10,15 +10,9 @@ export const authenticateAnonymously = () => {
   return firebase.auth().signInAnonymously();
 };
 
-export const saveResults = (results) => {
-  return db.collection("results").add(results)
-    .then((docRef) => {
-      console.log("Result added with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding result: ", error);
-    })
-};
+export const saveResultsForEvent = (eventid, results) => {
+  return db.collection("results").doc(eventid).set({data: JSON.stringify(results)})
+}
 
 export const saveError = (error) => {
   // TODO
@@ -43,10 +37,6 @@ export const addRunner = (id, runner) => {
 
 export const addEvent = (id, event) => {
   return db.collection('events').doc(id).set(event)
-}
-
- export const addEventResults = (id, results) => {
-   return db.collection('results').doc(id).set({data: JSON.stringify(results)})
 }
 
 export const getResultsByEvent = (event) => {
