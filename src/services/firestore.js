@@ -60,7 +60,8 @@ export const saveResultForEvent = (eventid, runnerid, result) => {
 
 export const getStageResultsForEvent = (eventid) => {
   return db.collection('stageResults').doc(eventid).collection("runners")
-  .limit(3).get()
+  //.limit(3).get()
+  .get()
 }
 
 export const updateStagesForEvent = (id, stages) => {

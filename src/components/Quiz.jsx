@@ -5,7 +5,7 @@ import Header from './Header.jsx'
 //import entries from './entries.js'
 import stageRes from './stageRes.js'
 import res from './res.js'
-import e1stages001 from './e1stages001.js'
+import e1stages011 from './e1stages011.js'
 // import Alert from 'react-bootstrap/Alert';
 // import runners from './runners';
 import Button from 'react-bootstrap/Button';
@@ -88,7 +88,7 @@ class Quiz extends React.Component {
           <Button
             value="e001"
             onClick={this.getStageResults}
-            variant="primary"
+            variant="warning"
           >
             Get stage results
           </Button>
@@ -99,12 +99,18 @@ class Quiz extends React.Component {
           >
             Calculate stage results
           </Button>
-          <Button
+          {/* <Button
+            onClick={this.createStageResults}
+            variant="primary"
+          >
+            Create stage s003 results
+          </Button> */}
+          {/* <Button
             onClick={this.createDummyResults}
             variant="primary"
           >
             Create dummy results
-          </Button>
+          </Button> */}
           </Card>
         {/* <Footer /> */}
       </div>
@@ -133,14 +139,14 @@ class Quiz extends React.Component {
     })         
   }
 
-  calculateStageResults = (btnEvent) => {
-    for (let i = 0; i < e1stages001.length; i = i + 1) {
+  createStageResults = () => {
+    e1stages011.forEach(stage => {
       let result = {}
-      const runnerid = e1stages001[i][0].toString()
-      result.score = e1stages001[i][1]
+      const runnerid = stage[0]
+      result.score = stage[1]
       //console.log(runnerid, result)
-      //FirestoreService.saveResultForEvent(eventid, runnerid, {s001: result})    
-    }
+      FirestoreService.saveResultForEvent("e001", runnerid, {s011: result})    
+    })
   }
 
   getStageId = (id) => {
@@ -156,6 +162,7 @@ class Quiz extends React.Component {
   calculateOverallResults = (btnEvent) =>  {
     let results = this.state.results
     const eventid = btnEvent.target.value
+    console.log("Generating results for event " + eventid)
     // 0 accesses e001: need to decide how to pick this up...
     const stages = this.state.stages[0]
     for (let i = 0; i < stages.length; i = i + 1) {
@@ -167,6 +174,7 @@ class Quiz extends React.Component {
       const scoring = stage.scoring ? stage.scoring: []
       //scoreOrder shows how to sort each field
       const scoreOrder = stage.scoreOrder ? stage.scoreOrder: []
+      console.log("Stage " + stageId + " scoring [" + scoring + "] by [" + scoreOrder + "]")
       this.state.stageResults.forEach((result) => {
         if (result[stageId]) {
           let res = {}
@@ -185,22 +193,30 @@ class Quiz extends React.Component {
       for (let i = scoring.length - 1; i >= 0; i = i - 1) {
         switch (scoring[i]) {
           case "score":
-            if (scoreOrder[i] === "desc") {
-              extract.sort((a, b) => b.score - a.score)
-              console.log("Score desc")
-            } else {
-              extract.sort((a, b) => a.score - b.score)
-              console.log("Score asc")
-            }
-            break
           case "time":
+          case "course": 
             if (scoreOrder[i] === "desc") {
-              extract.sort((a, b) => b.time - a.time)
-              console.log("Time desc")
+              extract.sort((a, b) => b[scoring[i]] - a[scoring[i]])
             } else {
-              extract.sort((a, b) => a.time - b.time)
-              console.log("Time asc")
-            }
+              extract.sort((a, b) => a[scoring[i]] - b[scoring[i]])
+            }          
+          // case "score":
+          //   if (scoreOrder[i] === "desc") {
+          //     extract.sort((a, b) => b.score - a.score)
+          //     console.log("Score desc")
+          //   } else {
+          //     extract.sort((a, b) => a.score - b.score)
+          //     console.log("Score asc")
+          //   }
+          //   break
+          // case "time":
+          //   if (scoreOrder[i] === "desc") {
+          //     extract.sort((a, b) => b.time - a.time)
+          //     console.log("Time desc")
+          //   } else {
+          //     extract.sort((a, b) => a.time - b.time)
+          //     console.log("Time asc")
+          //   }
             break
           default: console.log("Unknown sort method " + scoring[i])
         }
@@ -215,16 +231,28 @@ class Quiz extends React.Component {
       })
       
       console.log(extract)
+      let emptyResults = []
+      stages.forEach(() => {
+        emptyResults.push({})
+      })
       // add to overall results
       extract.forEach((res) => {
         const idx = results.findIndex((result) => result.id === res.id)
         if (idx !== -1) {
           results[idx]["stagePos"][i] = res.pos
           results[idx]["stageScore"][i] = res.pos
+          // delete unneeded fields and then save stage results to runner record
+          delete res.pos
+          delete res.id
+          if (!results[idx]["stageResult"]) {
+            results[idx]["stageResult"] = emptyResults
+          }
+          results[idx]["stageResult"][i] = res
         } else {
           console.log("Cannot find id " + res.id)
         }
       })
+      console.log("Found " + extract.length + " results for this stage")
     }
     // update overall results
     let resultsToCount = 1
