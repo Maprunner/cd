@@ -56,13 +56,7 @@ export const getStageResultsForEvent = (eventid) => {
 
 export const updateStagesForEvent = (id, stages) => {
   return db.collection("events").doc(id).set({stages: stages}, {merge: true})
-    .then((docRef) => {
-      console.log("Updated event ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error updating event: ", error);
-    })
-};
+}
 
 export const registerForWebResults = (type, onChange) => {
   return db.collection('results')

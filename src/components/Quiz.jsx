@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import * as FirestoreService from '../services/firestore';
+import CSVReader from 'react-csv-reader'
 // import _ from 'underscore';
 import Header from './Header.jsx'
 //import entries from './entries.js'
-import stageRes from './stageRes.js'
+import e001stageRes from './e001StageResults'
+import e002stages from './e002stages.js'
 import res from './res.js'
-import e1stages011 from './e1stages011.js'
 // import Alert from 'react-bootstrap/Alert';
 // import runners from './runners';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 class Quiz extends React.Component {
@@ -70,7 +74,9 @@ class Quiz extends React.Component {
         <Header
           onShowResultsTable={this.onShowResultsTable}
         />
-        <Card>
+        <Container width="100%">
+          <Row className="m-5">
+            <Col>
           <Button
             value = "e001"
             onClick={this.getResultsForEvent}
@@ -78,6 +84,8 @@ class Quiz extends React.Component {
           >
             Load results
           </Button>
+          </Col>
+          <Col>
           <Button
             value="e001"
             onClick={this.getSavedStageResults}
@@ -85,6 +93,8 @@ class Quiz extends React.Component {
           >
             Load saved stage results
           </Button>
+          </Col>
+          <Col>
           <Button
             value="e001"
             onClick={this.getStageResults}
@@ -92,6 +102,19 @@ class Quiz extends React.Component {
           >
             Get stage results
           </Button>
+          </Col>
+          </Row>
+          <Row className="m-5">
+          <Col>
+          <Button
+            value="e001"
+            onClick={this.saveStageDetails}
+            variant="warning"
+          >
+            Save stage details
+          </Button>
+          </Col>
+          <Col>
           <Button
             value="e001"
             onClick={this.calculateOverallResults}
@@ -99,6 +122,11 @@ class Quiz extends React.Component {
           >
             Calculate stage results
           </Button>
+          </Col>
+          <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo)} />
+          </Col>
+          </Row>
           {/* <Button
             onClick={this.createStageResults}
             variant="primary"
@@ -111,7 +139,7 @@ class Quiz extends React.Component {
           >
             Create dummy results
           </Button> */}
-          </Card>
+        </Container>
         {/* <Footer /> */}
       </div>
     );
@@ -120,7 +148,7 @@ class Quiz extends React.Component {
   getSavedStageResults = () => {
     console.log("Loading stageResults from file")
     this.setState({
-      stageResults: stageRes
+      stageResults: e001stageRes
     })    
   }
 
@@ -139,14 +167,33 @@ class Quiz extends React.Component {
     })         
   }
 
-  createStageResults = () => {
-    e1stages011.forEach(stage => {
+  createStageResults = (data, fileinfo) => {
+    // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
+    const stageid = "s012"
+    const stageInfo = this.state.events[0].stages[11]
+    const fieldCount = stageInfo.fields.length + 1
+    for (let i = 0; i < data.length; i = i + 1) {
+      const row = data[i]
+      if (fieldCount > row.length) {
+        console.log("Not enough fields")
+        break
+      }
       let result = {}
-      const runnerid = stage[0]
-      result.score = stage[1]
-      //console.log(runnerid, result)
-      FirestoreService.saveResultForEvent("e001", runnerid, {s011: result})    
-    })
+      const runnerid = row[0]
+      if (runnerid === "") {
+        continue
+      }
+      let idx = 1
+      stageInfo.fields.forEach((field) => {
+        result[field] = row[idx]
+        idx = idx + 1
+      })
+      console.log(runnerid, result)
+      let newResult = {}
+      newResult[stageid] = result
+      console.log(newResult)
+      FirestoreService.saveResultForEvent("e001", runnerid, newResult)    
+    }
   }
 
   getStageId = (id) => {
@@ -163,16 +210,13 @@ class Quiz extends React.Component {
     const eventid = btnEvent.target.value
     console.log("Generating results for event " + eventid)
     let newResults = JSON.parse(JSON.stringify(this.state.results))
-    // 0 accesses e001: need to decide how to pick this up...
     const stages = this.state.stages[0]
-    let emptyResults = []
-    stages.forEach(() => {
-      emptyResults.push({})
-    })
+    const categories = this.state.events[0].categories
+    const winnerPoints = this.state.events[0].winnerPoints
     newResults.forEach((res) => {
-      if (!res.stageResult) {
-        res.stageResult = emptyResults
-      }
+      res.catScore = []
+      res.catPos = []
+      res.catResults = []
     })
     for (let i = 0; i < stages.length; i = i + 1) {
       let extract = []
@@ -191,7 +235,16 @@ class Quiz extends React.Component {
           // extract required fields for each scoring method e.g. ["score", "time"]
           scoring.forEach((method) => {
             if (method in result[stageId]) {
-              res[method] = result[stageId][method]
+              // force certain fields to numbers for sorting purposes
+              // decimal-separated mm.ss works Ok as a trsing so leave these as they are
+              switch (method) {
+                case "score":
+                case "wrong":
+                  res[method] = parseFloat(result[stageId][method])
+                break;
+                default:
+                  res[method] = result[stageId][method]
+              }
             }
           })
           extract.push(res)
@@ -204,12 +257,25 @@ class Quiz extends React.Component {
         switch (scoring[i]) {
           case "score":
           case "time":
-          case "course":
+          case "wrong":
             // scoreOrder tells you how to sort each method e.g. ["asc", "desc"]
+            // sorting numerically; this works even though time can be a string
             if (scoreOrder[i] === "desc") {
               extract.sort((a, b) => b[scoring[i]] - a[scoring[i]])
             } else {
               extract.sort((a, b) => a[scoring[i]] - b[scoring[i]])
+            }          
+            break
+          case "course":
+            // sorting alphabetically
+            if (scoreOrder[i] === "desc") {
+              extract.sort((a, b) => {
+                return a[scoring[i]] > b[scoring[i]] ? -1 : a[scoring[i]] < b[scoring[i]] ? 1 : 0
+              })
+            } else {
+              extract.sort((a, b) => {
+                return a[scoring[i]] < b[scoring[i]] ? -1 : a[scoring[i]] > b[scoring[i]] ? 1 : 0
+              })
             }          
             break
           default: console.log("Unknown sort method " + scoring[i])
@@ -218,7 +284,7 @@ class Quiz extends React.Component {
 
       // add positions
       // need to allow for ties...
-      let pos = 1
+      let pos = 0
       let ties = 0
       extract.forEach((res, idx, data) => {
         let tied = true
@@ -239,6 +305,7 @@ class Quiz extends React.Component {
           ties = 0
         }
         res.pos = pos
+        res.stageScore = (winnerPoints === 1) ? res.pos: winnerPoints + 1 - res.pos
       })
       
       console.log(extract)
@@ -247,7 +314,7 @@ class Quiz extends React.Component {
         const idx = newResults.findIndex((result) => result.id === res.id)
         if (idx !== -1) {
           newResults[idx]["stagePos"][i] = res.pos
-          newResults[idx]["stageScore"][i] = res.pos
+          newResults[idx]["stageScore"][i] = res.stageScore
           // delete unneeded fields and then save stage results to runner record
           //delete res.pos
           //delete res.id
@@ -258,41 +325,75 @@ class Quiz extends React.Component {
       })
       console.log("Found " + extract.length + " results for this stage")
     }
-    // update overall results
-    let resultsToCount = 1
-    newResults.forEach((result) => {
-        // create copy of stageScores for this runner
-        let a = result.stageScore.slice()
-        // sort in ascending order
-        let b = a.sort((a, b) => a - b)
-        // remove all 0 entries
-        let c = b.filter((score) => score > 0)
-        // limit to number of counting scores
-        let d = c.slice(0, resultsToCount)
-        // add up scores
-        result.score= d.reduce((acc, cur) => acc + cur, 0)
-    })
-    newResults.sort((a, b) => {
-      if (a.score === 0) {
-        return 1
-      }
-      return a.score - b.score
-    })
-    let pos = 0
-    let ties = 0
-    let oldScore = -1
-    newResults.forEach((res) => {
-      if (oldScore === res.score) {
-        ties = ties + 1
+    categories.forEach((cat, catIdx) => {
+      // update overall results
+      newResults.forEach((result) => {
+          // create copy of stageScores for this runner
+          const a = result.stageScore.slice()
+          // filter out scores for this category
+          let x = cat.stages.map(stageIdx => a[stageIdx])
+          // sort in ascending order
+          let b = x.sort((a, b) => a - b)
+          // remove all 0 entries
+          let c = b.filter((score) => score > 0)
+          // limit to number of counting scores
+          let d = c.slice(0, cat.countingStages)
+          // add up scores
+          result.catScore[catIdx] = d.reduce((acc, cur) => acc + cur, 0)
+          result.catResults[catIdx] = d.length
+      })
+
+      if (winnerPoints === 1) {
+        // sort is by increasing score of 1 or over, but 0 comes last
+        // people with not enough scores go at the end in ascending order
+        newResults.sort((a, b) => {
+          if ((a.catResults[catIdx] < cat.countingStages) && (b.catResults[catIdx] < cat.countingStages)) {
+            return (a.catScore[catIdx] === 0) ? 1: (b.catScore[catIdx] === 0) ? -1: a.catScore[catIdx] - b.catScore[catIdx]
+          }
+          if (a.catResults[catIdx] < cat.countingStages) {
+            return 1
+          }
+          if (b.catResults[catIdx] < cat.countingStages) {
+            return -1
+          }
+          // sort is by increasing score of 1 or over, but 0 comes last
+          return (a.catScore[catIdx] === 0) ? 1: (b.catScore[catIdx] === 0) ? -1: a.catScore[catIdx] - b.catScore[catIdx]
+        })
       } else {
-        pos = pos + ties + 1
-        ties = 0
-        oldScore = res.score  
+        // sort is by decreasing score
+        // people with not enough scores go at the end in descending order
+        newResults.sort((a, b) => {
+          if ((a.catResults[catIdx] < cat.countingStages) && (b.catResults[catIdx] < cat.countingStages)) {
+            return b.catScore[catIdx] - a.catScore[catIdx]
+          }
+          if (a.catResults[catIdx] < cat.countingStages) {
+            return 1
+          }
+          if (b.catResults[catIdx] < cat.countingStages) {
+            return -1
+          }
+          // sort is by decreasing score
+          return b.catScore[catIdx] - a.catScore[catIdx]
+        })  
       }
-      res.pos = pos
+      let pos = 0
+      let ties = 0
+      let oldScore = -1
+      newResults.forEach((res) => {
+        if (oldScore === res.catScore[catIdx]) {
+          ties = ties + 1
+        } else {
+          pos = pos + ties + 1
+          ties = 0
+          oldScore = res.catScore[catIdx]
+        }
+        res.catPos[catIdx] = pos
+      })
+
     })
+    console.log(newResults)
     this.setState({results: newResults})
-    FirestoreService.saveResultsForEvent(eventid, newResults)
+    // FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = () => {
@@ -328,17 +429,15 @@ class Quiz extends React.Component {
 //   FirestoreService.addRunner(id, runner)
 // })  
 
-// e1stages.forEach((s) => {
-//   let stage = {}
-//   let f = s.split(",")
-//   stage.id = parseInt(f[0], 10)
-//   stage.name = f[1]
-//   stage.isOpen = (Math.random() > 0.5)
-//   stage.isAuto = (Math.random() > 0.5)
-//   stage.url = f[3]
-//   stage.fields = f[2].split(";")
-//   stages.push(stage)
-// })
+saveStageDetails = () => {
+  const stages = []
+  e002stages.forEach((stage) => {
+    stages.push(stage)
+  })
+  console.log(stages)
+  //FirestoreService.updateStagesForEvent("e002", stages)
+  //FirestoreService.updateStagesForEvent("e003", stages)
   }
+}
 
 export default Quiz
