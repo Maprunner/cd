@@ -133,12 +133,12 @@ class Quiz extends React.Component {
           >
             Create stage s003 results
           </Button> */}
-          {/* <Button
+          <Button
             onClick={this.createDummyResults}
             variant="primary"
           >
             Create dummy results
-          </Button> */}
+          </Button>
         </Container>
         {/* <Footer /> */}
       </div>
@@ -397,30 +397,33 @@ class Quiz extends React.Component {
   }
 
   createDummyResults = () => {
-    let pos = 1;
-    let id = 0;
     let newResults = []
     res.forEach((r) => {
       let result = {}
-      // pos = pos + 1
       let f = r.split(",")
-      result.pos = pos
       result.id = f[0]
       result.name = f[1]
       result.club = f[3]
       result.class = f[2] 
       result.country = f[4]
-      result.score = parseInt(f[5], 10)
       result.stageScore= []
       result.stagePos = []
-      for (let i = 7; i < 19; i = i + 1) {
-        //result.stageScore.push(parseInt(f[i],10))
+      result.stageResult = []
+      result.catPos = []
+      result.catResults = []
+      result.catScore = []
+      for (let i = 0; i < 10; i = i + 1) {
         result.stageScore.push(0)
         result.stagePos.push(0)
+        result.stageResult.push({})
+        result.catPos.push(0)
+        result.catResults.push(0)
+        result.catScore.push(0)
       }
       newResults.push(result)
     })
-    FirestoreService.saveResultsForEvent("e005", newResults)
+    console.log(newResults)
+    FirestoreService.saveResultsForEvent("e003", newResults)
   }
 
 // runners.forEach((runner) => {
