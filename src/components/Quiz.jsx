@@ -6,6 +6,7 @@ import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 //import entries from './entries.js'
 import e001stageRes from './e001StageResults'
+import e001stages from './e001stages.js'
 import e002stages from './e002stages.js'
 import res from './res.js'
 // import Alert from 'react-bootstrap/Alert';
@@ -139,18 +140,24 @@ class Quiz extends React.Component {
           </Col>
           <Col>
           <Button
-            onClick={this.createEvent}
+            onClick={this.createEvent002}
             variant="primary"
           >
-            Create event e004
+            Create event e002
           </Button>
           </Col>
           <Col>
+          Create dummy results for e002
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
+          </Col>
+          </Row>
+          <Row>
+          <Col>
           <Button
-            onClick={this.createDummyResults}
+            onClick={this.createEvent001}
             variant="primary"
           >
-            Create dummy results
+            Create event e001
           </Button>
           </Col>
           </Row>
@@ -414,16 +421,16 @@ class Quiz extends React.Component {
     FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
-  createDummyResults = () => {
+  createDummyResults = (data, fileinfo) => {
     let newResults = []
-    res.forEach((r) => {
+    data.forEach((r) => {
       let result = {}
-      let f = r.split(",")
-      result.id = f[0]
-      result.name = f[1]
-      result.club = f[3]
-      result.class = f[2] 
-      result.country = f[4]
+      result.id = r[0]
+      result.name = r[1]
+      result.ageclass = r[2] 
+      result.club = r[3]
+      result.country = r[4]
+      result.class = r[5] 
       result.stageScore= []
       result.stagePos = []
       result.stageResult = []
@@ -441,7 +448,8 @@ class Quiz extends React.Component {
       newResults.push(result)
     })
     console.log(newResults)
-    //FirestoreService.saveResultsForEvent("e004", newResults)
+  
+    FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
 // runners.forEach((runner) => {
@@ -478,13 +486,13 @@ updateCategories = () => {
   FirestoreService.updateCategoriesForEvent("e002", cats)
 }
 
-createEvent = () => {
-  const eventid = "e004"
+createEvent002 = () => {
+  const eventid = "e002"
   let event = {
-    description: "Development testing version",
-    name: "Maprunner test event",
-    dateFrom: 1586473200000,
-    dateTo: 1586732400000,
+    description: "A weekend of virtual sprint orienteering",
+    name: "Sprint weekend",
+    dateFrom: 1587682800000,
+    dateTo: 1587855600000,
     winnerPoints: 1
   }
   let stages = []
@@ -503,6 +511,40 @@ createEvent = () => {
     countingStages: 7,
     name: "7-stage",
     stages: [0, 2, 3, 4, 6, 7, 8, 10]
+  }
+  cats.push(cat1)
+  event.categories = cats
+
+  console.log(event)
+
+  //FirestoreService.addEvent(eventid, event)
+}
+
+createEvent001 = () => {
+  const eventid = "e001"
+  let event = {
+    description: "The first Lockdown Orienteering event",
+    name: "Easter Championships",
+    dateFrom: 1586473200000,
+    dateTo: 1586732400000,
+    winnerPoints: 1
+  }
+  let stages = []
+  e001stages.forEach((stage) => {
+    stages.push(stage)
+  })
+  event.stages = stages
+  let cats = []
+  const cat0 = {
+    countingStages: 12,
+    name: "12-stage",
+    stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  }
+  cats.push(cat0)
+  const cat1 = {
+    countingStages: 8,
+    name: "8-stage",
+    stages: [0, 1, 3, 4, 5, 7, 8, 10]
   }
   cats.push(cat1)
   event.categories = cats
