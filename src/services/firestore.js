@@ -58,6 +58,10 @@ export const updateStagesForEvent = (id, stages) => {
   return db.collection("events").doc(id).set({stages: stages}, {merge: true})
 }
 
+export const updateCategoriesForEvent = (id, cats) => {
+  return db.collection("events").doc(id).set({categories: cats}, {merge: true})
+}
+
 export const registerForWebResults = (type, onChange) => {
   return db.collection('results')
     .where("type", "==", type)

@@ -124,21 +124,36 @@ class Quiz extends React.Component {
           </Button>
           </Col>
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo)} />
-          </Col>
-          </Row>
-          {/* <Button
-            onClick={this.createStageResults}
+          <Button
+            value="e003"
+            onClick={this.updateCategories}
             variant="primary"
           >
-            Create stage s003 results
-          </Button> */}
+            Add categories
+          </Button>
+          </Col>
+          </Row>
+          <Row>
+          <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo)} />
+          </Col>
+          <Col>
+          <Button
+            onClick={this.createEvent}
+            variant="primary"
+          >
+            Create event e004
+          </Button>
+          </Col>
+          <Col>
           <Button
             onClick={this.createDummyResults}
             variant="primary"
           >
             Create dummy results
           </Button>
+          </Col>
+          </Row>
         </Container>
         {/* <Footer /> */}
       </div>
@@ -169,8 +184,8 @@ class Quiz extends React.Component {
 
   createStageResults = (data, fileinfo) => {
     // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
-    const stageid = "s012"
-    const stageInfo = this.state.events[0].stages[11]
+    const stageid = "s008"
+    const stageInfo = this.state.events[0].stages[7]
     const fieldCount = stageInfo.fields.length + 1
     for (let i = 0; i < data.length; i = i + 1) {
       const row = data[i]
@@ -192,7 +207,7 @@ class Quiz extends React.Component {
       let newResult = {}
       newResult[stageid] = result
       console.log(newResult)
-      FirestoreService.saveResultForEvent("e001", runnerid, newResult)    
+      //FirestoreService.saveResultForEvent("e001", runnerid, newResult)    
     }
   }
 
@@ -236,12 +251,15 @@ class Quiz extends React.Component {
           scoring.forEach((method) => {
             if (method in result[stageId]) {
               // force certain fields to numbers for sorting purposes
-              // decimal-separated mm.ss works Ok as a trsing so leave these as they are
+              // decimal-separated mm.ss works Ok as a string so leave these as they are
               switch (method) {
                 case "score":
                 case "wrong":
                   res[method] = parseFloat(result[stageId][method])
                 break;
+                case "time":
+                  res[method] = result[stageId][method].replace(":", ".")
+                  break;
                 default:
                   res[method] = result[stageId][method]
               }
@@ -393,7 +411,7 @@ class Quiz extends React.Component {
     })
     console.log(newResults)
     this.setState({results: newResults})
-    // FirestoreService.saveResultsForEvent(eventid, newResults)
+    FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = () => {
@@ -423,7 +441,7 @@ class Quiz extends React.Component {
       newResults.push(result)
     })
     console.log(newResults)
-    FirestoreService.saveResultsForEvent("e003", newResults)
+    //FirestoreService.saveResultsForEvent("e004", newResults)
   }
 
 // runners.forEach((runner) => {
@@ -441,6 +459,59 @@ saveStageDetails = () => {
   //FirestoreService.updateStagesForEvent("e002", stages)
   //FirestoreService.updateStagesForEvent("e003", stages)
   }
+
+updateCategories = () => {
+  let cats = []
+  const cat0 = {
+    countingStages: 10,
+    name: "10-stage",
+    stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  }
+  cats.push(cat0)
+  const cat1 = {
+    countingStages: 7,
+    name: "7-stage",
+    stages: [0, 2, 3, 4, 6, 7, 8, 10]
+  }
+  cats.push(cat1)
+  console.log(cats)
+  FirestoreService.updateCategoriesForEvent("e002", cats)
+}
+
+createEvent = () => {
+  const eventid = "e004"
+  let event = {
+    description: "Development testing version",
+    name: "Maprunner test event",
+    dateFrom: 1586473200000,
+    dateTo: 1586732400000,
+    winnerPoints: 1
+  }
+  let stages = []
+  e002stages.forEach((stage) => {
+    stages.push(stage)
+  })
+  event.stages = stages
+  let cats = []
+  const cat0 = {
+    countingStages: 10,
+    name: "10-stage",
+    stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  }
+  cats.push(cat0)
+  const cat1 = {
+    countingStages: 7,
+    name: "7-stage",
+    stages: [0, 2, 3, 4, 6, 7, 8, 10]
+  }
+  cats.push(cat1)
+  event.categories = cats
+
+  console.log(event)
+
+  FirestoreService.addEvent(eventid, event)
+}
+
 }
 
 export default Quiz
