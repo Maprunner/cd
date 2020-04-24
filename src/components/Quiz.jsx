@@ -16,12 +16,13 @@ import fi from '../lang/fi.js';
 import fr from '../lang/fr.js';
 import hu from '../lang/hu.js';
 import ja from '../lang/ja.js';
+import no from '../lang/no.js';
 import pl from '../lang/pl.js';
 
 export const NEW_RESULTS_COUNT = 10;
 export const ALL_TIME_RESULTS_COUNT = 10;
 
-export const availableLanguages = ['en', 'cz', 'de', 'es', 'fi', 'fr', 'hu', 'ja', 'pl'];
+export const availableLanguages = ['en', 'cz', 'de', 'es', 'fi', 'fr', 'hu', 'ja', 'no','pl'];
 const dictionaries = {
   'cz': cz,
   'de': de,
@@ -30,6 +31,7 @@ const dictionaries = {
   'fr': fr,
   'hu': hu,
   'ja': ja,
+  'no': no,
   'pl': pl
 };
 
