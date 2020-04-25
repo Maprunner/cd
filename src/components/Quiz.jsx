@@ -79,6 +79,17 @@ class Quiz extends React.Component {
         <Container width="100%">
           <Row className="m-5">
             <Col>
+            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s001")} label="Stage 1: Course Choice"/>
+            </Col>
+            <Col>
+            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Streetview"/>
+            </Col>
+            <Col>
+            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s004")} label="Stage 4: Rapid Route"/>
+            </Col>
+          </Row>
+          <Row className="m-5">
+            <Col>
           <Button
             value = "e002"
             onClick={this.getResultsForEvent}
@@ -127,10 +138,7 @@ class Quiz extends React.Component {
           </Col>
           </Row>
           <Row>
-          <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo)} />
-          </Col>
-          <Col>
+            <Col>
           <Button
             onClick={this.createEvent002}
             variant="primary"
@@ -187,34 +195,81 @@ class Quiz extends React.Component {
     FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
-  createStageResults = (data, fileinfo) => {
+  createStageResults = (data, fielInfo, stageid) => {
     // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
-    const stageid = "s008"
+    const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
     const eventid = "e002"
-    const stageInfo = this.state.events[0].stages[7]
-    const fieldCount = stageInfo.fields.length + 1
-    for (let i = 0; i < data.length; i = i + 1) {
-      const row = data[i]
-      if (fieldCount > row.length) {
-        console.log("Not enough fields")
-        break
+    const stageInfo = this.state.events[1].stages[stageno - 1]
+    console.log("Processing results for stage " + stageno)
+    console.log(stageInfo)
+    // read header row to find all required scoring columns
+    const headers = data[0].map(field => field.trim())
+    const idxId = headers.indexOf("id")
+    if (idxId === -1) {
+      console.log("Cannot find id field")
+      return
+    }
+    const scoringMethods = stageInfo.scoring.length
+    const scoringIndex = Array.from({length: scoringMethods}, () => 0)
+    for (let i = 0; i < scoringMethods; i = i + 1) {
+      scoringIndex[i] = headers.indexOf(stageInfo.scoring[i])
+      if (scoringIndex[i] === -1) {
+        console.log("Cannot find " + stageInfo.scoring[i] + " field")
+        return
       }
+    }
+
+    let seenRunners = []
+    let duplicatedRunners = []
+    for (let i = 1; i < data.length; i = i + 1) {
+      const row = data[i].map(field => field.trim())
       let result = {}
-      const runnerid = row[0]
+      const runnerid = row[idxId]
       if (runnerid === "") {
         continue
       }
+      if (seenRunners.indexOf(runnerid) === -1) {
+        seenRunners.push(runnerid)
+      } else {
+        duplicatedRunners.push(runnerid)
+      }
       let idx = 1
-      stageInfo.fields.forEach((field) => {
-        result[field] = row[idx]
+      for (let j = 0; j < scoringMethods; j = j + 1) {
+        result[stageInfo.scoring[j]] = row[scoringIndex[j]]
         idx = idx + 1
-      })
+        //temporary fix for Sprint Weekend
+        if (stageInfo.scoring[j] === "time") {
+          let bits = []
+          let time = result[stageInfo.scoring[j]]
+          switch (stageid) {
+            case "s001":
+            case "s004":
+              bits = time.split(":")
+              if (bits.length !== 2) {
+                console.log("Invalid time format for runner " + runnerid + " with time " + time)
+                return
+              }
+              let bigsecs = parseInt(bits[0]) * 60
+              let secs = parseFloat(bits[1])
+              result[stageInfo.scoring[j]] = (secs + bigsecs).toFixed(2)
+              //console.log(runnerid, result[stageInfo.scoring[j]])
+              break
+            case "s003": 
+
+              break
+            default:
+              break
+          }
+        }
+      }
       console.log(runnerid, result)
       let newResult = {}
       newResult[stageid] = result
-      console.log(newResult)
-      //FirestoreService.saveResultForEvent(eventid, runnerid, newResult)    
+      // console.log(runnerid, newResult) 
+      //FirestoreService.saveResultForEvent(eventid, runnerid, newResult) 
     }
+    console.log("duplicated runners " , duplicatedRunners)
+
   }
 
   getStageId = (id) => {
