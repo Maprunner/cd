@@ -1,6 +1,6 @@
 ﻿const textReg = ".+"
 const timeReg = "^[0-9]+[0-9]:[0-5][0-9]$"
-const scoreReg = "^[0-9]+(.[0-9]+)$"
+const scoreReg = "^[0-9]+(\.[0-9]+){0,1}$"
 
 const e002stages = [
   { id: 1, name: "Course Choice", fields: [{name: "score", type: "input", valid: scoreReg}, {name: "time", type: "input", valid: timeReg}], 
@@ -21,7 +21,7 @@ const e002stages = [
     scoring: ["course", "time"], scoreOrder: ["asc", "asc"], isAuto: false, isOpen: false },
   { id: 8, name: "Jigsaw", fields: [{name: "time", type: "input", valid: timeReg}],
     scoring: ["time"], scoreOrder: ["asc"], isAuto: false, isOpen: false },
-  { id: 9, name: "RouteChoiceGame", fields: [{name: "username", type: "input", valid: textReg}, {name: "score", type: "input", valid: scoreReg}],
+  { id: 9, name: "Route Choice Game", fields: [{name: "username", type: "input", valid: textReg}, {name: "score", type: "input", valid: scoreReg}],
     scoring: ["score"], scoreOrder: ["desc"], isAuto: false, isOpen: false },
   { id: 10, name: "Catching Features Round 3",
     fields: [{name: "username", type: "input", valid: textReg}, {name: "course", type: "select", valid: ["Course A", "Course B"]}, {name: "time", type: "time", valid: timeReg}],

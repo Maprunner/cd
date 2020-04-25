@@ -25,7 +25,8 @@ class Quiz extends React.Component {
       stages: [],
       stageResults: []
     }
-  }
+ }
+
   componentDidMount() {
     FirestoreService.authenticateAnonymously().then(() => {
       console.log("Logged in")
@@ -79,49 +80,40 @@ class Quiz extends React.Component {
           <Row className="m-5">
             <Col>
           <Button
-            value = "e001"
+            value = "e002"
             onClick={this.getResultsForEvent}
             variant="primary"
           >
-            Load results
+            Load results for e002
           </Button>
           </Col>
           <Col>
           <Button
-            value="e001"
-            onClick={this.getSavedStageResults}
-            variant="primary"
-          >
-            Load saved stage results
-          </Button>
-          </Col>
-          <Col>
-          <Button
-            value="e001"
+            value="e002"
             onClick={this.getStageResults}
             variant="warning"
           >
-            Get stage results
+            Get stage results for e002
           </Button>
           </Col>
           </Row>
           <Row className="m-5">
           <Col>
           <Button
-            value="e001"
-            onClick={this.saveStageDetails}
+            value="e002"
+            onClick={this.rewriteEvent}
             variant="warning"
           >
-            Save stage details
+            Rewrite event 002
           </Button>
           </Col>
           <Col>
           <Button
-            value="e001"
+            value="e002"
             onClick={this.calculateOverallResults}
             variant="primary"
           >
-            Calculate stage results
+            Calculate overall results for e002
           </Button>
           </Col>
           <Col>
@@ -142,6 +134,7 @@ class Quiz extends React.Component {
           <Button
             onClick={this.createEvent002}
             variant="primary"
+            disabled={true}
           >
             Create event e002
           </Button>
@@ -149,16 +142,6 @@ class Quiz extends React.Component {
           <Col>
           Create dummy results for e002
           <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
-          </Col>
-          </Row>
-          <Row>
-          <Col>
-          <Button
-            onClick={this.createEvent001}
-            variant="primary"
-          >
-            Create event e001
-          </Button>
           </Col>
           </Row>
         </Container>
@@ -183,15 +166,31 @@ class Quiz extends React.Component {
         result.id = parseInt(doc.id, 10) 
         results.push(result)
        })
+       console.log("Got stage results: " + results.length)
        this.setState({
         stageResults: results
       })
     })         
   }
 
+  rewriteEvent = () => {
+    let newResults = []
+    for (let i = 0; i < this.state.results.length; i = i + 1) {
+      let res = this.state.results[i]
+      if (res.country === "CYM") {
+        res.country = "WAL"
+      }
+      newResults.push(res)
+    }
+      console.log(newResults)
+    this.setState({results: newResults})
+    FirestoreService.saveResultsForEvent("e002", newResults)
+  }
+
   createStageResults = (data, fileinfo) => {
     // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
     const stageid = "s008"
+    const eventid = "e002"
     const stageInfo = this.state.events[0].stages[7]
     const fieldCount = stageInfo.fields.length + 1
     for (let i = 0; i < data.length; i = i + 1) {
@@ -214,7 +213,7 @@ class Quiz extends React.Component {
       let newResult = {}
       newResult[stageid] = result
       console.log(newResult)
-      //FirestoreService.saveResultForEvent("e001", runnerid, newResult)    
+      //FirestoreService.saveResultForEvent(eventid, runnerid, newResult)    
     }
   }
 
@@ -229,12 +228,15 @@ class Quiz extends React.Component {
   }
   
   calculateOverallResults = (btnEvent) =>  {
-    const eventid = btnEvent.target.value
+    const eventid = "e002"
+    const eventidx = 1
     console.log("Generating results for event " + eventid)
     let newResults = JSON.parse(JSON.stringify(this.state.results))
-    const stages = this.state.stages[0]
-    const categories = this.state.events[0].categories
-    const winnerPoints = this.state.events[0].winnerPoints
+    const stages = this.state.events[eventidx].stages
+    const categories = this.state.events[eventidx].categories
+    const winnerPoints = this.state.events[eventidx].winnerPoints
+    //console.table(stages)
+    //console.table(categories)
     newResults.forEach((res) => {
       res.catScore = []
       res.catPos = []
@@ -263,9 +265,12 @@ class Quiz extends React.Component {
                 case "score":
                 case "wrong":
                   res[method] = parseFloat(result[stageId][method])
-                break;
+                  break;
                 case "time":
-                  res[method] = result[stageId][method].replace(":", ".")
+                // force separator to be a decimal point since this is needed to make sorting work as expected
+                // remove leading zero where time forced to be hh.mm
+                // e.g 06:23 becomes 6.23
+                  res[method] = result[stageId][method].replace(":", ".").replace(/^0([^0]*)\1/, "")
                   break;
                 default:
                   res[method] = result[stageId][method]
@@ -341,8 +346,14 @@ class Quiz extends React.Component {
           newResults[idx]["stagePos"][i] = res.pos
           newResults[idx]["stageScore"][i] = res.stageScore
           // delete unneeded fields and then save stage results to runner record
-          //delete res.pos
-          //delete res.id
+          // delete res.pos
+          // delete res.id
+          if ("time" in res) {
+            res.time = ""
+          }
+          if ("score" in res) {
+            res.score = ""
+          }
           newResults[idx]["stageResult"][i] = res
         } else {
           console.log("Cannot find id " + res.id)
@@ -416,14 +427,21 @@ class Quiz extends React.Component {
       })
 
     })
-    console.log(newResults)
+    // newResults.sort((a, b) => {
+    //   return a.id - b.id
+    // })
+    console.log("Results created: " + newResults.length)
     this.setState({results: newResults})
     FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = (data, fileinfo) => {
     let newResults = []
-    data.forEach((r) => {
+    for (let row = 0; row < data.length; row = row + 1) {
+      let r = data[row]
+      if (r.length < 6) {
+        continue
+      }
       let result = {}
       result.id = r[0]
       result.name = r[1]
@@ -446,10 +464,10 @@ class Quiz extends React.Component {
         result.catScore.push(0)
       }
       newResults.push(result)
-    })
+    }
     console.log(newResults)
   
-    FirestoreService.saveResultsForEvent("e002", newResults)
+    //FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
 // runners.forEach((runner) => {

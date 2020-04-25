@@ -1,6 +1,6 @@
 ﻿const textReg = ".+"
 const timeReg = "^[0-9]+[0-9]:[0-5][0-9]$"
-const scoreReg = "^[0-9]+(.[0-9]+)$"
+const scoreReg = "^[0-9]+(\.[0-9]+){0,1}$"
 
 const e001stages = [
 {id: 1, name: "Route Choice Game", 
