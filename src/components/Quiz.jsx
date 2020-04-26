@@ -195,6 +195,18 @@ class Quiz extends React.Component {
     FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
+  formatSecsAsMMSS = (secs) => {
+    const minutes = Math.floor(secs / 60);
+    let formattedtime = minutes;
+    const seconds = secs - (minutes * 60);
+    if (seconds < 10) {
+      formattedtime += ":0" + seconds;
+    } else {
+      formattedtime += ":" + seconds;
+    }
+    return formattedtime;
+  }
+
   createStageResults = (data, fielInfo, stageid) => {
     // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
     const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
@@ -239,11 +251,11 @@ class Quiz extends React.Component {
         idx = idx + 1
         //temporary fix for Sprint Weekend
         if (stageInfo.scoring[j] === "time") {
-          let bits = []
           let time = result[stageInfo.scoring[j]]
           switch (stageid) {
             case "s001":
             case "s004":
+              let bits = []
               bits = time.split(":")
               if (bits.length !== 2) {
                 console.log("Invalid time format for runner " + runnerid + " with time " + time)
@@ -255,7 +267,7 @@ class Quiz extends React.Component {
               //console.log(runnerid, result[stageInfo.scoring[j]])
               break
             case "s003": 
-
+            result[stageInfo.scoring[j]] = this.formatSecsAsMMSS(time)
               break
             default:
               break
@@ -403,12 +415,12 @@ class Quiz extends React.Component {
           // delete unneeded fields and then save stage results to runner record
           // delete res.pos
           // delete res.id
-          if ("time" in res) {
-            res.time = ""
-          }
-          if ("score" in res) {
-            res.score = ""
-          }
+          // if ("time" in res) {
+          //   res.time = ""
+          // }
+          // if ("score" in res) {
+          //   res.score = ""
+          // }
           newResults[idx]["stageResult"][i] = res
         } else {
           console.log("Cannot find id " + res.id)
@@ -487,7 +499,7 @@ class Quiz extends React.Component {
     // })
     console.log("Results created: " + newResults.length)
     this.setState({results: newResults})
-    FirestoreService.saveResultsForEvent(eventid, newResults)
+    //FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = (data, fileinfo) => {
@@ -566,7 +578,9 @@ createEvent002 = () => {
     name: "Sprint weekend",
     dateFrom: 1587682800000,
     dateTo: 1587855600000,
-    winnerPoints: 1
+    winnerPoints: 1,
+    messageTitle: "",
+    message: ""
   }
   let stages = []
   e002stages.forEach((stage) => {
@@ -600,7 +614,9 @@ createEvent001 = () => {
     name: "Easter Championships",
     dateFrom: 1586473200000,
     dateTo: 1586732400000,
-    winnerPoints: 1
+    winnerPoints: 1,
+    messageTitle: "",
+    message: ""
   }
   let stages = []
   e001stages.forEach((stage) => {
