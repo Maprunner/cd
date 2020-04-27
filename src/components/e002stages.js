@@ -1,5 +1,5 @@
 ﻿const textReg = ".+"
-const timeReg = "^[0-9]+[0-9]:[0-5][0-9]$"
+const timeReg = "^[0-9]*[0-9]:[0-5][0-9]$"
 const scoreReg = "^[0-9]+(\.[0-9]+){0,1}$"
 
 const e002stages = [

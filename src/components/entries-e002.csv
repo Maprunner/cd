@@ -54,7 +54,7 @@
 1087,Joseph Morris,M12,BOK,GBR,M/W12
 1089,Adam McCreadie,M40,DEE,GBR,Open
 1090,Rebecca McCreadie,W40,DEE,GBR,Open
-1092,Simon Errington,M55,HH,ENG,Open
+1092,Simon Errington,M55,HH,GBR,Open
 1093,Helen Errington,W55,HH,GBR,Open
 1094,Ula Trykozko,, Team 360 ,POL,Open
 1096,Rona Laird,W12,INVOC,SCO,M/W12
@@ -209,6 +209,7 @@
 1373,Nicolas Kastner ,,NF Wien ,AUT,Open
 1375,Alice Rigby,W21,CLOK,GBR,Open
 1376,Jenny Hall,W55,INVOC,SCO,Open
+1379,James Austin-Mills,M40,NOR,GBR,Open
 1381,Mike Capper,M65,WAOC,GBR,Open
 1382,Lone Brochmann,W21,IND,NOR,Open
 1383,Mark Light,M50,SOC,GBR,Open
@@ -275,7 +276,6 @@
 1519,Michele Fiocca,M35,CCR Roma,ITA,Open
 1520,Alexander Chepelin,M21,EUOC,GBR,Open
 1521,Ellen Deschepper,W40,Trol,BEL,Open
-1522,James Austin-Mills,M40,NOR,GBR,Open
 1523,Morag McLuckie,W45,MOR,SCO,Open
 1524,Alexandra Danninger,W45,OC München,GER,Open
 1525,Angela Darley,W45,GO,GBR,Open
@@ -558,13 +558,5 @@
 1802,Rafael Miguel,,Ori-Estarreja ,POR,Open
 1803,Peter Reitsema,,,NED,Open
 1804,Liam Buyck,,Auckland Orienteering Club,NZL,M/W16
-1805,Vakant 1,,,,
-1806,Vakant 2,,,,
-1807,Vakant 3,,,,
-1808,Vakant 4,,,,
-1809,Vakant 5,,,,
-1810,Vakant 6,,,,
-1811,Vakant 7,,,,
-1812,Vakant 8,,,,
-1813,Vakant 9,,,,
-1814,Vakant 10,,,,
+1805,Risto Kivinen,,,FIN,Open
+1808,Katrin Muller,,,SUI,Open

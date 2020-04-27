@@ -129,11 +129,11 @@ class Quiz extends React.Component {
           </Col>
           <Col>
           <Button
-            value="e003"
-            onClick={this.updateCategories}
+            value="e002"
+            onClick={this.moveRunner}
             variant="primary"
           >
-            Add categories
+            Move 1522 to 1379
           </Button>
           </Col>
           </Row>
@@ -156,6 +156,13 @@ class Quiz extends React.Component {
         {/* <Footer /> */}
       </div>
     );
+  }
+
+  moveRunner = () => {
+    FirestoreService.getStageResultsForRunner("e002", "1522").then((doc) => {
+        let result = doc.data()
+// FirestoreService.saveResultForEvent("e002", "1379", result)
+    })      
   }
 
   getSavedStageResults = () => {
@@ -278,7 +285,7 @@ class Quiz extends React.Component {
       let newResult = {}
       newResult[stageid] = result
       // console.log(runnerid, newResult) 
-      //FirestoreService.saveResultForEvent(eventid, runnerid, newResult) 
+      FirestoreService.saveResultForEvent(eventid, runnerid, newResult) 
     }
     console.log("duplicated runners " , duplicatedRunners)
 
@@ -436,7 +443,7 @@ class Quiz extends React.Component {
           // filter out scores for this category
           let x = cat.stages.map(stageIdx => a[stageIdx])
           // sort in ascending order
-          let b = x.sort((a, b) => a - b)
+          let b = x.sort((a, b) => b - a)
           // remove all 0 entries
           let c = b.filter((score) => score > 0)
           // limit to number of counting scores
@@ -499,7 +506,7 @@ class Quiz extends React.Component {
     // })
     console.log("Results created: " + newResults.length)
     this.setState({results: newResults})
-    //FirestoreService.saveResultsForEvent(eventid, newResults)
+    FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = (data, fileinfo) => {
@@ -534,7 +541,7 @@ class Quiz extends React.Component {
     }
     console.log(newResults)
   
-    //FirestoreService.saveResultsForEvent("e002", newResults)
+    FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
 // runners.forEach((runner) => {

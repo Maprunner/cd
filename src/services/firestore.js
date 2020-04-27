@@ -54,6 +54,12 @@ export const getStageResultsForEvent = (eventid) => {
   .get()
 }
 
+export const getStageResultsForRunner = (eventid, runnerid) => {
+  return db.collection('stageResults').doc(eventid).collection("runners").doc(runnerid)
+  .get()
+}
+
+
 export const updateStagesForEvent = (id, stages) => {
   return db.collection("events").doc(id).set({stages: stages}, {merge: true})
 }
