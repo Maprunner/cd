@@ -10,7 +10,7 @@ export const AnswerAsSymbol = (props) => {
 }
 
 const AnswerListAsSymbols = (props) => {
-  const {answers, answer, onClick} = props
+  const {answers, onClick} = props
   if (!answers) {
     return null
   }
@@ -20,7 +20,7 @@ const AnswerListAsSymbols = (props) => {
         key={i}
         answer={ans.desc}
         code={ans.code}
-        onClick={() => onClick(answer)}
+        onClick={onClick}
       />
     )
   })

@@ -279,17 +279,11 @@ class Quiz extends React.Component {
   }
 
   getTypeText(type) {
-    return _.chain(quizDefs)
-      .where({ value: type })
-      .pluck('text')
-      .value() 
+    return quizDefs.find((q) => q.value === type).text
   }
 
   getCaptionText(type) {
-    return _.chain(quizDefs)
-      .where({ value: type })
-      .pluck('caption')
-      .value() 
+    return quizDefs.find((q) => q.value === type).caption
   }
 
   renderBody() {

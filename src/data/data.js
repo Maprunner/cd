@@ -174,8 +174,8 @@ export const quizDefs = [
      hash: 'match',
      value: 2,
      caption: 'Match symbols and text'
-    }
-  ]
+      }
+]
 
 export const mapImg = {}
 mapImg.c101 = c101

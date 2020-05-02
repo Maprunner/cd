@@ -4,6 +4,8 @@ import { t } from './Quiz.jsx'
 import { quizDefs } from '../data/data.js'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 
 const Types = (props) => {
   const {quizDefs, onStart} = props
@@ -12,10 +14,11 @@ const Types = (props) => {
       <div className="col-md-4" key={i}>
         <Card className="my-2">
           <Card.Header className="font-weight-bold">
+            <Row>
+              <Col>
             {t(btn.text)}
-          </Card.Header>
-          <Card.Body>
-            <Card.Text>{t(btn.caption)}</Card.Text>
+            </Col>
+            <Col xs={3}>
             <Button
               value={btn.value}
               onClick={(event) => onStart(parseInt(event.currentTarget.value, 10))}
@@ -23,6 +26,11 @@ const Types = (props) => {
             >
               {t('Start')}
             </Button>
+            </Col>
+            </Row>
+          </Card.Header>
+          <Card.Body>
+            <Card.Text>{t(btn.caption)}</Card.Text>
           </Card.Body>
         </Card>
       </div>
