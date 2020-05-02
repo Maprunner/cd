@@ -1,26 +1,24 @@
-import React from 'react';
+import React from 'react'
 import Category from './Category.jsx'
-import Row from 'react-bootstrap/Row';
+import Row from 'react-bootstrap/Row'
 
-class CategoryList extends React.Component {
-  render() {
-    const self = this;
-    const categories = this.props.categories.map(function (cat, idx) {
-      return (
-        <Category
-          key={idx}
-          category={cat.name}
-          use={cat.use}
-          onClick={self.props.onClick}
-        />
-      );
-    })
+const CategoryList = (props) => {
+  const {onClick, categories} = props
+  const cats = categories.map(function (cat, idx) {
     return (
-      <Row className="pb-2">
-        {categories}
-      </Row>
+      <Category
+        key={idx}
+        category={cat.name}
+        use={cat.use}
+        onClick={onClick}
+      />
     )
-  }
+  })
+  return (
+    <Row className="pb-2">
+      {cats}
+    </Row>
+  )
 }
 
-export default CategoryList;
+export default CategoryList

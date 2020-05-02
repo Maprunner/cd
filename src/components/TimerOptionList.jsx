@@ -1,35 +1,34 @@
-import React from 'react';
-import Form from 'react-bootstrap/Form';
-import { t } from './Quiz.jsx';
+import React from 'react'
+import Form from 'react-bootstrap/Form'
+import { t } from './Quiz.jsx'
 
-class TimerOptionList extends React.Component {
-  handleChange = (event) => {
-    this.props.onChange(event.target.value);
+const TimerOptionList = (props) => {
+  const {onChange, possibleTimers, setting } = props
+  const handleChange = (event) => {
+    onChange(event.target.value)
   }
 
-  render() {
-    let timers = this.props.possibleTimers.map(function (timer, i) {
-      return (
-        <option value={timer} key={i}>{timer}</option>
-      );
-    });
-
+  let timers = possibleTimers.map(function (timer, i) {
     return (
-      <Form.Group
-        controlId="frmTimerOptionSelect"
-        className="col-md-2"
-      >
-        <Form.Label className="font-weight-bold">{t('Time')}</Form.Label>
-        <Form.Control
-          onChange={this.handleChange}
-          as="select"
-          value={this.props.setting}
-        >
-          {timers}
-        </Form.Control>
-      </Form.Group>
+      <option value={timer} key={i}>{timer}</option>
     )
-  }
+  })
+
+  return (
+    <Form.Group
+      controlId="frmTimerOptionSelect"
+      className="col-md-2"
+    >
+      <Form.Label className="font-weight-bold">{t('Time')}</Form.Label>
+      <Form.Control
+        onChange={handleChange}
+        as="select"
+        value={setting}
+      >
+        {timers}
+      </Form.Control>
+    </Form.Group>
+  )
 }
 
-export default TimerOptionList;
+export default TimerOptionList

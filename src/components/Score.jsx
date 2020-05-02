@@ -1,8 +1,8 @@
-import React from 'react';
-import { t } from './Quiz.jsx';
-import Card from 'react-bootstrap/Card';
+import React, { memo } from 'react'
+import { t } from './Quiz.jsx'
+import Card from 'react-bootstrap/Card'
 
-function Score(props) {
+const Score = memo((props) => {
   return (
     <Card variant='primary' className="my-2 text-center">
       <Card.Header className="font-weight-bold">{t('Score')}</Card.Header>
@@ -12,7 +12,7 @@ function Score(props) {
         </Card.Text>
       </Card.Body>
     </Card>
-  );
-}
+  )
+})
 
-export default Score;
+export default Score

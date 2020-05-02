@@ -1,60 +1,61 @@
-import React from 'react';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Score from './Score.jsx';
-import Timer from './Timer.jsx';
-import QuizType from './QuizType.jsx';
-import Countdown from './Countdown.jsx';
-import AnswerIconGrid from './AnswerIconGrid.jsx';
-import AnswerListAsSymbols from './AnswerListAsSymbols.jsx';
-import { t } from './Quiz.jsx';
+import React from 'react' 
+import Col from 'react-bootstrap/Col' 
+import Row from 'react-bootstrap/Row' 
+import Score from './Score.jsx' 
+import Timer from './Timer.jsx' 
+import QuizType from './QuizType.jsx' 
+import Countdown from './Countdown.jsx' 
+import AnswerIconGrid from './AnswerIconGrid.jsx' 
+import AnswerListAsSymbols from './AnswerListAsSymbols.jsx' 
+import { t } from './Quiz.jsx' 
 
 function TextToSymbolsQuestionPage(props) {
+  const {title, caption, score, idx, countdown, timerOption, questions, answered, onCheckAnswer, elapsed} = props
   return (
       <>
         <Row>
           <Col md={6}>
             <QuizType
-              title={props.title}
-              caption={props.caption}
+              title={title}
+              caption={caption}
             />
           </Col>
           <Col md={2}>
-            <Score score={props.score} from={props.idx} />
+            <Score score={score} from={idx} />
           </Col>
           <Col md={2}>
             <Timer
-              elapsed={props.elapsed} 
+              elapsed={elapsed} 
             />
           </Col>
           <Col md={2}>
             <Countdown
-              countdown={props.countdown}
-              timerOption={props.timerOption}
+              countdown={countdown}
+              timerOption={timerOption}
             />
           </Col>
         </Row>
         <Row className="py-2">
           <Col className="text-center font-weight-bolder large-text">
-            {t(props.questions[props.idx].question.desc)}
+            {t(questions[idx].question.desc)}
           </Col>
         </Row>
         <Row className='text-center py-2'>
           <Col>
             <AnswerListAsSymbols
-              answers={props.questions[props.idx].answers}
-              onClick={props.onCheckAnswer}
+              answers={questions[idx].answers}
+              onClick={onCheckAnswer}
             />
           </Col>
         </Row>
         <Row className="py-2 answer-icon-grid">
           <AnswerIconGrid
-            answers={props.questions.slice(0, props.answered)}
-            questions={props.questions.length}
+            answers={questions.slice(0, answered)}
+            questions={questions.length}
           />
         </Row>
       </>
     )
 }
 
-export default TextToSymbolsQuestionPage;
+export default TextToSymbolsQuestionPage 

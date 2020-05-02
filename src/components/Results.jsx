@@ -1,24 +1,22 @@
-import React from 'react';
-import { t } from './Quiz.jsx';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Table from 'react-bootstrap/Table';
-import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
+import React from 'react' 
+import { t } from './Quiz.jsx' 
+import Button from 'react-bootstrap/Button' 
+import Modal from 'react-bootstrap/Modal' 
+import Table from 'react-bootstrap/Table' 
+import Row from 'react-bootstrap/Row' 
+import Container from 'react-bootstrap/Container' 
 
-export class Results extends React.Component {
-  handleClose = () => {
-    this.props.handleClose();
-  }
+const Results = (props) => {
+  const { handleClose, allTimeResults, results, open } = props
 
-  renderResults(results, title) {
+  const renderResults = (results, title) => {
     if (results.length === 0) {
       return (
         <div>
           <h4>{title}</h4>
           {t('No results yet')}
         </div>
-      );
+      ) 
     }
     const formattedResults = results.map(function (result, idx) {
       return (
@@ -30,8 +28,8 @@ export class Results extends React.Component {
           <td className='text-center'>{result.percent}</td>
           <td className='text-center'>{result.time}</td>
         </tr>
-      );
-    });
+      ) 
+    }) 
 
     return (
       <div>
@@ -52,31 +50,29 @@ export class Results extends React.Component {
           </tbody>
         </Table>
       </div>
-    );
+    ) 
   }
 
-  render() {
     return (
-      <Modal show={this.props.open} onHide={this.handleClose}>
+      <Modal show={open} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{t('Results')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>
             <Row className="py-2">
-              {this.renderResults(this.props.results, t('This session'))}
+              {renderResults(results, t('This session'))}
             </Row>
             <Row className="py-2">
-              {this.renderResults(this.props.allTimeResults, t('All time'))}
+              {renderResults(allTimeResults, t('All time'))}
             </Row>
           </Container>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleClose}>OK</Button>
+          <Button onClick={handleClose}>OK</Button>
         </Modal.Footer>
       </Modal>
-    );
-  }
+    ) 
 }
 
-export default Results;
+export default Results 

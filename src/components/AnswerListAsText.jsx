@@ -1,54 +1,47 @@
-import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
+import React from 'react'
+import Button from 'react-bootstrap/Button'
+import Col from 'react-bootstrap/Col'
 import { t } from './Quiz.jsx'
 
-export class AnswerAsText extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.answer);
-  }
-
-  render() {
-    return (
-      <Col>
-        <Button
-          variant='outline-primary'
-          size='lg'
-          block
-          onClick={this.onClick}
-        >
-          {t(this.props.answer)}
-        </Button>
-      </Col>
-    );
-  }
+export const AnswerAsText = (props) => {
+  const {onClick, answer} = props
+  return (
+    <Col>
+      <Button
+        variant='outline-primary'
+        size='lg'
+        block
+        onClick={() => onClick(answer)}
+      >
+        {t(answer)}
+      </Button>
+    </Col>
+  )
 }
 
-class AnswerListAsText extends React.Component {
-  render() {
-    const self = this;
-    if (!this.props.answers) {
-      return null;
-    }
-    const answers = this.props.answers.map(function (ans, i) {
-      return (
-        <AnswerAsText
-          key={i}
-          number={i + 1}
-          answer={ans.desc}
-          onClick={self.props.onClick}
-        />
-      );
-    });
-    if (!answers.length) {
-      return null;
-    }
+const AnswerListAsText = (props) => {
+  const {answers, onClick} = props
+  if (!answers) {
+    return null
+  }
+  const formattedAnswers = answers.map(function (ans, i) {
     return (
-      <>
-        {answers}
-      </>
+      <AnswerAsText
+        key={i}
+        number={i + 1}
+        answer={ans.desc}
+        onClick={onClick}
+      />
     )
+  })
+  if (!formattedAnswers.length) {
+    return null
   }
+  return (
+    <>
+      {formattedAnswers}
+    </>
+  )
 }
 
-export default AnswerListAsText;
+export default AnswerListAsText

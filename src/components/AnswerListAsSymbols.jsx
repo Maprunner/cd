@@ -1,44 +1,37 @@
-import React from 'react';
+import React from 'react'
 
-export class AnswerAsSymbol extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.answer);
-  }
-
-  render() {
-    return (
-      <div className='big-cd-icon' onClick={this.onClick}>
-        <span className='cd'>{String.fromCharCode(this.props.code)}</span>
-      </div>
-    );
-  }
+export const AnswerAsSymbol = (props) => {
+  const {answer, onClick, code} = props
+  return (
+    <div className='big-cd-icon' onClick={() => onClick(answer)}>
+      <span className='cd'>{String.fromCharCode(code)}</span>
+    </div>
+  )
 }
 
-class AnswerListAsSymbols extends React.Component {
-  render() {
-    const self = this;
-    if (!this.props.answers) {
-      return null;
-    }
-    const answers = this.props.answers.map(function (ans, i) {
-      return (
-        <AnswerAsSymbol
-          key={i}
-          answer={ans.desc}
-          code={ans.code}
-          onClick={self.props.onClick}
-        />
-      );
-    });
-    if (!answers.length) {
-      return null;
-    }
+const AnswerListAsSymbols = (props) => {
+  const {answers, answer, onClick} = props
+  if (!answers) {
+    return null
+  }
+  const formattedAnswers = answers.map(function (ans, i) {
     return (
-      <div>
-        {answers}
-      </div>
+      <AnswerAsSymbol
+        key={i}
+        answer={ans.desc}
+        code={ans.code}
+        onClick={() => onClick(answer)}
+      />
     )
+  })
+  if (!formattedAnswers.length) {
+    return null
   }
+  return (
+    <div>
+      {formattedAnswers}
+    </div>
+  )
 }
 
-export default AnswerListAsSymbols;
+export default AnswerListAsSymbols
