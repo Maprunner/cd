@@ -154,27 +154,74 @@ export const baseCategories = [
  {name: 'Man-made', index: 5, use: true}
 ]
 
-export const SYMBOLS_TO_TEXT = 0
-export const TEXT_TO_SYMBOLS = 1
-export const MATCH_ITEMS = 2
-export const NO_TYPE = 9999
+export const TYPE_NONE = "none"
+export const TYPE_PICK = "pick"
+export const TYPE_MATCH = "match"
 
 export const quizDefs = [
-    {text: 'Symbols',
-     hash: 'symbols',
-     value: 0,
-     caption: 'Identify the text description for a given symbol'
-    },
-    {text: 'Text',
-     hash: 'text',
-     value: 1,
-     caption: 'Identify the symbol for a given text description'
-    },
-    {text: 'Match',
-     hash: 'match',
-     value: 2,
-     caption: 'Match symbols and text'
-      }
+  { title: 'Symbols to Text',
+    id: 0,
+    from: "cd",
+    to: "text",
+    type: "pick",
+    caption: 'Identify the text description for a given symbol'
+  },
+  { title: 'Text to Symbols',
+    id: 1,
+    from: "text",
+    to: "cd",
+    type: "pick",
+    caption: 'Identify the symbol for a given text description'
+  },
+  { title: 'Match Symbols and Text',
+    id: 2,
+    from: "text",
+    to: "cd",
+    type: "match",
+    caption: 'Match symbols and text'
+  },
+  { title: 'Symbols to Map',
+  id: 3,
+  from: "cd",
+  to: "map",
+  type: "pick",
+  caption: 'Identify the text description for a given symbol'
+},
+{ title: 'Map to Symbols',
+  id: 4,
+  from: "map",
+  to: "cd",
+  type: "pick",
+  caption: 'Identify the symbol for a given text description'
+},
+{ title: 'Match Map and Symbols',
+  id: 5,
+  from: "map",
+  to: "cd",
+  type: "match",
+  caption: 'Match symbols and text'
+}, 
+{ title: 'Text to Map',
+id: 6,
+from: "text",
+to: "map",
+type: "pick",
+caption: 'Identify the text description for a given symbol'
+},
+{ title: 'Map to Text',
+id: 7,
+from: "map",
+to: "text",
+type: "pick",
+caption: 'Identify the symbol for a given text description'
+},
+{ title: 'Match Map and Text',
+id: 8,
+from: "map",
+to: "text",
+type: "match",
+caption: 'Match symbols and text'
+}
 ]
 
 export const mapImg = {}

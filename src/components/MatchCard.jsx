@@ -1,16 +1,28 @@
 import React from 'react'
 import { t } from './Quiz.jsx'
+import { mapImg } from '../data/data.js'
+import Image from 'react-bootstrap/Image'
+
+const getImage = (id) => {
+  const key = "c" + id
+  return (
+    <Image src={mapImg[key]} className="cd-card-map" roundedCircle/>
+  )
+}
 
 const CardFace = (props)  => {
   const {idx, onClick, question} = props
   let style = 'cd-card'
   let content
-  if (question.type === 'text') {
+
+  if (question.card === 'text') {
     style = style + ' cd-card-text'
     content = t(question.desc)
-  } else {
+  } else if (question.card === "cd") {
     style = style + ' cd-card-symbol cd'
     content = String.fromCharCode(question.code)
+  } else {
+    content = getImage(question.id)
   }
   if (question.selected) {
     style = style + ' card-selected'

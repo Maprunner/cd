@@ -8,7 +8,7 @@ import Footer from './Footer.jsx'
 import {loadAllTimeResults, saveAllTimeResults, loadSettings, saveSettings} from './Persist.js'
 import Results from './Results.jsx'
 import ResultMessage from './ResultMessage.jsx'
-import { MATCH_ITEMS, NO_TYPE, quizDefs } from '../data/data.js'
+import { TYPE_MATCH, TYPE_NONE, quizDefs } from '../data/data.js'
 import cz from '../lang/cz.js' 
 import de from '../lang/de.js' 
 import es from '../lang/es.js' 
@@ -68,8 +68,8 @@ class Quiz extends React.Component {
       quizRunning: false,
       displayResultsTable: false,
       displayNewResult: false,
-      newResultType: NO_TYPE,
-      type: NO_TYPE,
+      // definition for active quiz
+      quizDef: {},
       results: [],
       name: settings.name,
       allTimeResults: loadAllTimeResults(),
@@ -157,11 +157,12 @@ class Quiz extends React.Component {
     this.setState({ answersPerQuestion: parseInt(value, 10) }) 
   }
 
-  onStartNewQuiz = (questions, type) => {
+  onStartNewQuiz = (questions, id) => {
+    const quizDef = quizDefs[id]
     if (questions.length > 0) {
       this.setState({
         questions: questions,
-        type: type,
+        quizDef: quizDef,
         currentQuestionIdx: 0,
         quizRunning: true,
         start: new Date().getTime(),
@@ -172,7 +173,7 @@ class Quiz extends React.Component {
       }) 
     }
     this.timer = setInterval(this.onTick, 1000) 
-    if ((this.state.timerOption > 0) && (type !== MATCH_ITEMS)) {
+    if ((this.state.timerOption > 0) && (quizDef.type !== TYPE_MATCH)) {
       this.questionTimer = setInterval(this.onQuestionTimer, 1000) 
     }
   }
@@ -187,7 +188,7 @@ class Quiz extends React.Component {
     } else {
       this.setState({
         quizRunning: false,
-        type: NO_TYPE
+        quizDef: {}
       }) 
     }
   }
@@ -218,7 +219,7 @@ class Quiz extends React.Component {
       this.saveResult(score, answered) 
     } else {
       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 }) 
-      if ((this.state.timerOption > 0) && (this.state.type !== MATCH_ITEMS)) {
+      if ((this.state.timerOption > 0) && (this.state.id !== TYPE_MATCH)) {
         clearInterval(this.questionTimer) 
         this.questionTimer = setInterval(this.onQuestionTimer, 1000) 
       }
@@ -227,7 +228,7 @@ class Quiz extends React.Component {
 
   saveResult(score, from) {
     const newResults = this.addNewResult({
-      type: this.getTypeText(this.state.type),
+      title: this.state.quizDef.title,
       name: this.state.name,
       score: score,
       from: from,
@@ -239,8 +240,7 @@ class Quiz extends React.Component {
       allTimeResults: newResults.allTime,
       quizRunning: false,
       displayNewResult: true,
-      newResultType: this.state.type,
-      type: NO_TYPE
+      type: TYPE_NONE
     }) 
   }
 
@@ -278,14 +278,6 @@ class Quiz extends React.Component {
     }) 
   }
 
-  getTypeText(type) {
-    return quizDefs.find((q) => q.value === type).text
-  }
-
-  getCaptionText(type) {
-    return quizDefs.find((q) => q.value === type).caption
-  }
-
   renderBody() {
     if (this.state.displayResultsTable) {
       return (
@@ -315,16 +307,14 @@ class Quiz extends React.Component {
     return (
       <QuestionPage
         idx={this.state.currentQuestionIdx}
-        type={this.state.type}
-        title={this.getTypeText(this.state.type)}
-        caption={this.getCaptionText(this.state.type)}
+        quizDef={this.state.quizDef}
         questions={this.state.questions}
         score={this.state.score}
         answered={this.state.answered}
         elapsed={parseInt((this.state.elapsed / 1000), 10)}
         timerOption={this.state.timerOption}
         countdown={this.state.timerOption - this.state.secsForThisQuestion}
-        onCheckAnswer={this.state.type === MATCH_ITEMS ?
+        onCheckAnswer={this.state.quizDef.type === TYPE_MATCH ?
           this.onMatchFinished
           :
           this.onCheckAnswer
@@ -345,7 +335,7 @@ class Quiz extends React.Component {
       <ResultMessage
         handleClose={this.onCloseNewResult}
         open={true}
-        type={this.state.newResultType}
+        type={this.state.quizDef.type}
         name={this.state.name}
         questions={this.state.questions}
       >

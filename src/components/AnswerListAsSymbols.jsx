@@ -1,4 +1,5 @@
 import React from 'react'
+import Col from 'react-bootstrap/Col'
 
 export const AnswerAsSymbol = (props) => {
   const {answer, onClick, code} = props
@@ -28,10 +29,10 @@ const AnswerListAsSymbols = (props) => {
     return null
   }
   return (
-    <div>
+    <Col className="center-column">
       {formattedAnswers}
-    </div>
-  )
+    </Col>
+    )
 }
 
 export default AnswerListAsSymbols

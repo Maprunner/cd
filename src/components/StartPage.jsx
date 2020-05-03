@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { MATCH_ITEMS, baseCategories, baseData } from '../data/data.js'
+import { TYPE_MATCH, baseCategories, baseData, quizDefs } from '../data/data.js'
 import {loadSettings, saveSettings} from './Persist.js'
 import NameInput from './NameInput.jsx'
 import CategoryList from './CategoryList.jsx'
@@ -31,14 +31,14 @@ class StartPage extends React.Component {
     }
   }
 
-  onStart = (type) => {
+  onStart = (id) => {
     let questions
-    if (type === MATCH_ITEMS) {
-      questions = this.createMatch()
+    if (quizDefs[id].type === TYPE_MATCH) {
+      questions = this.createMatch(quizDefs[id])
     } else {
       questions = this.createQuiz(this.props.answersPerQuestion)
     }
-    this.props.onStart(questions, type)
+    this.props.onStart(questions, id)
   }
 
   onSetCategory = (category) => {
@@ -70,20 +70,22 @@ class StartPage extends React.Component {
     return questions
   }
 
-  createMatch() {
+  createMatch(quizDef) {
     const shuffled = _.shuffle(this.state.questions)
-    let text = []
-    let symbols = []
+    let fromCards = []
+    let toCards = []
     for (let i = 0; i < shuffled.length; i = i + 1) {
-      text.push({
-        type: 'text',
+      fromCards.push({
+        card: quizDef.from,
+        id: shuffled[i].id,
         code: shuffled[i].code,
         desc: shuffled[i].desc,
         gotIt: false,
         selected: false
       })
-      symbols.push({
-        type: 'symbol',
+      toCards.push({
+        card: quizDef.to,
+        id: shuffled[i].id,
         code: shuffled[i].code,
         desc: shuffled[i].desc,
         gotIt: false,
@@ -91,14 +93,14 @@ class StartPage extends React.Component {
       })
     }
     // move correct pairs apart
-    symbols = _.shuffle(symbols)
-    // merge symbol and text arrays
-    // by taking symbol and text alternately
+    fromCards = _.shuffle(fromCards)
+    // merge from and to arrays
+    // by taking cards alternately
     // starting with an empty array
-    const questions = _.reduce(symbols,
-      function (questions, symbol, idx) {
-        questions.push(symbol)
-        questions.push(text[idx])
+    const questions = _.reduce(fromCards,
+      function (questions, fromCard, idx) {
+        questions.push(fromCard)
+        questions.push(toCards[idx])
         return questions
       },
       []

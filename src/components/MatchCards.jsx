@@ -44,7 +44,7 @@ class MatchCards extends React.Component {
       attempts = attempts + 1
       a2 = this.state.questions[this.state.selectedIdx]
       // match if same description and different card types
-      if ((a1.desc === a2.desc) && (a1.type !== a2.type)) {
+      if ((a1.desc === a2.desc) && (a1.card !== a2.card)) {
         // correct match
         a2.selected = false
         a1.gotIt = true
@@ -87,6 +87,7 @@ class MatchCards extends React.Component {
           idx={i}
           key={i}
           question={q}
+          quizDef={self.props.quizDef}
           onClick={self.onCheckMatch}
         />
       )
@@ -105,7 +106,9 @@ class MatchCards extends React.Component {
           <Modal.Title>{status}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {cards}
+          <div className="py-2 match-grid">
+            {cards}
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.handleClose}>Close</Button>

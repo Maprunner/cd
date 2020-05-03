@@ -23,7 +23,7 @@ const Results = (props) => {
         <tr key={idx}>
           <td>{idx + 1}</td>
           <td>{result.name}</td>
-          <td>{t(result.type)}</td>
+          <td>{t(result.title)}</td>
           <td className='text-center'>{result.score}/{result.from}</td>
           <td className='text-center'>{result.percent}</td>
           <td className='text-center'>{result.time}</td>
