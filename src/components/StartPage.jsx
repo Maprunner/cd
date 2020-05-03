@@ -55,7 +55,6 @@ class StartPage extends React.Component {
     })
   }
 
-
   filterQuestions(categories) {
     // create a list of index values for categories to be used
     const useCategories = _.chain(categories)

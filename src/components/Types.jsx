@@ -13,21 +13,42 @@ const Types = (props) => {
   const { onStart} = props
 
   const pictogram = (quizDef)  => {
-    return(
+    const textSpur = <div className="pictogram pictogram-border">{t("Spur")}</div>
+    const textThicket = <div className="pictogram pictogram-border">{t("Thicket")}</div>
+    const mapSpur = <div className="pictogram pictogram-border"><Image className="cd-card-map" roundedCircle src={mapImg.c102} /></div>
+    const mapThicket = <div className="pictogram pictogram-border"><Image className="cd-card-map" roundedCircle src={mapImg.c405} /></div>
+    const cdSpur = <div className="pictogram pictogram-border cd"><div className="pictogram-cd">{String.fromCharCode(59649)}</div></div>
+    const cdThicket = <div className="pictogram pictogram-border cd"><div className="pictogram-cd">{String.fromCharCode(59689)}</div></div>
+
+    if (quizDef.type === "pick") {
+      return (
       <>
-      <Col>
-      {(quizDef.from === "cd") && <div className='cd-pictogram cd'>{String.fromCharCode(59649)}</div>}
-      {(quizDef.from === "map") && <Image src={mapImg.c102} roundedCircle/>}
-      {(quizDef.from === "text") && t("Spur")}
-      </Col>
-      <Col>
-        <>-></>
-      </Col>
-      <Col>
-      {(quizDef.to === "cd") && <div className='cd'>{String.fromCharCode(59649)}</div>}
-      {(quizDef.to === "map") && <Image src={mapImg.c102} roundedCircle/>}
-      {(quizDef.to === "text") && t("Spur")}
-      </Col>
+      {(quizDef.from === "cd") && cdSpur}
+      {(quizDef.from === "map") && mapSpur}
+      {(quizDef.from === "text") && textSpur}
+      <div className="pictogram">
+        <Image className="cd-card-map" src={mapImg.c900} roundedCircle/>
+      </div>
+      {(quizDef.to === "cd") && cdSpur}
+      {(quizDef.to === "map") && mapSpur}
+      {(quizDef.to === "text") && textSpur}
+      </>
+      )
+    }
+    return (
+      <>
+      {(quizDef.from === "cd") && cdSpur}
+      {(quizDef.from === "map") && mapSpur}
+      {(quizDef.from === "text") && textSpur}
+      {(quizDef.to === "cd") && cdThicket}
+      {(quizDef.to === "map") && mapThicket}
+      {(quizDef.to === "text") && textThicket}
+      {(quizDef.from === "cd") && cdThicket}
+      {(quizDef.from === "map") && mapThicket}
+      {(quizDef.from === "text") && textThicket}
+      {(quizDef.to === "cd") && cdSpur}
+      {(quizDef.to === "map") && mapSpur}
+      {(quizDef.to === "text") && textSpur}
       </>
     )
   }
@@ -53,8 +74,7 @@ const Types = (props) => {
             </Row>
           </Card.Header>
           <Card.Body>
-            <Card.Text>{t(q.caption)}</Card.Text>
-            <Row>
+            <Row className="center-column">
             {pictogram(q)}
             </Row>
           </Card.Body>

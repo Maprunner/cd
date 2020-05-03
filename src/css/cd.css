@@ -38,9 +38,25 @@ body {
   max-width: none !important;
 }
 
-.cd-pictogram {
-  font-size: 50px;
+.pictogram {
+  align-items: center;
+  display: inline-flex;
+  height: 80px;
+  justify-content: center;
+  margin: 2px;
+  text-align: center;
+  vertical-align: middle;
+  width: 80px; 
+}
+
+.pictogram-border {
+  border: 2px solid;
+  border-radius: 10px;
+}
+
+.pictogram-cd {
   color: darkviolet;
+  font-size: 60px;
 }
 
 .cd-card {
@@ -54,6 +70,7 @@ body {
   text-align: center;
   vertical-align: middle;
   width: 80px;
+  font-size: 70px;
 }
 
 .cd-card-text {
@@ -67,10 +84,12 @@ body {
 
 .cd-card-symbol {
   font-size: 60px;
+  color: darkviolet;
 }
 
 .card-got-it {
   background-color: silver;
+  font-size: 15px;
 }
 
 .card-selected {
