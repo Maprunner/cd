@@ -7,13 +7,12 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container' 
 
 const Results = (props) => {
-  const { handleClose, allTimeResults, results, open } = props
+  const { handleClose, results, open } = props
 
-  const renderResults = (results, title) => {
+  const renderResults = (results) => {
     if (results.length === 0) {
       return (
         <div>
-          <h4>{title}</h4>
           {t('No results yet')}
         </div>
       ) 
@@ -23,9 +22,9 @@ const Results = (props) => {
         <tr key={idx}>
           <td>{idx + 1}</td>
           <td>{result.name}</td>
-          <td>{t(result.title)}</td>
-          <td className='text-center'>{result.score}/{result.from}</td>
-          <td className='text-center'>{result.percent}</td>
+          <td>{result.number}</td>
+          <td className='text-center'>{result.score}</td>
+          <td className='text-center'>{result.wrong}</td>
           <td className='text-center'>{result.time}</td>
         </tr>
       ) 
@@ -33,15 +32,14 @@ const Results = (props) => {
 
     return (
       <div>
-        <h4>{title}</h4>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <th className='text-center'>#</th>
               <th>{t('Name')}</th>
-              <th>{t('Type')}</th>
+              <th>{t('id')}</th>
               <th className='text-center'>{t('Score')}</th>
-              <th className='text-center'>%</th>
+              <th className='text-center'>{t('Wrong')}</th>
               <th className='text-center'>{t('Time')}</th>
             </tr>
           </thead>
@@ -61,10 +59,7 @@ const Results = (props) => {
         <Modal.Body>
           <Container>
             <Row className="py-2">
-              {renderResults(results, t('This session'))}
-            </Row>
-            <Row className="py-2">
-              {renderResults(allTimeResults, t('All time'))}
+              {renderResults(results)}
             </Row>
           </Container>
         </Modal.Body>

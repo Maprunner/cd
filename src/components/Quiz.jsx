@@ -1,14 +1,16 @@
-import React from 'react' 
+import React from 'react'
+import * as FirestoreService from '../services/firestore';
 import _ from 'underscore' 
 import update from 'immutability-helper' 
 import StartPage from './StartPage.jsx'
 import QuestionPage from './QuestionPage.jsx'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import {loadAllTimeResults, saveAllTimeResults, loadSettings, saveSettings} from './Persist.js'
+import {loadResults, saveResults, loadSettings, saveSettings} from './Persist.js'
 import Results from './Results.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from '../data/data.js'
+import entries from '../data/entries.js'
 import cz from '../lang/cz.js' 
 import de from '../lang/de.js' 
 import es from '../lang/es.js' 
@@ -70,15 +72,25 @@ class Quiz extends React.Component {
       displayNewResult: false,
       // definition for active quiz
       quizDef: {},
-      results: [],
+      results: loadResults(),
       name: settings.name,
-      allTimeResults: loadAllTimeResults(),
+      number: settings.number,
       language: settings.language,
-      answersPerQuestion: settings.answersPerQuestion
+      answersPerQuestion: settings.answersPerQuestion,
+      canStart: false
     }
   }
   componentDidMount() {
-    this.onSelectLanguage(this.state.language) 
+    this.onSelectLanguage(this.state.language)
+    // FirestoreService.authenticateAnonymously().then(() => {
+    //   //console.log("Logged in")
+    //   FirestoreService.registerForWebResults(0, this.handleWebResults)
+    //   //FirestoreService.registerForWebResults(1, this.handleWebResults)
+    //   //FirestoreService.registerForWebResults(2, this.handleWebResults)
+    // })
+    // .catch((error) => {
+    //    console.error("Error reading results: ", error);
+    // })
   }
 
   componentWillUnmount() {
@@ -150,6 +162,32 @@ class Quiz extends React.Component {
     this.setState({
       name: name
     }) 
+  }
+
+  onSetNumber = (num) => {
+    // input limits number to 0 to 4 digits
+    let number = parseInt(num, 10);
+    const entry = this.getEntryForNumber(number);
+    if (entry === undefined) {
+      this.setState({
+        number: num,
+        name: "",
+        canStart: false
+      });
+      return;
+    }
+    console.log("Entry: " + entry.name + ", " + entry.number);
+    saveSettings("number", number);
+    saveSettings("name", entry.name);
+    this.setState({
+      number: number,
+      name: entry.name,
+      canStart: true,
+    });
+  }
+
+  getEntryForNumber = number => {
+    return entries.find(entry => (entry.number === number));
   }
 
   onSetAnswersPerQuestion = (value) => {
@@ -230,32 +268,29 @@ class Quiz extends React.Component {
     const newResults = this.addNewResult({
       title: this.state.quizDef.title,
       name: this.state.name,
+      number: this.state.number,
       score: score,
-      from: from,
-      percent: (score * 100 / from).toFixed(1),
-      time: parseInt((this.state.elapsed / 1000), 10)
+      wrong: from - score,
+      time: parseFloat(this.state.elapsed / 100).toFixed(1)
     }) 
     this.setState({
-      results: newResults.new,
-      allTimeResults: newResults.allTime,
+      results: newResults,
       quizRunning: false,
       displayNewResult: true,
       type: TYPE_NONE
     }) 
   }
 
-  adjustResultArray(array, result, length) {
+  adjustResultArray(array, result) {
     const newResults = _.chain(array)
       // add new result to array
       .push(result)
-      // sort by score DESC percent DESC time ASC
       .sortBy('time')
       .reverse()
-      .sortBy(function (r) { return parseFloat(r.percent)  })
       .sortBy('score')
       .reverse()
-      // truncate
-      .first(length)
+      .sortBy('wrong')
+      .reverse()
       .value() 
     return newResults 
   }
@@ -263,19 +298,10 @@ class Quiz extends React.Component {
   addNewResult(result) {
     const newResults = this.adjustResultArray(
       this.state.results,
-      result,
-      NEW_RESULTS_COUNT
+      result
     ) 
-    const newAllTimeResults = this.adjustResultArray(
-      this.state.allTimeResults,
-      result,
-      ALL_TIME_RESULTS_COUNT
-    ) 
-    saveAllTimeResults(newAllTimeResults) 
-    return ({
-      new: newResults,
-      allTime: newAllTimeResults
-    }) 
+    saveResults(newResults) 
+    return newResults 
   }
 
   renderBody() {
@@ -283,7 +309,6 @@ class Quiz extends React.Component {
       return (
         <Results
           results={this.state.results}
-          allTimeResults={this.state.allTimeResults}
           handleClose={this.onCloseResultsTable}
           open={true}
         />
@@ -294,6 +319,7 @@ class Quiz extends React.Component {
         <StartPage
           onStart={this.onStartNewQuiz}
           onSetName={this.onSetName}
+          onSetNumber={this.onSetNumber}
           onSelectLanguage={this.onSelectLanguage}
           onTimerClick={this.onTimerClick}
           onSetAnswersPerQuestion={this.onSetAnswersPerQuestion}
@@ -301,6 +327,7 @@ class Quiz extends React.Component {
           language={this.state.language}
           answersPerQuestion={this.state.answersPerQuestion}
           name={this.state.name}
+          number={this.state.number}
         />
       ) 
     }

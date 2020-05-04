@@ -160,69 +160,22 @@ export const TYPE_PICK = "pick"
 export const TYPE_MATCH = "match"
 
 export const quizDefs = [
-  { title: 'Symbols to Text',
-    id: 0,
-    from: "cd",
-    to: "text",
-    type: "pick",
-    caption: 'Identify the text description for a given symbol'
-  },
-  { title: 'Text to Symbols',
-    id: 1,
-    from: "text",
-    to: "cd",
-    type: "pick",
-    caption: 'Identify the symbol for a given text description'
-  },
-  { title: 'Match Symbols and Text',
-    id: 2,
-    from: "text",
-    to: "cd",
-    type: "match",
-    caption: 'Match symbols and text'
-  },
-  { title: 'Symbols to Map',
-  id: 3,
+  { 
+  title: 'Symbols to Map',
+  id: 0,
   from: "cd",
   to: "map",
   type: "pick",
   caption: 'Identify the text description for a given symbol'
 },
-{ title: 'Map to Symbols',
-  id: 4,
-  from: "map",
-  to: "cd",
-  type: "pick",
-  caption: 'Identify the symbol for a given text description'
-},
-{ title: 'Match Map and Symbols',
-  id: 5,
+{
+  title: 'Match Symbols and Map',
+  id: 1,
   from: "map",
   to: "cd",
   type: "match",
   caption: 'Match symbols and text'
 }, 
-{ title: 'Text to Map',
-id: 6,
-from: "text",
-to: "map",
-type: "pick",
-caption: 'Identify the text description for a given symbol'
-},
-{ title: 'Map to Text',
-id: 7,
-from: "map",
-to: "text",
-type: "pick",
-caption: 'Identify the symbol for a given text description'
-},
-{ title: 'Match Map and Text',
-id: 8,
-from: "map",
-to: "text",
-type: "match",
-caption: 'Match symbols and text'
-}
 ]
 
 export const mapImg = {}

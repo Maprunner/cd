@@ -25,6 +25,7 @@ const NameInput = (props) => {
       <Form.Control
         type="text"
         value={name}
+        disabled={true}
         placeholder={name}
         onChange={onNameChange}
       />
