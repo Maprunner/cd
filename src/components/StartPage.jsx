@@ -36,7 +36,7 @@ class StartPage extends React.Component {
     if (quizDefs[id].type === TYPE_MATCH) {
       questions = this.createMatch(quizDefs[id])
     } else {
-      questions = this.createQuiz(this.props.answersPerQuestion)
+      questions = this.createQuiz(this.props.answersPerQuestion, quizDefs[id])
     }
     this.props.onStart(questions, id)
   }
@@ -69,8 +69,16 @@ class StartPage extends React.Component {
     return questions
   }
 
+  filterOutMapQuestions = (questions, quizDef) => {
+    // removes dodgy map symbols posible list of questions
+    if ((quizDef.from === "map") || (quizDef.to === "map")) {
+      return questions.filter((q) => q.useIfMap === true)
+    }
+    return questions
+  }
+
   createMatch(quizDef) {
-    const shuffled = _.shuffle(this.state.questions)
+    const shuffled = _.shuffle(this.filterOutMapQuestions(this.state.questions, quizDef))
     let fromCards = []
     let toCards = []
     for (let i = 0; i < shuffled.length; i = i + 1) {
@@ -107,8 +115,8 @@ class StartPage extends React.Component {
     return questions
   }
 
-  createQuiz(answersPerQuestion) {
-    const shuffled = _.shuffle(this.state.questions)
+  createQuiz(answersPerQuestion, quizDef) {
+    const shuffled = _.shuffle(this.filterOutMapQuestions(this.state.questions, quizDef))
     // extract list of possible answers
     let answers = []
     for (let i = 0; i < shuffled.length; i = i + 1) {

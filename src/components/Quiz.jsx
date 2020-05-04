@@ -157,18 +157,11 @@ class Quiz extends React.Component {
     this.setState({ answersPerQuestion: parseInt(value, 10) }) 
   }
 
-  filterQuestions = (questions, quizDef) => {
-    if ((quizDefs.from === "map") || (quizDef.to === "map")) {
-      return questions.filter((q) => q.useIfMap === true)
-    }
-    return questions
-  }
-
   onStartNewQuiz = (questions, id) => {
     const quizDef = quizDefs[id]
     if (questions.length > 0) {
       this.setState({
-        questions: this.filterQuestions(questions, quizDef),
+        questions: questions,
         quizDef: quizDef,
         currentQuestionIdx: 0,
         quizRunning: true,
