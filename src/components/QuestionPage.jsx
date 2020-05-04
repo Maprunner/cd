@@ -1,70 +1,49 @@
-import React from 'react';
+import React from 'react'
 import MatchCards from './MatchCards.jsx'
-import TextToSymbolsQuestionPage from './TextToSymbolsQuestionPage.jsx'
-import SymbolsToTextQuestionPage from './SymbolsToTextQuestionPage.jsx'
-import { SYMBOLS_TO_TEXT, TEXT_TO_SYMBOLS, MATCH_ITEMS } from './data.jsx'
+import PickQuestionPage from './PickQuestionPage.jsx'
+import { TYPE_MATCH, TYPE_PICK } from '../data/data.js'
 
-class QuestionPage extends React.Component {
-  renderSymbolsToText() {
+const QuestionPage = (props) => {
+
+  const renderPick = (props) => {
     return (
-      <SymbolsToTextQuestionPage
-        idx={this.props.idx}
-        answered={this.props.answered}
-        elapsed={this.props.elapsed}
-        countdown={this.props.countdown}
-        timerOption={this.props.timerOption}
-        questions={this.props.questions}
-        score={this.props.score}
-        onCheckAnswer={this.props.onCheckAnswer}
-        title={this.props.title}
-        caption={this.props.caption}
+      <PickQuestionPage
+        idx={props.idx}
+        answered={props.answered}
+        elapsed={props.elapsed}
+        countdown={props.countdown}
+        timerOption={props.timerOption}
+        questions={props.questions}
+        score={props.score}
+        onCheckAnswer={props.onCheckAnswer}
+        quizDef={props.quizDef}
       />
-    );
+    )
   }
 
-  renderTextToSymbols() {
-    return (
-      <TextToSymbolsQuestionPage
-        idx={this.props.idx}
-        answered={this.props.answered}
-        elapsed={this.props.elapsed}
-        countdown={this.props.countdown}
-        timerOption={this.props.timerOption}
-        questions={this.props.questions}
-        score={this.props.score}
-        onCheckAnswer={this.props.onCheckAnswer}
-        title={this.props.title}
-        caption={this.props.caption}
-      />
-    );
-  }
-
-  renderMatchItems() {
+  const renderMatchItems = (props) => {
     return (
       <MatchCards
-        questions={this.props.questions}
-        answered={this.props.answered}
-        elapsed={this.props.elapsed}
-        score={this.props.score}
+        questions={props.questions}
+        quizDef={props.quizDef}
+        answered={props.answered}
+        elapsed={props.elapsed}
+        score={props.score}
         open={true}
-        onFinished={this.props.onCheckAnswer}
+        onFinished={props.onCheckAnswer}
       />
     );
   }
 
-  render() {
-    switch (this.props.type) {
-      case SYMBOLS_TO_TEXT:
-        return this.renderSymbolsToText();
-      case TEXT_TO_SYMBOLS:
-        return this.renderTextToSymbols();
-      case MATCH_ITEMS:
-        return this.renderMatchItems();
-      default:
-        return null;
-    }
+  switch (props.quizDef.type) {
+    case TYPE_PICK:
+      return renderPick(props)
+    case TYPE_MATCH:
+      return renderMatchItems(props)
+    default:
+      return null
   }
 }
 
-export default QuestionPage;
+export default QuestionPage
 

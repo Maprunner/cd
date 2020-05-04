@@ -8,17 +8,55 @@ body {
   user-select: none;          /* Likely future */      
 }
 
+.this-is-me {
+  font-weight: bolder;
+  color: darkviolet;
+}
+
 .large-text {
   font-size: 3em;
 }
 
 .answer-icon-grid {
   background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  margin-top: 16px;
+}
+
+.match-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
 
 .match-cards {
   width: 95%;
   max-width: none !important;
+}
+
+.pictogram {
+  align-items: center;
+  display: inline-flex;
+  height: 80px;
+  justify-content: center;
+  margin: 2px;
+  text-align: center;
+  vertical-align: middle;
+  width: 80px; 
+}
+
+.pictogram-border {
+  border: 2px solid;
+  border-radius: 10px;
+}
+
+.pictogram-cd {
+  color: darkviolet;
+  font-size: 60px;
 }
 
 .cd-card {
@@ -32,18 +70,26 @@ body {
   text-align: center;
   vertical-align: middle;
   width: 80px;
+  font-size: 70px;
 }
 
 .cd-card-text {
   font-size: 15px;
 }
 
+.cd-card-map {
+  width: 75px;
+  height: 75px
+}
+
 .cd-card-symbol {
   font-size: 60px;
+  color: darkviolet;
 }
 
 .card-got-it {
   background-color: silver;
+  font-size: 15px;
 }
 
 .card-selected {
@@ -75,10 +121,36 @@ body {
   cursor: pointer;
   display: inline-block;
   font-size: 60px;
-  margin: 8px;
+  margin: 8px 30px;
   text-align: center;
   width: 90px;
   color: darkviolet;
+}
+
+.center-column {
+  display: flex;
+  justify-content: center;
+}
+
+.map-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.map-button {
+  cursor: pointer;
+  width: 175px;
+  height: 175px;
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-list {
+  color: darkviolet;
+  font-size: larger;
+  font-weight: bolder;
 }
 
 .text-center {
@@ -107,6 +179,10 @@ body {
 
 .cd {
   font-family: "orienteering-maprunner";
+}
+
+.disabled-button {
+  cursor: no-drop !important;
 }
 
 /* CSS from IcoMoon font generation [process */

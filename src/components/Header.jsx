@@ -1,8 +1,8 @@
-import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import logo from './img/cdquizlogo.gif';
-import { t } from './Quiz.jsx';
+import React from 'react'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+import logo from './img/cdquizlogo.gif'
+import { t } from './Quiz.jsx'
 
 function Header(props) {
   return (
@@ -21,7 +21,7 @@ function Header(props) {
         </div>
       </Navbar>
     </div>
-  );
+  )
 }
 
-export default Header;
+export default Header

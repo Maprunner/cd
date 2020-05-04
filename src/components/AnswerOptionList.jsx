@@ -1,18 +1,14 @@
-import React from 'react';
-import Form from 'react-bootstrap/Form';
-import { t } from './Quiz.jsx';
+import React from 'react'
+import Form from 'react-bootstrap/Form'
+import { t } from './Quiz.jsx'
 
-class AnswerOptionList extends React.Component {
-  handleChange = (event) => {
-    this.props.onSetAnswersPerQuestion(event.target.value);
-  }
-
-  render() {
-    let answers = this.props.possibleAnswers.map(function (number, i) {
+const AnswerOptionList = (props) => {
+  const {possibleAnswers, setting, onSetAnswersPerQuestion} = props
+  let answers = possibleAnswers.map(function (number, i) {
       return (
         <option value={number} key={i}>{number}</option>
-      );
-    });
+      )
+    })
 
     return (
       <Form.Group
@@ -21,15 +17,14 @@ class AnswerOptionList extends React.Component {
       >
         <Form.Label className="font-weight-bold">{t('Answers per question')}</Form.Label>
         <Form.Control
-          onChange={this.handleChange}
+          onChange={(event) => onSetAnswersPerQuestion(event.target.value)}
           as="select"
-          value={this.props.setting}
+          value={setting}
         >
         {answers}
         </Form.Control>
       </Form.Group>
     )
-  }
 }
 
-export default AnswerOptionList;
+export default AnswerOptionList

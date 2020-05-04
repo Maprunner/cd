@@ -1,8 +1,8 @@
-import React from 'react';
-import Card from 'react-bootstrap/Card';
+import React, { memo } from 'react'
+import Card from 'react-bootstrap/Card'
 import { t } from './Quiz.jsx'
 
-function QuizType(props)  {
+const QuizType = memo((props) => {
   return (
   <Card variant='primary' className="my-2">
     <Card.Header className="font-weight-bold">
@@ -15,5 +15,6 @@ function QuizType(props)  {
     </Card.Body>
   </Card>
 )}
+)
 
 export default QuizType

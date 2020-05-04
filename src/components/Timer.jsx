@@ -1,6 +1,6 @@
-import React from 'react';
-import { t } from './Quiz.jsx';
-import Card from 'react-bootstrap/Card';
+import React from 'react'
+import { t } from './Quiz.jsx'
+import Card from 'react-bootstrap/Card'
 
 function Timer(props) {
   return (
@@ -14,7 +14,7 @@ function Timer(props) {
         </Card.Text>
       </Card.Body>
     </Card>
-  );
+  )
 }
 
-export default Timer;
+export default Timer

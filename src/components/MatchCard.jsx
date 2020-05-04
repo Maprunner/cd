@@ -1,58 +1,62 @@
-import React from 'react';
-import { t } from './Quiz.jsx';
+import React from 'react'
+import { t } from './Quiz.jsx'
+import { mapImg } from '../data/data.js'
+import Image from 'react-bootstrap/Image'
 
-class CardFace extends React.Component {
-  onClick = () => {
-    this.props.onClick(this.props.idx);
-  }
-
-  render() {
-    let style = 'cd-card';
-    let content;
-    if (this.props.question.type === 'text') {
-      style = style + ' cd-card-text';
-      content = t(this.props.question.desc);
-    } else {
-      style = style + ' cd-card-symbol cd';
-      content = String.fromCharCode(this.props.question.code);
-    }
-    if (this.props.question.selected) {
-      style = style + ' card-selected';
-    }
-    return (
-      <div className={style} onClick={this.onClick}>
-        {content}
-      </div>
-    );
-  }
+const getImage = (id) => {
+  const key = "c" + id
+  return (
+    <Image src={mapImg[key]} className="cd-card-map" roundedCircle/>
+  )
 }
 
-class FinishedCard extends React.Component {
-  render() {
-    return (
-      <div className='cd-card card-got-it'>
-        {t('OK')}
-      </div>
-    );
+const CardFace = (props)  => {
+  const {idx, onClick, question} = props
+  let style = 'cd-card'
+  let content
+
+  if (question.card === 'text') {
+    style = style + ' cd-card-text'
+    content = t(question.desc)
+  } else if (question.card === "cd") {
+    style = style + ' cd-card-symbol cd'
+    content = String.fromCharCode(question.code)
+  } else {
+    content = getImage(question.id)
   }
+  if (question.selected) {
+    style = style + ' card-selected'
+  }
+  return (
+    <div className={style} onClick={() => onClick(idx)}>
+      {content}
+    </div>
+  )
 }
 
-class MatchCard extends React.Component {
-  render() {
-    if (this.props.question.gotIt) {
-      return (
-        <FinishedCard />
-      );
-    }
+const FinishedCard = () => {
+  return (
+    <div className='cd-card card-got-it'>
+      {t('OK')}
+    </div>
+  )
+}
+
+const MatchCard = (props) => {
+  const {question, idx, onClick} = props
+  if (question.gotIt) {
     return (
-      <CardFace
-        question={this.props.question}
-        idx={this.props.idx}
-        onClick={this.props.onClick}
-        type={this.props.question.type}
-      />
+      <FinishedCard />
     )
   }
+  return (
+    <CardFace
+      question={question}
+      idx={idx}
+      onClick={onClick}
+      type={question.type}
+    />
+  )
 }
 
-export default MatchCard;
+export default MatchCard
