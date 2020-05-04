@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 const Category = (props) => {
   const { onClick, category, use } = props
   return (
-    <Col>
+    <Col className="center-column">
       <Form.Check
         type="checkbox"
         inline

@@ -166,14 +166,8 @@ class StartPage extends React.Component {
           <Card.Header className="font-weight-bold">
             {t('Select options') + ": " + this.state.questions.length + ' ' + t('questions selected')}
           </Card.Header>
-          <Card.Body>
+          <Card.Body className="m-1 py-1">
             <Form>
-              <Form.Group>
-                <CategoryList
-                  onClick={this.onSetCategory}
-                  categories={this.state.categories}
-                />
-              </Form.Group>
               <Form.Group as={Row}>
                 <NameInput
                   name={this.props.name}
@@ -192,6 +186,12 @@ class StartPage extends React.Component {
                   possibleTimers={[0, 2, 5, 10]}
                   onChange={this.props.onTimerClick}
                   setting={this.props.timerOption}
+                />
+              </Form.Group>
+              <Form.Group>
+                <CategoryList
+                  onClick={this.onSetCategory}
+                  categories={this.state.categories}
                 />
               </Form.Group>
             </Form>

@@ -57,10 +57,10 @@ const Types = (props) => {
     return (
       <div className="col-md-4" key={i}>
         <Card className="my-2">
-          <Card.Header className="font-weight-bold">
-            <Row>
-              <Col>
-            {t(q.title)}
+          <Card.Header className="font-weight-bold p-0">
+            <Row className="m-1">
+            <Col>
+              {t(q.title)}
             </Col>
             <Col xs={3}>
             <Button
@@ -73,7 +73,7 @@ const Types = (props) => {
             </Col>
             </Row>
           </Card.Header>
-          <Card.Body>
+          <Card.Body className="p-1">
             <Row className="center-column">
             {pictogram(q)}
             </Row>

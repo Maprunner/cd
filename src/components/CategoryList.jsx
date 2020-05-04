@@ -15,7 +15,7 @@ const CategoryList = (props) => {
     )
   })
   return (
-    <Row className="pb-2">
+    <Row className="pb-1">
       {cats}
     </Row>
   )

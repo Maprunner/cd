@@ -352,18 +352,14 @@ class Quiz extends React.Component {
   }
 
   render() {
-
-    let body = this.renderBody() 
-    let message = this.state.displayNewResult ? this.renderNewResult() : null 
-
     return (
       <div>
         <Header
           onShowResultsTable={this.onShowResultsTable}
         />
         <div className='container'>
-          {body}
-          {message}
+          {this.renderBody() }
+          {this.state.displayNewResult ? this.renderNewResult() : null }
         </div>
         <Footer />
       </div>
