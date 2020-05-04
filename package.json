@@ -2,7 +2,7 @@
   "name": "cd",
   "version": "2.2.0",
   "private": true,
-  "homepage": "https://www.maprunner.co.uk/cd-test",
+  "homepage": "https://www.maprunner.co.uk/cd",
   "dependencies": {
     "bootstrap": "^4.4.1",
     "immutability-helper": "^3.0.2",
