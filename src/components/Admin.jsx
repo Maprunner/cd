@@ -2,21 +2,17 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
-// import _ from 'underscore';
 import Header from './Header.jsx'
-//import entries from './entries.js'
-import e001stageRes from './e001StageResults'
-import e001stages from './e001stages.js'
-import e002stages from './e002stages.js'
-import res from './res.js'
-// import Alert from 'react-bootstrap/Alert';
-// import runners from './runners';
+import Footer from './Footer.jsx'
+import e002stages from '../data/e002stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-class Quiz extends React.Component {
+import Container from 'react-bootstrap/Container'
+import EventList from './EventList';
+
+class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,6 +50,10 @@ class Quiz extends React.Component {
     })
   }
 
+  setEvent = (id) => {
+    console.log(id)
+  }
+
   getResultsForEvent = (event) => {
     const id = event.target.value
     FirestoreService.getResultsByEvent(id).then((rawResults) =>{
@@ -69,107 +69,11 @@ class Quiz extends React.Component {
     })
   }
 
-  render = () => {
-
-    return (
-      <div>
-        <Header
-          onShowResultsTable={this.onShowResultsTable}
-        />
-        <Container width="100%">
-          <Row className="m-5">
-            <Col>
-            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s001")} label="Stage 1: Course Choice"/>
-            </Col>
-            <Col>
-            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Streetview"/>
-            </Col>
-            <Col>
-            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s004")} label="Stage 4: Rapid Route"/>
-            </Col>
-          </Row>
-          <Row className="m-5">
-            <Col>
-          <Button
-            value = "e002"
-            onClick={this.getResultsForEvent}
-            variant="primary"
-          >
-            Load results for e002
-          </Button>
-          </Col>
-          <Col>
-          <Button
-            value="e002"
-            onClick={this.getStageResults}
-            variant="warning"
-          >
-            Get stage results for e002
-          </Button>
-          </Col>
-          </Row>
-          <Row className="m-5">
-          <Col>
-          <Button
-            value="e002"
-            onClick={this.rewriteEvent}
-            variant="warning"
-          >
-            Rewrite event 002
-          </Button>
-          </Col>
-          <Col>
-          <Button
-            value="e002"
-            onClick={this.calculateOverallResults}
-            variant="primary"
-          >
-            Calculate overall results for e002
-          </Button>
-          </Col>
-          <Col>
-          <Button
-            value="e002"
-            onClick={this.moveRunner}
-            variant="primary"
-          >
-            Move 1522 to 1379
-          </Button>
-          </Col>
-          </Row>
-          <Row>
-            <Col>
-          <Button
-            onClick={this.createEvent002}
-            variant="primary"
-            disabled={true}
-          >
-            Create event e002
-          </Button>
-          </Col>
-          <Col>
-          Create dummy results for e002
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
-          </Col>
-          </Row>
-        </Container>
-        {/* <Footer /> */}
-      </div>
-    );
-  }
-
   moveRunner = () => {
     FirestoreService.getStageResultsForRunner("e002", "1522").then((doc) => {
         let result = doc.data()
 // FirestoreService.saveResultForEvent("e002", "1379", result)
     })      
-  }
-
-  getSavedStageResults = () => {
-    console.log("Loading stageResults from file")
-    this.setState({
-      stageResults: e001stageRes
-    })    
   }
 
   getStageResults = (btnEvent) => {
@@ -544,39 +448,15 @@ class Quiz extends React.Component {
     FirestoreService.saveResultsForEvent("e002", newResults)
   }
 
-// runners.forEach((runner) => {
-//   const id = runner.id.toString()
-//   delete runner.id
-//   FirestoreService.addRunner(id, runner)
-// })  
-
 saveStageDetails = () => {
-  const stages = []
-  e002stages.forEach((stage) => {
-    stages.push(stage)
-  })
-  console.log(stages)
+  // const stages = []
+  // e002stages.forEach((stage) => {
+  //   stages.push(stage)
+  // })
+  // console.log(stages)
   //FirestoreService.updateStagesForEvent("e002", stages)
   //FirestoreService.updateStagesForEvent("e003", stages)
   }
-
-updateCategories = () => {
-  let cats = []
-  const cat0 = {
-    countingStages: 10,
-    name: "10-stage",
-    stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-  }
-  cats.push(cat0)
-  const cat1 = {
-    countingStages: 7,
-    name: "7-stage",
-    stages: [0, 2, 3, 4, 6, 7, 8, 10]
-  }
-  cats.push(cat1)
-  console.log(cats)
-  FirestoreService.updateCategoriesForEvent("e002", cats)
-}
 
 createEvent002 = () => {
   const eventid = "e002"
@@ -614,42 +494,98 @@ createEvent002 = () => {
   //FirestoreService.addEvent(eventid, event)
 }
 
-createEvent001 = () => {
-  const eventid = "e001"
-  let event = {
-    description: "The first Lockdown Orienteering event",
-    name: "Easter Championships",
-    dateFrom: 1586473200000,
-    dateTo: 1586732400000,
-    winnerPoints: 1,
-    messageTitle: "",
-    message: ""
-  }
-  let stages = []
-  e001stages.forEach((stage) => {
-    stages.push(stage)
-  })
-  event.stages = stages
-  let cats = []
-  const cat0 = {
-    countingStages: 12,
-    name: "12-stage",
-    stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-  }
-  cats.push(cat0)
-  const cat1 = {
-    countingStages: 8,
-    name: "8-stage",
-    stages: [0, 1, 3, 4, 5, 7, 8, 10]
-  }
-  cats.push(cat1)
-  event.categories = cats
-
-  console.log(event)
-
-  FirestoreService.addEvent(eventid, event)
+render = () => {
+  return (
+    <div>
+      <Header
+        onShowResultsTable={this.onShowResultsTable}
+      />
+      <Container width="100%">
+        <Row className="m-5">
+          <Col>
+          <EventList
+            events={this.state.events}
+            onSelectEvent={this.setEvent}
+            idx={0}
+          />
+          </Col>
+          <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Streetview"/>
+          </Col>
+          <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s004")} label="Stage 4: Rapid Route"/>
+          </Col>
+        </Row>
+        <Row className="m-5">
+          <Col>
+        <Button
+          value = "e002"
+          onClick={this.getResultsForEvent}
+          variant="primary"
+        >
+          Load results for e002
+        </Button>
+        </Col>
+        <Col>
+        <Button
+          value="e002"
+          onClick={this.getStageResults}
+          variant="warning"
+        >
+          Get stage results for e002
+        </Button>
+        </Col>
+        </Row>
+        <Row className="m-5">
+        <Col>
+        <Button
+          value="e002"
+          onClick={this.rewriteEvent}
+          variant="warning"
+        >
+          Rewrite event 002
+        </Button>
+        </Col>
+        <Col>
+        <Button
+          value="e002"
+          onClick={this.calculateOverallResults}
+          variant="primary"
+        >
+          Calculate overall results for e002
+        </Button>
+        </Col>
+        <Col>
+        <Button
+          value="e002"
+          onClick={this.moveRunner}
+          variant="primary"
+        >
+          Move 1522 to 1379
+        </Button>
+        </Col>
+        </Row>
+        <Row>
+          <Col>
+        <Button
+          onClick={this.createEvent002}
+          variant="primary"
+          disabled={true}
+        >
+          Create event e002
+        </Button>
+        </Col>
+        <Col>
+        Create dummy results for e002
+        <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
+        </Col>
+        </Row>
+      </Container>
+      <Footer />
+    </div>
+  );
 }
 
 }
 
-export default Quiz
+export default Admin

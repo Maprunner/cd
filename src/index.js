@@ -2,10 +2,10 @@ import './css/cd.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 //import registerServiceWorker from './registerServiceWorker';
-import Quiz from './components/Quiz.jsx';
+import Admin from './components/Admin.jsx';
 
 ReactDOM.render(
-  <Quiz />,
+  <Admin />,
   document.getElementById('root')
 );
 

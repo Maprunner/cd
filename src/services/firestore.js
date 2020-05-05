@@ -3,6 +3,11 @@ import firebaseConfig from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
+const eventCollection = "events"
+const resultCollection = "results"
+const runnerCollection = "runners"
+const stageResultCollection = "stageResults"
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -11,65 +16,53 @@ export const authenticateAnonymously = () => {
 };
 
 export const saveResultsForEvent = (eventid, results) => {
-  return db.collection("results").doc(eventid).set({data: JSON.stringify(results)})
+  return db.collection(resultCollection).doc(eventid).set({data: JSON.stringify(results)})
 }
 
-export const saveError = (error) => {
-  // TODO
-  console.log("Saving error: " + JSON.stringify(error))
-  return;
-  return db.collection("errors").add(error)
-    .then((docRef) => {
-      //console.log("Error saved with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding error: ", error);
-    })
-};
 export const getEvents = () => {
-  return db.collection('events')
+  return db.collection(eventCollection)
   .get()
 }
 
 export const addRunner = (id, runner) => {
-  return db.collection('runners').doc(id).set(runner)
+  return db.collection(runnerCollection).doc(id).set(runner)
 }
 
 export const addEvent = (id, event) => {
-  return db.collection('events').doc(id).set(event)
+  return db.collection(eventCollection).doc(id).set(event)
 }
 
 export const getResultsByEvent = (event) => {
-  return db.collection('results').doc(event).get()
+  return db.collection(resultCollection).doc(event).get()
 }
 
 export const saveResultForEvent = (eventid, runnerid, result) => {
-  return db.collection('stageResults').doc(eventid).collection("runners")
+  return db.collection(stageResultCollection).doc(eventid).collection("runners")
   .doc(runnerid).set(result, {merge: true})
 }
 
 export const getStageResultsForEvent = (eventid) => {
-  return db.collection('stageResults').doc(eventid).collection("runners")
+  return db.collection(stageResultCollection).doc(eventid).collection("runners")
   //.limit(3).get()
   .get()
 }
 
 export const getStageResultsForRunner = (eventid, runnerid) => {
-  return db.collection('stageResults').doc(eventid).collection("runners").doc(runnerid)
+  return db.collection(stageResultCollection).doc(eventid).collection("runners").doc(runnerid)
   .get()
 }
 
 
 export const updateStagesForEvent = (id, stages) => {
-  return db.collection("events").doc(id).set({stages: stages}, {merge: true})
+  return db.collection(eventCollection).doc(id).set({stages: stages}, {merge: true})
 }
 
 export const updateCategoriesForEvent = (id, cats) => {
-  return db.collection("events").doc(id).set({categories: cats}, {merge: true})
+  return db.collection(eventCollection).doc(id).set({categories: cats}, {merge: true})
 }
 
 export const registerForWebResults = (type, onChange) => {
-  return db.collection('results')
+  return db.collection(resultCollection)
     .where("type", "==", type)
     .orderBy("score", "desc")
     .orderBy("wrong", "asc")
