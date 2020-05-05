@@ -1,14 +1,14 @@
 import * as firebase from "firebase/app";
-import firebaseConfig from "./config.js";
+import {firebaseLockdownConfig} from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
-const eventCollection = "events"
-const resultCollection = "results"
+const eventCollection = "testevents"
+const resultCollection = "testresults"
 const runnerCollection = "runners"
-const stageResultCollection = "stageResults"
+const stageResultCollection = "teststageResults"
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseLockdownConfig);
 const db = firebase.firestore();
 
 export const authenticateAnonymously = () => {
@@ -41,10 +41,19 @@ export const saveResultForEvent = (eventid, runnerid, result) => {
   .doc(runnerid).set(result, {merge: true})
 }
 
+export const getStageResultsForEvent002 = () => {
+  return db.collection("stageResults").doc("e002").collection("runners")
+  .get()
+}
+
 export const getStageResultsForEvent = (eventid) => {
   return db.collection(stageResultCollection).doc(eventid).collection("runners")
   //.limit(3).get()
   .get()
+}
+
+export const writeStageResultsForEvent003 = (stage, results) => {
+  return db.collection(stageResultCollection).doc("e003").collection("stages").doc(stage).set(results)
 }
 
 export const getStageResultsForRunner = (eventid, runnerid) => {

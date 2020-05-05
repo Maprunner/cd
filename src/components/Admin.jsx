@@ -4,7 +4,7 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e002stages from '../data/e002stages.js'
+import e003stages from '../data/e003stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -69,12 +69,12 @@ class Admin extends React.Component {
     })
   }
 
-  moveRunner = () => {
-    FirestoreService.getStageResultsForRunner("e002", "1522").then((doc) => {
-        let result = doc.data()
-// FirestoreService.saveResultForEvent("e002", "1379", result)
-    })      
-  }
+  // moveRunner = () => {
+  //   FirestoreService.getStageResultsForRunner("e002", "1522").then((doc) => {
+  //     let result = doc.data()
+  //     FirestoreService.saveResultForEvent("e002", "1379", result)
+  //   })      
+  // }
 
   getStageResults = (btnEvent) => {
     const eventid = btnEvent.target.value
@@ -90,6 +90,47 @@ class Admin extends React.Component {
         stageResults: results
       })
     })         
+  }
+
+  rewriteStageResults = () => {
+    FirestoreService.getStageResultsForEvent002().then((snapshot) => {
+      let results = []
+       snapshot.forEach((doc) => {
+        let result = doc.data()
+        result.id = parseInt(doc.id, 10) 
+        results.push(result)
+      })
+      console.log("Got stage results: " + results.length)
+      // change from by runner to by stage
+      const stages = []
+      for (let i = 0; i < 10; i = i + 1) {
+        stages[i] = {}
+      }
+      results.forEach((res)  => {
+        const keys = Object.keys(res)
+          for (const key of keys) {
+            if (key !== "id") {
+              const stage = parseInt(key.slice(1), 10) - 1
+              if ((stage < 0) || (stage > 9)) {
+                console.log("Error for ", res)
+              } else {
+                stages[stage][res.id.toString()] = res[key]
+              }
+          }
+          } 
+      })
+      console.log(stages)
+      for (let i = 0; i < 10; i = i + 1) {
+        let stage = "s0"
+        if (i === 9) {
+          stage = stage + "10"
+        } else {
+          stage = stage + "0" + i
+        }
+        FirestoreService.writeStageResultsForEvent003(stage, stages[i])
+      }
+
+    })     
   }
 
   rewriteEvent = () => {
@@ -458,19 +499,19 @@ saveStageDetails = () => {
   //FirestoreService.updateStagesForEvent("e003", stages)
   }
 
-createEvent002 = () => {
-  const eventid = "e002"
+createEvent003 = () => {
+  const eventid = "e003"
   let event = {
-    description: "A weekend of virtual sprint orienteering",
-    name: "Sprint weekend",
+    description: "A weekend of virtual classic orienteering",
+    name: "Classic weekend",
     dateFrom: 1587682800000,
     dateTo: 1587855600000,
-    winnerPoints: 1,
+    winnerPoints: 1000,
     messageTitle: "",
     message: ""
   }
   let stages = []
-  e002stages.forEach((stage) => {
+  e003stages.forEach((stage) => {
     stages.push(stage)
   })
   event.stages = stages
@@ -540,10 +581,10 @@ render = () => {
         <Col>
         <Button
           value="e002"
-          onClick={this.rewriteEvent}
+          onClick={this.rewriteStageResults}
           variant="warning"
         >
-          Rewrite event 002
+          Rewrite Stage Results
         </Button>
         </Col>
         <Col>
@@ -555,24 +596,15 @@ render = () => {
           Calculate overall results for e002
         </Button>
         </Col>
-        <Col>
-        <Button
-          value="e002"
-          onClick={this.moveRunner}
-          variant="primary"
-        >
-          Move 1522 to 1379
-        </Button>
-        </Col>
         </Row>
         <Row>
           <Col>
         <Button
-          onClick={this.createEvent002}
+          onClick={this.createEvent003}
           variant="primary"
-          disabled={true}
+          disabled={false}
         >
-          Create event e002
+          Create event e003
         </Button>
         </Col>
         <Col>
