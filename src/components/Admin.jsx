@@ -388,7 +388,15 @@ class Admin extends React.Component {
           // filter out scores for this category
           let x = cat.stages.map(stageIdx => a[stageIdx])
           // sort in ascending order
-          let b = x.sort((a, b) => b - a)
+          let b = x.sort((a, b) => {
+            if (winnerPoints === 1) {
+              // low to high
+              return b - a
+            } else {
+              // high to low
+              return a - b
+            }
+          })
           // remove all 0 entries
           let c = b.filter((score) => score > 0)
           // limit to number of counting scores
@@ -504,8 +512,8 @@ createEvent003 = () => {
   let event = {
     description: "A weekend of virtual classic orienteering",
     name: "Classic weekend",
-    dateFrom: 1587682800000,
-    dateTo: 1587855600000,
+    dateFrom: 1588762800,
+    dateTo: 1589151599,
     winnerPoints: 1000,
     messageTitle: "",
     message: ""
@@ -517,22 +525,22 @@ createEvent003 = () => {
   event.stages = stages
   let cats = []
   const cat0 = {
-    countingStages: 10,
+    countingStages: 8,
     name: "10-stage",
     stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
   }
   cats.push(cat0)
   const cat1 = {
-    countingStages: 7,
+    countingStages: 6,
     name: "7-stage",
-    stages: [0, 2, 3, 4, 6, 7, 8, 10]
+    stages: [0, 2, 3, 4, 6, 7, 8]
   }
   cats.push(cat1)
   event.categories = cats
 
   console.log(event)
 
-  //FirestoreService.addEvent(eventid, event)
+  FirestoreService.addEvent(eventid, event)
 }
 
 
