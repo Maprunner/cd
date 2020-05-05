@@ -10,7 +10,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container'
-import EventList from './EventList';
 
 class Admin extends React.Component {
   constructor(props) {
@@ -159,11 +158,11 @@ class Admin extends React.Component {
     return formattedtime;
   }
 
-  createStageResults = (data, fielInfo, stageid) => {
-    // csv result parser assuming csv file is id followed by fields in order defined in "fields" stage details
+  createStageResults = (data, fileInfo, stageid) => {
+    // csv result parser assuming csv file
     const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
-    const eventid = "e002"
-    const stageInfo = this.state.events[1].stages[stageno - 1]
+    const eventid = "e003"
+    const stageInfo = this.state.events[0].stages[stageno - 1]
     console.log("Processing results for stage " + stageno)
     console.log(stageInfo)
     // read header row to find all required scoring columns
@@ -185,6 +184,7 @@ class Admin extends React.Component {
 
     let seenRunners = []
     let duplicatedRunners = []
+    let stageResult = {}
     for (let i = 1; i < data.length; i = i + 1) {
       const row = data[i].map(field => field.trim())
       let result = {}
@@ -227,13 +227,12 @@ class Admin extends React.Component {
         }
       }
       console.log(runnerid, result)
-      let newResult = {}
-      newResult[stageid] = result
+      stageResult[runnerid] = result
       // console.log(runnerid, newResult) 
-      FirestoreService.saveResultForEvent(eventid, runnerid, newResult) 
     }
     console.log("duplicated runners " , duplicatedRunners)
-
+    console.log(stageResult)
+    // FirestoreService.saveStageResultForEvent(eventid, runnerid, newResult) 
   }
 
   getStageId = (id) => {
@@ -246,9 +245,9 @@ class Admin extends React.Component {
     return "s" + n 
   }
   
-  calculateOverallResults = (btnEvent) =>  {
-    const eventid = "e002"
-    const eventidx = 1
+  calculateOverallResults = () =>  {
+    const eventid = "e003"
+    const eventidx = 0
     console.log("Generating results for event " + eventid)
     let newResults = JSON.parse(JSON.stringify(this.state.results))
     const stages = this.state.events[eventidx].stages
@@ -271,35 +270,36 @@ class Admin extends React.Component {
       //scoreOrder shows how to sort each field
       const scoreOrder = stage.scoreOrder ? stage.scoreOrder: []
       console.log("Stage " + stageId + " scoring [" + scoring + "] by [" + scoreOrder + "]")
-      this.state.stageResults.forEach((result) => {
-        if (result[stageId]) {
+      let result = this.state.stageResults[i]
+      const keys = Object.keys(result)
+      for (const key of keys) {
+        if (key !== "id") {
           let res = {}
-          res.id = result.id.toString()
+          res.id = key.toString()
           // extract required fields for each scoring method e.g. ["score", "time"]
           scoring.forEach((method) => {
-            if (method in result[stageId]) {
+            if (method in result[key]) {
               // force certain fields to numbers for sorting purposes
               // decimal-separated mm.ss works Ok as a string so leave these as they are
               switch (method) {
                 case "score":
                 case "wrong":
-                  res[method] = parseFloat(result[stageId][method])
+                  res[method] = parseFloat(result[key][method])
                   break;
                 case "time":
                 // force separator to be a decimal point since this is needed to make sorting work as expected
                 // remove leading zero where time forced to be hh.mm
                 // e.g 06:23 becomes 6.23
-                  res[method] = result[stageId][method].replace(":", ".").replace(/^0([^0]*)\1/, "")
+                  res[method] = result[key][method].replace(":", ".").replace(/^0([^0]*)\1/, "")
                   break;
                 default:
-                  res[method] = result[stageId][method]
+                  res[method] = result[key][method]
               }
             }
           })
           extract.push(res)
         }
-      })
-
+      }
       // sort extracted results for this stage
       for (let i = scoring.length - 1; i >= 0; i = i - 1) {
         // depending on what is to be sorted...
@@ -446,12 +446,12 @@ class Admin extends React.Component {
       })
 
     })
-    // newResults.sort((a, b) => {
-    //   return a.id - b.id
-    // })
+    newResults.sort((a, b) => {
+      return a.id - b.id
+    })
     console.log("Results created: " + newResults.length)
     this.setState({results: newResults})
-    FirestoreService.saveResultsForEvent(eventid, newResults)
+    //FirestoreService.saveResultsForEvent(eventid, newResults)
   }
 
   createDummyResults = (data, fileinfo) => {
@@ -486,7 +486,7 @@ class Admin extends React.Component {
     }
     console.log(newResults)
   
-    FirestoreService.saveResultsForEvent("e002", newResults)
+   // FirestoreService.saveResultsForEvent("e003", newResults)
   }
 
 saveStageDetails = () => {
@@ -535,6 +535,8 @@ createEvent003 = () => {
   //FirestoreService.addEvent(eventid, event)
 }
 
+
+
 render = () => {
   return (
     <div>
@@ -544,36 +546,30 @@ render = () => {
       <Container width="100%">
         <Row className="m-5">
           <Col>
-          <EventList
-            events={this.state.events}
-            onSelectEvent={this.setEvent}
-            idx={0}
-          />
+            <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Streetview"/>
           </Col>
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Streetview"/>
           </Col>
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s004")} label="Stage 4: Rapid Route"/>
           </Col>
         </Row>
         <Row className="m-5">
           <Col>
         <Button
-          value = "e002"
+          value = "e003"
           onClick={this.getResultsForEvent}
           variant="primary"
         >
-          Load results for e002
+          Load results for e003
         </Button>
         </Col>
         <Col>
         <Button
-          value="e002"
+          value="e003"
           onClick={this.getStageResults}
           variant="warning"
         >
-          Get stage results for e002
+          Get stage results for e003
         </Button>
         </Col>
         </Row>
@@ -589,11 +585,11 @@ render = () => {
         </Col>
         <Col>
         <Button
-          value="e002"
+          value="e003"
           onClick={this.calculateOverallResults}
           variant="primary"
         >
-          Calculate overall results for e002
+          Calculate overall results for e003
         </Button>
         </Col>
         </Row>
@@ -608,7 +604,7 @@ render = () => {
         </Button>
         </Col>
         <Col>
-        Create dummy results for e002
+        Create dummy results for e003
         <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
         </Col>
         </Row>

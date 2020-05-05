@@ -47,9 +47,8 @@ export const getStageResultsForEvent002 = () => {
 }
 
 export const getStageResultsForEvent = (eventid) => {
-  return db.collection(stageResultCollection).doc(eventid).collection("runners")
-  //.limit(3).get()
-  .get()
+  console.log("Get stage results for ", eventid, " from ", stageResultCollection)
+  return db.collection(stageResultCollection).doc(eventid).collection("stages").get()
 }
 
 export const writeStageResultsForEvent003 = (stage, results) => {
