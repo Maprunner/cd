@@ -38,7 +38,7 @@ function saveItem(item, value) {
   }
 }
 
-export function loadResults() {
+export function loadLocalResults() {
   return loadItem(CD_QUIZ_RESULTS)
 }
 
@@ -60,6 +60,6 @@ export function saveSettings(key, value) {
   saveItem(CD_QUIZ_SETTINGS, settings)
 }
 
-export function saveResults(results) {
+export function saveLocalResults(results) {
   saveItem(CD_QUIZ_RESULTS, results)
 }

@@ -21,6 +21,7 @@ const Results = (props) => {
       return (
         <tr key={idx}>
           <td>{idx + 1}</td>
+          <td>{result.title}</td>
           <td>{result.name}</td>
           <td>{result.number}</td>
           <td className='text-center'>{result.score}</td>
@@ -36,6 +37,7 @@ const Results = (props) => {
           <thead>
             <tr>
               <th className='text-center'>#</th>
+              <th>{t("Type")}</th>
               <th>{t('Name')}</th>
               <th>{t('id')}</th>
               <th className='text-center'>{t('Score')}</th>
@@ -52,7 +54,7 @@ const Results = (props) => {
   }
 
     return (
-      <Modal show={open} onHide={handleClose}>
+      <Modal show={open} onHide={handleClose} dialogClassName="results-modal">
         <Modal.Header closeButton>
           <Modal.Title>{t('Results')}</Modal.Title>
         </Modal.Header>

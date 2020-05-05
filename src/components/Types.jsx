@@ -10,7 +10,7 @@ import { mapImg } from '../data/data.js'
 import Image from 'react-bootstrap/Image'
 
 const Types = (props) => {
-  const { onStart} = props
+  const {webResults, onStart} = props
 
   const pictogram = (quizDef)  => {
     const textSpur = <div className="pictogram pictogram-border">{t("Spur")}</div>
@@ -54,22 +54,35 @@ const Types = (props) => {
   }
 
   const types = quizDefs.map(function (q, i) {
+    const buttonSize = q.title in webResults ? 4 : 3
+    const button = q.title in webResults ?
+    <Button
+      value={q.id}
+      onClick={null}
+      variant="success"
+      active="false"
+    >
+    {webResults[q.title].score + " / " + (webResults[q.title].wrong + webResults[q.title].score) + ", " + webResults[q.title].time + "s"}
+    </Button>
+    :
+    <Button
+      value={q.id}
+      onClick={(event) => onStart(parseInt(event.currentTarget.value, 10))}
+      variant="primary"
+    >
+    {t('Start')}
+    </Button>
+
     return (
-      <div className="col-md-4" key={i}>
+      <div className="col-md-6" key={i}>
         <Card className="my-2">
           <Card.Header className="font-weight-bold p-0">
             <Row className="m-1">
             <Col>
               {t(q.title)}
             </Col>
-            <Col xs={3}>
-            <Button
-              value={q.id}
-              onClick={(event) => onStart(parseInt(event.currentTarget.value, 10))}
-              variant="primary"
-            >
-              {t('Start')}
-            </Button>
+            <Col xs={buttonSize}>
+              {button}
             </Col>
             </Row>
           </Card.Header>

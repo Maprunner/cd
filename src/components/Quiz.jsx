@@ -6,7 +6,7 @@ import StartPage from './StartPage.jsx'
 import QuestionPage from './QuestionPage.jsx'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import {loadResults, saveResults, loadSettings, saveSettings} from './Persist.js'
+import {loadLocalResults, saveLocalResults, loadSettings, saveSettings} from './Persist.js'
 import Results from './Results.jsx'
 import ResultMessage from './ResultMessage.jsx'
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from '../data/data.js'
@@ -55,7 +55,7 @@ function setDictionary(dict) {
 class Quiz extends React.Component {
   constructor(props) {
     super(props) 
-    const settings = loadSettings() 
+    const settings = loadSettings()
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
@@ -66,32 +66,48 @@ class Quiz extends React.Component {
       answered: 0,
       score: 0,
       start: 0,
-      elapsed: 1,
+      elapsed: 0,
       quizRunning: false,
       displayResultsTable: false,
       displayNewResult: false,
       // definition for active quiz
       quizDef: {},
-      results: loadResults(),
+      localResults: loadLocalResults(),
+      webResults: {},
       name: settings.name,
       number: settings.number,
       language: settings.language,
-      answersPerQuestion: settings.answersPerQuestion,
-      canStart: false
+      answersPerQuestion: settings.answersPerQuestion
     }
   }
   componentDidMount() {
     this.onSelectLanguage(this.state.language)
-    // FirestoreService.authenticateAnonymously().then(() => {
-    //   //console.log("Logged in")
-    //   FirestoreService.registerForWebResults(0, this.handleWebResults)
-    //   //FirestoreService.registerForWebResults(1, this.handleWebResults)
-    //   //FirestoreService.registerForWebResults(2, this.handleWebResults)
-    // })
-    // .catch((error) => {
-    //    console.error("Error reading results: ", error);
-    // })
+    FirestoreService.authenticateAnonymously().then(() => {
+      console.log("Logged in")
+      if (this.state.number > 0) {
+        FirestoreService.getWebResults(this.state.number).then((results) => this.handleWebResults(results))
+      }
+    })
+    .catch((error) => {
+      console.error("Error reading results: ", error);
+    })
   }
+
+  handleWebResults = (results) => {
+    let webResults = {}
+    let number = this.state.number
+    results.forEach(function(doc) {
+      // doc.data() is never undefined for query doc snapshots
+      //console.log(doc.id, " => ", doc.data());
+      let data = doc.data()
+      if (number in data) {
+        webResults[doc.id] = data[number]
+      }
+    })
+    this.setState({
+      webResults: webResults
+    })
+  } 
 
   componentWillUnmount() {
     // shouldn't need this...
@@ -171,18 +187,17 @@ class Quiz extends React.Component {
     if (entry === undefined) {
       this.setState({
         number: num,
-        name: "",
-        canStart: false
+        name: ""
       });
       return;
     }
+    FirestoreService.getWebResults(number).then((results) => this.handleWebResults(results))
     console.log("Entry: " + entry.name + ", " + entry.number);
     saveSettings("number", number);
     saveSettings("name", entry.name);
     this.setState({
       number: number,
-      name: entry.name,
-      canStart: true,
+      name: entry.name
     });
   }
 
@@ -217,12 +232,14 @@ class Quiz extends React.Component {
   }
 
   onMatchFinished = (validFinish, score, attempts) => {
+    const elapsed = new Date() - this.state.start
     if (validFinish) {
       this.setState({
         answered: attempts,
-        score: score
+        score: score,
+        elapsed: elapsed
       })
-      this.saveResult(score, attempts) 
+      this.saveResult(elapsed, score, attempts) 
     } else {
       this.setState({
         quizRunning: false,
@@ -245,16 +262,12 @@ class Quiz extends React.Component {
     let q = this.state.questions[idx] 
     q.gotIt = gotIt 
     const answered = this.state.answered + 1 
-    this.setState({
-      questions: update(this.state.questions, { [idx]: { $set: q } }),
-      answered: answered,
-      score: score,
-      secsForThisQuestion: 0
-    })
+    let elapsed = this.state.elapsed
     if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
+      elapsed = new Date() - this.state.start
       clearInterval(this.timer) 
       clearInterval(this.questionTimer) 
-      this.saveResult(score, answered) 
+      this.saveResult(elapsed, score, answered)
     } else {
       this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 }) 
       if ((this.state.timerOption > 0) && (this.state.id !== TYPE_MATCH)) {
@@ -262,19 +275,43 @@ class Quiz extends React.Component {
         this.questionTimer = setInterval(this.onQuestionTimer, 1000) 
       }
     }
+    this.setState({
+      questions: update(this.state.questions, { [idx]: { $set: q } }),
+      answered: answered,
+      score: score,
+      secsForThisQuestion: 0,
+      elapsed: elapsed
+    })
+
   }
 
-  saveResult(score, from) {
-    const newResults = this.addNewResult({
+  saveResult(elapsed, score, from) {
+    const newResult = {
       title: this.state.quizDef.title,
       name: this.state.name,
       number: this.state.number,
       score: score,
       wrong: from - score,
-      time: parseFloat(this.state.elapsed / 100).toFixed(1)
-    }) 
+      time: parseFloat(elapsed / 1000).toFixed(1)
+    }
+    const newResults = this.adjustResultArray(
+      this.state.localResults,
+      newResult
+    )
+    saveLocalResults(newResults)
+    const result = {
+      time: parseFloat(elapsed / 1000).toFixed(1),
+      score: score,
+      wrong: from - score
+    }
+    let webResult = {}
+    webResult[this.state.number] = result
+    FirestoreService.saveWebResult(this.state.quizDef.title, webResult).then(
+      FirestoreService.getWebResults(this.state.number).then((results) => this.handleWebResults(results))
+    )
+
     this.setState({
-      results: newResults,
+      localResults: newResults,
       quizRunning: false,
       displayNewResult: true,
       type: TYPE_NONE
@@ -295,20 +332,11 @@ class Quiz extends React.Component {
     return newResults 
   }
 
-  addNewResult(result) {
-    const newResults = this.adjustResultArray(
-      this.state.results,
-      result
-    ) 
-    saveResults(newResults) 
-    return newResults 
-  }
-
   renderBody() {
     if (this.state.displayResultsTable) {
       return (
         <Results
-          results={this.state.results}
+          results={this.state.localResults}
           handleClose={this.onCloseResultsTable}
           open={true}
         />
@@ -328,6 +356,7 @@ class Quiz extends React.Component {
           answersPerQuestion={this.state.answersPerQuestion}
           name={this.state.name}
           number={this.state.number}
+          webResults={this.state.webResults}
         />
       ) 
     }

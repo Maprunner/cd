@@ -172,6 +172,7 @@ class StartPage extends React.Component {
       <div>
         <Types
           onStart={this.onStart}
+          webResults={this.props.webResults}
         />
         <Card className="m-1">
           <Card.Header className="font-weight-bold">

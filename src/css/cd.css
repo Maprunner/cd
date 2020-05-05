@@ -38,6 +38,11 @@ body {
   max-width: none !important;
 }
 
+.results-modal {
+  width: 50%;
+  max-width: none !important;
+}
+
 .pictogram {
   align-items: center;
   display: inline-flex;
