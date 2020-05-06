@@ -10,7 +10,7 @@ export const AnswerAsMap = memo((props) => {
     props.onClick(props.answer.desc)
   }
   const key = "c" + props.answer.id
-  console.log(key)
+  //console.log(key)
   return (
     <Col>
       <div className="map-container">

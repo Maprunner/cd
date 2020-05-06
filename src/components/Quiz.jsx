@@ -73,7 +73,7 @@ class Quiz extends React.Component {
       // definition for active quiz
       quizDef: {},
       localResults: loadLocalResults(),
-      webResults: {},
+      webResults: [],
       name: settings.name,
       number: settings.number,
       language: settings.language,
@@ -94,14 +94,16 @@ class Quiz extends React.Component {
   }
 
   handleWebResults = (results) => {
-    let webResults = {}
+    let webResults = []
     let number = this.state.number
     results.forEach(function(doc) {
       // doc.data() is never undefined for query doc snapshots
       //console.log(doc.id, " => ", doc.data());
       let data = doc.data()
       if (number in data) {
-        webResults[doc.id] = data[number]
+        let res = data[number]
+        res.title = doc.id
+        webResults.push(res)
       }
     })
     this.setState({
@@ -112,7 +114,8 @@ class Quiz extends React.Component {
   componentWillUnmount() {
     // shouldn't need this...
     clearInterval(this.timer) 
-    clearInterval(this.questionTimer) 
+    clearInterval(this.questionTimer)
+    FirestoreService.signOut()
   }
 
   onTick = () => {
@@ -239,13 +242,15 @@ class Quiz extends React.Component {
         score: score,
         elapsed: elapsed
       })
-      this.saveResult(elapsed, score, attempts) 
     } else {
       this.setState({
+        answered: attempts,
+        score: score,
+        elapsed: elapsed,
         quizRunning: false,
-        quizDef: {}
       }) 
     }
+    this.saveResult(elapsed, score, attempts)
   }
 
   onCheckAnswer = (answer) => {
@@ -286,6 +291,7 @@ class Quiz extends React.Component {
   }
 
   saveResult(elapsed, score, from) {
+    console.log("New result: ", score, from, elapsed)
     const newResult = {
       title: this.state.quizDef.title,
       name: this.state.name,
@@ -308,11 +314,26 @@ class Quiz extends React.Component {
     webResult[this.state.number] = result
     FirestoreService.saveWebResult(this.state.quizDef.title, webResult).then(
       FirestoreService.getWebResults(this.state.number).then((results) => this.handleWebResults(results))
-    )
+    ).catch((error) => {
+      console.error("Error saving results: ", error);
+    })
+    if (this.state.webResults.length === 1) {
+      console.log("Previous result: ", this.state.webResults[0])
+      const res = {
+        score: score + this.state.webResults[0].score,
+        wrong: from - score + this.state.webResults[0].wrong,
+        time: (parseFloat(elapsed / 1000) + parseFloat(this.state.webResults[0].time)).toFixed(1)
+      }
+      let lockdownResult = {}
+      lockdownResult[parseInt(this.state.number, 10)] = res
+      console.log("Lockdown result: ", lockdownResult)
+      FirestoreService.saveLockdownResult("e004", "s004", lockdownResult)
+    }
 
     this.setState({
       localResults: newResults,
       quizRunning: false,
+      quizDef: {},
       displayNewResult: true,
       type: TYPE_NONE
     }) 

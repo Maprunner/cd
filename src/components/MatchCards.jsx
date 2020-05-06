@@ -76,7 +76,7 @@ class MatchCards extends React.Component {
   }
 
   handleClose = () => {
-    this.props.onFinished(false)
+    this.props.onFinished(false, this.state.matched, this.state.attempts)
   }
 
   render() {

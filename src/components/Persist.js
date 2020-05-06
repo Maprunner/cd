@@ -1,5 +1,5 @@
 const CD_QUIZ_SETTINGS = 'ld-cdquiz-settings'
-const CD_QUIZ_RESULTS = 'ld-e0003-results'
+const CD_QUIZ_RESULTS = 'ld-e003-results'
 
 const defaultSettings = {
   name: "",

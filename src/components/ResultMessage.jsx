@@ -14,7 +14,7 @@ const ResultMessage = (props) => {
       </Modal.Header>
       <Modal.Body>
         <div>{children}</div>
-        {type !== TYPE_MATCH ? <AnswerIconGrid answers={questions} /> : null}
+        {type && type !== TYPE_MATCH ? <AnswerIconGrid answers={questions} /> : null}
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={handleClose}>OK</Button>

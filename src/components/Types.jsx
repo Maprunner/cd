@@ -54,15 +54,16 @@ const Types = (props) => {
   }
 
   const types = quizDefs.map(function (q, i) {
-    const buttonSize = q.title in webResults ? 4 : 3
-    const button = q.title in webResults ?
+    const idx = webResults.findIndex((result) => (result.title === q.title))
+    const buttonSize = ((idx > -1) && (webResults[idx].title === q.title)) ? 4 : 3
+    const button = ((idx > -1) && (webResults[idx].title === q.title)) ?
     <Button
       value={q.id}
       onClick={null}
       variant="success"
       active="false"
     >
-    {webResults[q.title].score + " / " + (webResults[q.title].wrong + webResults[q.title].score) + ", " + webResults[q.title].time + "s"}
+    {webResults[idx].score + " / " + (webResults[idx].wrong + webResults[idx].score) + ", " + webResults[idx].time + "s"}
     </Button>
     :
     <Button
