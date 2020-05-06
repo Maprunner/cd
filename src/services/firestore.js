@@ -4,22 +4,30 @@ import "firebase/firestore"
 import "firebase/auth"
 
 firebase.initializeApp(firebaseCDConfig)
-const lockdown = firebase.initializeApp(firebaseLockdownConfig, "lockdown-results")
+//const lockdown = firebase.initializeApp(firebaseLockdownConfig, "lockdown-results")
 const db = firebase.firestore()
 const resultsCollection = "testcd"
 const stageResultsCollection = "teststageResults"
 
 export const saveLockdownResult = (eventid, stageid, result) => {
-  lockdown.auth().signInAnonymously().then(() => {
-    console.log("Saving result for event", eventid, " for stage", stageid)
-    lockdown.firestore().collection(stageResultsCollection).doc(eventid).collection("stages").doc(stageid).set(result, {merge: true})
-  }).then(() => {
-    console.log("Signing out")
-    lockdown.auth().signOut()
-  }).catch((error) => {
+  console.log("Saving result for event", eventid, " for stage", stageid)
+  db.collection(stageResultsCollection).doc(eventid).collection("stages").doc(stageid).set(result, {merge: true})
+  .catch((error) => {
     console.error("Error saving Lockdown results: ", error);
   })
 }
+
+// export const saveLockdownResult = (eventid, stageid, result) => {
+//   lockdown.auth().signInAnonymously().then(() => {
+//     console.log("Saving result for event", eventid, " for stage", stageid)
+//     lockdown.firestore().collection(stageResultsCollection).doc(eventid).collection("stages").doc(stageid).set(result, {merge: true})
+//   }).then(() => {
+//     console.log("Signing out")
+//     lockdown.auth().signOut()
+//   }).catch((error) => {
+//     console.error("Error saving Lockdown results: ", error);
+//   })
+// }
 
 export const authenticateAnonymously = () => {
   return firebase.auth().signInAnonymously()

@@ -195,7 +195,7 @@ class Quiz extends React.Component {
       return;
     }
     FirestoreService.getWebResults(number).then((results) => this.handleWebResults(results))
-    console.log("Entry: " + entry.name + ", " + entry.number);
+    //console.log("Entry: " + entry.name + ", " + entry.number);
     saveSettings("number", number);
     saveSettings("name", entry.name);
     this.setState({
@@ -291,7 +291,7 @@ class Quiz extends React.Component {
   }
 
   saveResult(elapsed, score, from) {
-    console.log("New result: ", score, from, elapsed)
+    //console.log("New result: ", score, from, elapsed)
     const newResult = {
       title: this.state.quizDef.title,
       name: this.state.name,
@@ -318,7 +318,7 @@ class Quiz extends React.Component {
       console.error("Error saving results: ", error);
     })
     if (this.state.webResults.length === 1) {
-      console.log("Previous result: ", this.state.webResults[0])
+      //console.log("Previous result: ", this.state.webResults[0])
       const res = {
         score: score + this.state.webResults[0].score,
         wrong: from - score + this.state.webResults[0].wrong,
@@ -326,7 +326,7 @@ class Quiz extends React.Component {
       }
       let lockdownResult = {}
       lockdownResult[parseInt(this.state.number, 10)] = res
-      console.log("Lockdown result: ", lockdownResult)
+      //console.log("Lockdown result: ", lockdownResult)
       FirestoreService.saveLockdownResult("e004", "s004", lockdownResult)
     }
 

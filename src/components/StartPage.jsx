@@ -21,12 +21,6 @@ class StartPage extends React.Component {
         item.use = settings[item.name]
       }
     })
-    // testing
-    baseCategories[0].use = false
-    baseCategories[1].use = true
-    baseCategories[2].use = false
-    baseCategories[3].use = false
-    baseCategories[4].use = false
     let questions = this.filterQuestions(baseCategories)
     this.state = {
       questions: questions,
