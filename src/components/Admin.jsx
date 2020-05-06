@@ -391,10 +391,10 @@ class Admin extends React.Component {
           let b = x.sort((a, b) => {
             if (winnerPoints === 1) {
               // low to high
-              return b - a
+              return a - b
             } else {
               // high to low
-              return a - b
+              return b - a
             }
           })
           // remove all 0 entries
