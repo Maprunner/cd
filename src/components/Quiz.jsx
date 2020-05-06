@@ -462,11 +462,12 @@ class Quiz extends React.Component {
         />
         <div className='container p-5'>
         <Alert variant={"primary"}>
-          Results are now available on the{' '}
-          <Alert.Link href="https://lockdownorienteering.wordpress.com/easter/">Lockdown Orienteering website</Alert.Link>.
+          Stage 4 of the {' '}
+          <Alert.Link href="https://lockdownorienteering.wordpress.com/classic-weekend-entry/">Lockdown Orienteering Classic Weekend </Alert.Link>
+          will be available here from Friday.
         </Alert>
         <Alert variant={"warning"}>
-          You can try the control description quiz again on the{' '}
+          You can warm up on the new map symbol options on the {' '}
           <Alert.Link href="https://www.maprunner.co.uk/cd/">Maprunner website</Alert.Link>.
         </Alert>
           {/* {body}
