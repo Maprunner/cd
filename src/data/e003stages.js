@@ -2,6 +2,7 @@
 const timeReg = "^[0-9]*[0-9]:[0-5][0-9]$"
 const scoreReg = "^[0-9]+(\.[0-9]+){0,1}$"
 const numReg = "^[1-9]*"
+const mazeTimeReg="^[0-9]*[0-9]\.[0-9][0-9]$"
 
 const e003stages = [
   { id: 1, name: "Forest Route Choice", fields: [{name: "score", type: "input", valid: scoreReg}, {name: "time", type: "input", valid: timeReg}], 
@@ -18,7 +19,7 @@ const e003stages = [
   { id: 6, name: "Catching Features Round 2",
     fields: [{name: "username", type: "input", valid: textReg}, {name: "course", type: "select", valid: ["Course A", "Course B", "Course C"]}, {name: "time", type: "time", valid: timeReg}],
     scoring: ["course", "time"], scoreOrder: ["asc", "asc"], isAuto: false, isOpen: false },
-  { id: 7, name: "The Maze", fields: [{name: "course", type: "select", valid: ["A", "B", "C"]}, {name: "time", type: "input", valid: timeReg}],
+  { id: 7, name: "The Maze", fields: [{name: "course", type: "select", valid: ["A", "B", "C"]}, {name: "time", type: "input", valid: mazeTimeReg}],
     scoring: ["course", "time"], scoreOrder: ["asc", "asc"], isAuto: false, isOpen: false },
   { id: 8, name: "Up or Down?", fields: [{name: "score", type: "input", valid: scoreReg}, {name: "time", type: "input", valid: timeReg}],
     scoring: ["score", "time"], scoreOrder: ["desc", "asc"], isAuto: false, isOpen: false },

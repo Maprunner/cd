@@ -494,7 +494,7 @@ class Admin extends React.Component {
     }
     console.log(newResults)
   
-   // FirestoreService.saveResultsForEvent("e003", newResults)
+   FirestoreService.saveResultsForEvent("e003", newResults)
   }
 
 saveStageDetails = () => {
@@ -511,9 +511,9 @@ createEvent003 = () => {
   const eventid = "e003"
   let event = {
     description: "A weekend of virtual classic orienteering",
-    name: "Classic weekend",
-    dateFrom: 1588762800,
-    dateTo: 1589151599,
+    name: "Classic Weekend",
+    dateFrom: 1588723200000,
+    dateTo: 1589065200000,
     winnerPoints: 1000,
     messageTitle: "",
     message: ""
