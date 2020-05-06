@@ -466,15 +466,15 @@ class Admin extends React.Component {
     let newResults = []
     for (let row = 0; row < data.length; row = row + 1) {
       let r = data[row]
-      if (r.length < 6) {
+      if (r.length < 8) {
         continue
       }
       let result = {}
-      result.id = r[0]
-      result.name = r[1]
-      result.ageclass = r[2] 
-      result.club = r[3]
-      result.country = r[4]
+      result.id = r[1]
+      result.name = r[2]
+      result.ageclass = "" 
+      result.club = r[6]
+      result.country = r[7]
       result.class = r[5] 
       result.stageScore= []
       result.stagePos = []
