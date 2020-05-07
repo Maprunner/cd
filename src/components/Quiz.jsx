@@ -83,7 +83,6 @@ class Quiz extends React.Component {
   componentDidMount() {
     this.onSelectLanguage(this.state.language)
     FirestoreService.authenticateAnonymously().then(() => {
-      console.log("Logged in")
       if (this.state.number > 0) {
         FirestoreService.getWebResults(this.state.number).then((results) => this.handleWebResults(results))
       }
