@@ -1,14 +1,15 @@
 import * as firebase from "firebase/app";
-import {firebaseLockdownConfig} from "./config.js";
+import {firebaseLockdownConfig, firebaseCDConfig} from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
-const eventCollection = "events"
-const resultCollection = "results"
-const runnerCollection = "runners"
+const eventCollection = "testevents"
+const resultCollection = "testresults"
+const runnerCollection = "testrunners"
 const stageResultCollection = "teststageResults"
+const config = firebaseCDConfig
 
-firebase.initializeApp(firebaseLockdownConfig);
+firebase.initializeApp(config);
 const db = firebase.firestore();
 
 export const authenticateAnonymously = () => {
