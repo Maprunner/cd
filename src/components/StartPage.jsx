@@ -167,6 +167,7 @@ class StartPage extends React.Component {
         <Types
           onStart={this.onStart}
           webResults={this.props.webResults}
+          btnDisabled={this.props.name.length === 0}
         />
         <Card className="m-1">
           <Card.Header className="font-weight-bold">

@@ -10,7 +10,7 @@ import { mapImg } from '../data/data.js'
 import Image from 'react-bootstrap/Image'
 
 const Types = (props) => {
-  const {webResults, onStart} = props
+  const {webResults, onStart, btnDisabled} = props
 
   const pictogram = (quizDef)  => {
     const textSpur = <div className="pictogram pictogram-border">{t("Spur")}</div>
@@ -56,7 +56,7 @@ const Types = (props) => {
   const types = quizDefs.map(function (q, i) {
     const idx = webResults.findIndex((result) => (result.title === q.title))
     const buttonSize = ((idx > -1) && (webResults[idx].title === q.title)) ? 4 : 3
-    const button = ((idx > -1) && (webResults[idx].title === q.title)) ?
+    const button = ((idx > -1) && (webResults[idx].title === q.title))  ?
     <Button
       value={q.id}
       onClick={null}
@@ -68,6 +68,7 @@ const Types = (props) => {
     :
     <Button
       value={q.id}
+      disabled={btnDisabled}
       onClick={(event) => onStart(parseInt(event.currentTarget.value, 10))}
       variant="primary"
     >
