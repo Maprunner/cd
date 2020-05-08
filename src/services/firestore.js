@@ -3,11 +3,11 @@ import { firebaseCDConfig, firebaseLockdownConfig } from "./config.js"
 import "firebase/firestore"
 import "firebase/auth"
 
-firebase.initializeApp(firebaseCDConfig)
-//const lockdown = firebase.initializeApp(firebaseLockdownConfig, "lockdown-results")
+firebase.initializeApp(firebaseLockdownConfig)
+// const lockdown = firebase.initializeApp(firebaseLockdownConfig, "lockdown-results")
 const db = firebase.firestore()
-const resultsCollection = "testcd"
-const stageResultsCollection = "teststageResults"
+const resultsCollection = "results-cd"
+const stageResultsCollection = "stageResults"
 
 export const saveLockdownResult = (eventid, stageid, result) => {
   console.log("Saving result for event", eventid, " for stage", stageid)

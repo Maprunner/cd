@@ -166,7 +166,7 @@ export const quizDefs = [
   from: "cd",
   to: "map",
   type: "pick",
-  caption: 'Identify the text description for a given symbol'
+  caption: 'Identify the map item for a given symbol'
 },
 {
   title: 'Match Symbols and Map',
@@ -174,7 +174,7 @@ export const quizDefs = [
   from: "map",
   to: "cd",
   type: "match",
-  caption: 'Match symbols and text'
+  caption: 'Match symbols and map'
 }, 
 ]
 

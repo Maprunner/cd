@@ -8,11 +8,6 @@ const QuizType = memo((props) => {
     <Card.Header className="font-weight-bold">
       {t(props.title)}
     </Card.Header>
-    <Card.Body>
-      <Card.Text>
-        {t(props.caption)}
-      </Card.Text>
-    </Card.Body>
   </Card>
 )}
 )
