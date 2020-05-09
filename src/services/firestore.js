@@ -3,11 +3,11 @@ import {firebaseLockdownConfig, firebaseCDConfig} from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
-const eventCollection = "testevents"
+const eventCollection = "events"
 const resultCollection = "testresults"
 const runnerCollection = "testrunners"
-const stageResultCollection = "teststageResults"
-const config = firebaseCDConfig
+const stageResultCollection = "stageResults"
+const config = firebaseLockdownConfig
 
 firebase.initializeApp(config);
 const db = firebase.firestore();
@@ -17,7 +17,7 @@ export const authenticateAnonymously = () => {
 };
 
 export const saveResultsForEvent = (eventid, results) => {
-  return db.collection(resultCollection).doc(eventid).set({data: JSON.stringify(results)})
+ // return db.collection(resultCollection).doc(eventid).set({data: JSON.stringify(results)})
 }
 
 export const getEvents = () => {
@@ -26,55 +26,40 @@ export const getEvents = () => {
 }
 
 export const addRunner = (id, runner) => {
-  return db.collection(runnerCollection).doc(id).set(runner)
+  //return db.collection(runnerCollection).doc(id).set(runner)
 }
 
 export const addEvent = (id, event) => {
-  return db.collection(eventCollection).doc(id).set(event)
+  //return db.collection(eventCollection).doc(id).set(event)
 }
 
 export const getResultsByEvent = (event) => {
   return db.collection(resultCollection).doc(event).get()
 }
 
-export const saveResultForEvent = (eventid, runnerid, result) => {
-  return db.collection(stageResultCollection).doc(eventid).collection("runners")
-  .doc(runnerid).set(result, {merge: true})
+export const getStageResultsForEvent = (eventid, stageid) => {
+  console.log("Get stage results for ", eventid, " for ", stageid, " from ", stageResultCollection)
+  return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).get()
 }
 
-export const getStageResultsForEvent002 = () => {
-  return db.collection("stageResults").doc("e002").collection("runners")
-  .get()
+export const writeStageResultsForEvent = (eventid, stageid, results) => {
+  console.log("Writing stage results for ", eventid, " for ", stageid, " to ", stageResultCollection)
+  //return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results)
 }
 
-export const getStageResultsForEvent = (eventid) => {
-  console.log("Get stage results for ", eventid, " from ", stageResultCollection)
-  return db.collection(stageResultCollection).doc(eventid).collection("stages").get()
-}
+// export const updateStagesForEvent = (id, stages) => {
+//   return db.collection(eventCollection).doc(id).set({stages: stages}, {merge: true})
+// }
 
-export const writeStageResultsForEvent003 = (stage, results) => {
-  return db.collection(stageResultCollection).doc("e003").collection("stages").doc(stage).set(results)
-}
+// export const updateCategoriesForEvent = (id, cats) => {
+//   return db.collection(eventCollection).doc(id).set({categories: cats}, {merge: true})
+// }
 
-export const getStageResultsForRunner = (eventid, runnerid) => {
-  return db.collection(stageResultCollection).doc(eventid).collection("runners").doc(runnerid)
-  .get()
-}
-
-
-export const updateStagesForEvent = (id, stages) => {
-  return db.collection(eventCollection).doc(id).set({stages: stages}, {merge: true})
-}
-
-export const updateCategoriesForEvent = (id, cats) => {
-  return db.collection(eventCollection).doc(id).set({categories: cats}, {merge: true})
-}
-
-export const registerForWebResults = (type, onChange) => {
-  return db.collection(resultCollection)
-    .where("type", "==", type)
-    .orderBy("score", "desc")
-    .orderBy("wrong", "asc")
-    .orderBy("time", "asc")
-    .onSnapshot(onChange)
-}
+// export const registerForWebResults = (type, onChange) => {
+//   return db.collection(resultCollection)
+//     .where("type", "==", type)
+//     .orderBy("score", "desc")
+//     .orderBy("wrong", "asc")
+//     .orderBy("time", "asc")
+//     .onSnapshot(onChange)
+// }
