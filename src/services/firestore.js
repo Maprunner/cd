@@ -4,7 +4,7 @@ import "firebase/firestore";
 import "firebase/auth";
 
 const eventCollection = "events"
-const resultCollection = "testresults"
+const resultCollection = "results"
 const runnerCollection = "testrunners"
 const stageResultCollection = "stageResults"
 const config = firebaseLockdownConfig
@@ -17,7 +17,7 @@ export const authenticateAnonymously = () => {
 };
 
 export const saveResultsForEvent = (eventid, results) => {
- // return db.collection(resultCollection).doc(eventid).set({data: JSON.stringify(results)})
+ return db.collection(resultCollection).doc(eventid).set({data: JSON.stringify(results)})
 }
 
 export const getEvents = () => {
@@ -44,7 +44,7 @@ export const getStageResultsForEvent = (eventid, stageid) => {
 
 export const writeStageResultsForEvent = (eventid, stageid, results) => {
   console.log("Writing stage results for ", eventid, " for ", stageid, " to ", stageResultCollection)
-  //return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results)
+  return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results)
 }
 
 // export const updateStagesForEvent = (id, stages) => {

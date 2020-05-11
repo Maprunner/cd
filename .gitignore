@@ -1,6 +1,7 @@
 # firebase config
 src/services/config*.js
 src/components/entries.js
+src/results
 
 # Windows image file caches
 Thumbs.db

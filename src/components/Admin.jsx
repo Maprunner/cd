@@ -31,20 +31,21 @@ class Admin extends React.Component {
       <Container width="100%">
       <Row className="m-5">
           <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s001")} label="Stage 1: Forest route choice"/>
+          </Col>
+          <Col>
           <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Spot the difference"/>
           </Col>
           <Col>
           <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s005")} label="Stage 5: Video"/>
           </Col>
-          <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s008")} label="Stage 8: Up/Down"/>
-          </Col>
          </Row>
         <Row className="m-5">
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s009")} label="Stage 9: Photo memory"/>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s008")} label="Stage 8: Up/Down"/>
           </Col>
           <Col>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s009")} label="Stage 9: Photo memory"/>
           </Col>
           <Col>
         Create dummy results for e003
@@ -264,9 +265,10 @@ class Admin extends React.Component {
           let time = result[stageInfo.scoring[j]]
           switch (stageid) {
             case "s005":
-              result[stageInfo.scoring[j]] = time.slice(2)
+              result[stageInfo.scoring[j]] = time.slice(3)
               break
             case "s008":
+            case "s001":
               let bits = []
               bits = time.split(":")
               if (bits.length !== 2) {
@@ -293,7 +295,7 @@ class Admin extends React.Component {
     }
     console.log("duplicated runners " , duplicatedRunners)
     console.log("Saving ", stageResult)
-    FirestoreService.writeStageResultsForEvent(eventid, stageid, stageResult) 
+    //FirestoreService.writeStageResultsForEvent(eventid, stageid, stageResult) 
   }
 
 getStageId = (id) => {
@@ -338,7 +340,7 @@ createDummyResults = (data, fileinfo) => {
   }
   console.log(newResults)
 
- //FirestoreService.saveResultsForEvent("e003", newResults)
+ FirestoreService.saveResultsForEvent("e003", newResults)
 }
 
 saveStageDetails = () => {
