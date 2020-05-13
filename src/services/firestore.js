@@ -4,9 +4,12 @@ import "firebase/firestore";
 import "firebase/auth";
 
 const eventCollection = "events"
-const resultCollection = "results"
-const runnerCollection = "testrunners"
-const stageResultCollection = "stageResults"
+//const resultCollection = "results"
+const runnerCollection = "eventRunners"
+//const stageResultCollection = "stageResults"
+// const eventCollection = "testevents"
+const resultCollection = "testresults"
+const stageResultCollection = "teststageResults"
 const config = firebaseLockdownConfig
 
 firebase.initializeApp(config);
@@ -25,16 +28,12 @@ export const getEvents = () => {
   .get()
 }
 
-export const addRunner = (id, runner) => {
-  //return db.collection(runnerCollection).doc(id).set(runner)
-}
-
 export const addEvent = (id, event) => {
-  //return db.collection(eventCollection).doc(id).set(event)
+  return db.collection(eventCollection).doc(id).set(event)
 }
 
-export const getResultsByEvent = (event) => {
-  return db.collection(resultCollection).doc(event).get()
+export const getLiveResultsByEvent = (event) => {
+  return db.collection("results").doc(event).get()
 }
 
 export const getStageResultsForEvent = (eventid, stageid) => {
@@ -47,19 +46,13 @@ export const writeStageResultsForEvent = (eventid, stageid, results) => {
   return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results)
 }
 
-// export const updateStagesForEvent = (id, stages) => {
-//   return db.collection(eventCollection).doc(id).set({stages: stages}, {merge: true})
-// }
+export const writeRunnersByEvent = (eventid, runners) => {
+  console.log("Writing runners for ", eventid)
+  return db.collection(runnerCollection).doc(eventid).set(runners)
+}
 
-// export const updateCategoriesForEvent = (id, cats) => {
-//   return db.collection(eventCollection).doc(id).set({categories: cats}, {merge: true})
-// }
+export const getRunnersByEvent = (eventid) => {
+  console.log("Getting runners for ", eventid)
+  return db.collection(runnerCollection).doc(eventid).get()
+}
 
-// export const registerForWebResults = (type, onChange) => {
-//   return db.collection(resultCollection)
-//     .where("type", "==", type)
-//     .orderBy("score", "desc")
-//     .orderBy("wrong", "asc")
-//     .orderBy("time", "asc")
-//     .onSnapshot(onChange)
-// }

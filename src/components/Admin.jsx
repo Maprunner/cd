@@ -4,18 +4,20 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e003stages from '../data/e003stages.js'
+import e004stages from '../data/e004stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container'
+import EventSelect from "./EventSelect"
 
 class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      eventid: "e001",
       events: [],
+      runners: [],
       results: {},
       stages: [],
       stageResults: []
@@ -29,17 +31,10 @@ class Admin extends React.Component {
         onShowResultsTable={this.onShowResultsTable}
       />
       <Container width="100%">
-      <Row className="m-5">
-          <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s001")} label="Stage 1: Forest route choice"/>
-          </Col>
-          <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s003")} label="Stage 3: Spot the difference"/>
-          </Col>
-          <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s005")} label="Stage 5: Video"/>
-          </Col>
-         </Row>
+      <EventSelect 
+        currentEventid={this.state.eventid}
+        onChange={this.handleEventidChange}
+      />
         <Row className="m-5">
           <Col>
           <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s008")} label="Stage 8: Up/Down"/>
@@ -48,49 +43,48 @@ class Admin extends React.Component {
           <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s009")} label="Stage 9: Photo memory"/>
           </Col>
           <Col>
-        Create dummy results for e003
-        <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(data, fileInfo)} />
+        Create dummy results for {this.state.eventid}
+        <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(this.state.eventid, data, fileInfo)} />
         </Col>
         </Row>
         <Row className="m-5">
         <Col>
-        <Button
-          onClick={this.getStageResults}
-          variant="warning"
-        >
-          Get stage results for e003
-        </Button>
+        <CSVReader onFileLoaded={(data, fileInfo) => this.createEventRunners(this.state.eventid, data, fileInfo)} label="Write eventRunners"/>
         </Col>
         <Col>
+        <Button
+          onClick={() => this.getRunnersForEvent(this.state.eventid)}
+          variant="warning"
+        >
+          Get runners for {this.state.eventid}
+        </Button>
         </Col>
         <Col></Col>
         </Row>
         <Row className="m-5">
           <Col>
         <Button
-          onClick={this.createEvent003}
+          onClick={() => this.createEvent(this.state.eventid)}
           variant="primary"
-          disabled={false}
+          disabled={true}
         >
-          Create event e003
+          Create event {this.state.eventid}
         </Button>
         </Col>
         <Col>
         <Button
-          value = "e003"
-          onClick={this.getResultsForEvent}
+          onClick={() => this.getResultsForEvent(this.state.eventid)}
           variant="primary"
         >
-          Get results for e003
+          Get results for {this.state.eventid}
         </Button>
         </Col>
         <Col>
         <Button
-          value="e003"
-          onClick={this.calculateOverallResults}
+          onClick={() => this.rewriteResults(this.state.eventid)}
           variant="primary"
         >
-          Calculate results for e003
+          Rewrite results for {this.state.eventid}
         </Button>
         </Col>
         </Row>
@@ -99,6 +93,22 @@ class Admin extends React.Component {
     </div>
   )
 }
+
+handleEventidChange = (event) => {
+  this.setState({
+    eventid: event.target.value
+  })
+}
+
+// {/* <Col>
+// <Button
+//   onClick={() => this.calculateOverallResults(this.state.eventid)}
+//   variant="primary"
+// >
+//   Calculate results for {this.state.eventid}
+// </Button>
+// </Col> */}
+
 
   componentDidMount() {
     FirestoreService.authenticateAnonymously().then(() => {
@@ -131,12 +141,57 @@ class Admin extends React.Component {
     console.log(id)
   }
 
-  getResultsForEvent = (event) => {
-    const id = event.target.value
-    FirestoreService.getResultsByEvent(id).then((rawResults) =>{
+  createEventRunners = (eventid, data, fileinfo) => {
+    let runners = {}
+    for (let row = 0; row < data.length; row = row + 1) {
+      let r = data[row]
+      if (r.length < 6) {
+        continue
+      }
+      let runner = {}
+      runner.name = r[2]
+      runner.club = r[3]
+      runner.country = r[4]
+      runner.class = r[5] 
+      runners[r[1]] = runner
+    }
+    console.log(runners)
+    FirestoreService.writeRunnersByEvent(eventid, runners)
+  }
+
+  getRunnersForEvent = (eventid) => {
+    FirestoreService.getRunnersByEvent(eventid).then((data) =>{
+      const raw = data.data()
+      let runners = []
+      for (const runnerid in raw) {
+        let runner = raw[runnerid]
+        runner.id = runnerid
+        runners.push(runner)
+       }
+      console.table(runners)
+      this.setState({
+        runners: runners
+        })
+    })
+    .catch((error) => {
+      console.error("Error getting runners: ", error);
+    })
+  }
+
+  getResultsForEvent = (eventid) => {
+    FirestoreService.getLiveResultsByEvent(eventid).then((rawResults) =>{
       const r = rawResults.data()
       const results = JSON.parse(r.data)
       console.log("Got results")
+
+      results.map((r) => {
+        delete r.club
+        delete r.ageclass
+        delete r.name
+        delete r.country
+        delete r.class
+        return r
+      })
       this.setState({
         results: results
         })
@@ -146,8 +201,7 @@ class Admin extends React.Component {
     })
   }
 
-  getStageResults = () => {
-    const eventid = "e003"
+  getStageResults = (eventid) => {
     const stageid = "s004"
     FirestoreService.getStageResultsForEvent(eventid, stageid).then((data) => {
       const rawResults = data.data()
@@ -217,11 +271,10 @@ class Admin extends React.Component {
     return formattedtime;
   }
 
-  createStageResults = (data, fileInfo, stageid) => {
+  createStageResults = (data, fileInfo, eventid, stageid) => {
     // csv result parser assuming csv file
     const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
-    const eventid = "e003"
-    // VERY BAD WAY OF INDEXING FOR REQUIRED EVENT DATA
+     // VERY BAD WAY OF INDEXING FOR REQUIRED EVENT DATA
     const stageInfo = this.state.events[2].stages[stageno - 1]
     console.log("Processing results for stage " + stageno)
     console.log(stageInfo)
@@ -308,7 +361,12 @@ getStageId = (id) => {
   return "s" + n 
 }
 
-createDummyResults = (data, fileinfo) => {
+rewriteResults = (eventid) => {
+  console.log(this.state.results)
+  FirestoreService.saveResultsForEvent(eventid, this.state.results)
+}
+
+createDummyResults = (eventid, data, fileinfo) => {
   let newResults = []
   for (let row = 0; row < data.length; row = row + 1) {
     let r = data[row]
@@ -340,7 +398,7 @@ createDummyResults = (data, fileinfo) => {
   }
   console.log(newResults)
 
- FirestoreService.saveResultsForEvent("e003", newResults)
+ FirestoreService.saveResultsForEvent(eventid, newResults)
 }
 
 saveStageDetails = () => {
@@ -353,35 +411,29 @@ saveStageDetails = () => {
 //FirestoreService.updateStagesForEvent("e003", stages)
 }
 
-createEvent003 = () => {
-const eventid = "e003"
+createEvent = (eventid) => {
 let event = {
-  description: "A weekend of virtual classic orienteering",
-  name: "Classic Weekend",
-  dateFrom: 1588723200000,
-  dateTo: 1589065200000,
-  winnerPoints: 1000,
+  description: "Five virtual orienteering stages for World Orienteering Day",
+  name: "World Orienteering Day",
+  dateFrom: Date.parse('13 May 2020 00:01:00 GMT'), 
+  dateTo: Date.parse('16 May 2020 00:01:00 GMT'),
+  winnerPoints: 2000,
   messageTitle: "",
   message: ""
 }
 let stages = []
-e003stages.forEach((stage) => {
+e004stages.forEach((stage) => {
   stages.push(stage)
 })
 event.stages = stages
 let cats = []
 const cat0 = {
-  countingStages: 8,
-  name: "10-stage",
-  stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  countingStages: 4,
+  name: "5-stage",
+  stages: [0, 1, 2, 3, 4]
 }
 cats.push(cat0)
-const cat1 = {
-  countingStages: 6,
-  name: "7-stage",
-  stages: [0, 2, 3, 4, 6, 7, 8]
-}
-cats.push(cat1)
+
 event.categories = cats
 
 console.log(event)
@@ -389,14 +441,29 @@ console.log(event)
 FirestoreService.addEvent(eventid, event)
 }
 
-calculateOverallResults = () =>  {
-  const eventid = "e003"
-  const eventidx = 0
+calculateOverallResults = (eventid) =>  {
+  // const eventidx = 2
+  // const event = this.state.events[eventidx]
+  // FirestoreService.getResultsByEvent(eventid).then((results) => {
+  //   console.log("Got results")
+  //   const stageResults = []
+  //   for (let i = 0; i < event.stages.length; i = i + 1) {
+  //     FirestoreService.getStageResultsForEvent(eventid, this.getStageId( i + 1)).then((stageResult) => {
+  //       stageResults[i] = stageResult
+  //     })
+  //   }
+  // }).then((results, stageResults) => {
+  //   // this.doCalcs(eventid, results, stageResults)
+  //   console.log(stageResults)
+  // })
+}
+
+doCalcs = (eventid, event, results, stageResults) => {
   console.log("Generating results for event " + eventid)
-  let newResults = JSON.parse(JSON.stringify(this.state.results))
-  const stages = this.state.events[eventidx].stages
-  const categories = this.state.events[eventidx].categories
-  const winnerPoints = this.state.events[eventidx].winnerPoints
+  let newResults = JSON.parse(JSON.stringify(results))
+  const stages = event.stages
+  const categories = event.categories
+  const winnerPoints = event.winnerPoints
   //console.table(stages)
   //console.table(categories)
   newResults.forEach((res) => {
