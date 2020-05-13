@@ -6,10 +6,10 @@ import "firebase/auth";
 const eventCollection = "events"
 //const resultCollection = "results"
 const runnerCollection = "eventRunners"
-//const stageResultCollection = "stageResults"
+const stageResultCollection = "stageResults"
 // const eventCollection = "testevents"
 const resultCollection = "testresults"
-const stageResultCollection = "teststageResults"
+// const stageResultCollection = "teststageResults"
 const config = firebaseLockdownConfig
 
 firebase.initializeApp(config);
@@ -43,7 +43,7 @@ export const getStageResultsForEvent = (eventid, stageid) => {
 
 export const writeStageResultsForEvent = (eventid, stageid, results) => {
   console.log("Writing stage results for ", eventid, " for ", stageid, " to ", stageResultCollection)
-  return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results)
+  return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).set(results, {merge: true})
 }
 
 export const writeRunnersByEvent = (eventid, runners) => {

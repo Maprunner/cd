@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e001",
+      eventid: "e004",
       events: [],
       runners: [],
       results: {},
@@ -37,11 +37,10 @@ class Admin extends React.Component {
       />
         <Row className="m-5">
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s008")} label="Stage 8: Up/Down"/>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, this.state.eventid, "s001")} label="Stage 1 Streetview"/>
           </Col>
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, "s009")} label="Stage 9: Photo memory"/>
-          </Col>
+         </Col>
           <Col>
         Create dummy results for {this.state.eventid}
         <CSVReader onFileLoaded={(data, fileInfo) => this.createDummyResults(this.state.eventid, data, fileInfo)} />
@@ -145,15 +144,15 @@ handleEventidChange = (event) => {
     let runners = {}
     for (let row = 0; row < data.length; row = row + 1) {
       let r = data[row]
-      if (r.length < 6) {
+      if (r.length < 5) {
         continue
       }
       let runner = {}
-      runner.name = r[2]
-      runner.club = r[3]
-      runner.country = r[4]
-      runner.class = r[5] 
-      runners[r[1]] = runner
+      runner.name = r[1]
+      runner.club = r[4]
+      runner.country = r[2]
+      runner.class = r[3] 
+      runners[r[0]] = runner
     }
     console.log(runners)
     FirestoreService.writeRunnersByEvent(eventid, runners)
@@ -184,14 +183,14 @@ handleEventidChange = (event) => {
       const results = JSON.parse(r.data)
       console.log("Got results")
 
-      results.map((r) => {
-        delete r.club
-        delete r.ageclass
-        delete r.name
-        delete r.country
-        delete r.class
-        return r
-      })
+      // results.map((r) => {
+      //   delete r.club
+      //   delete r.ageclass
+      //   delete r.name
+      //   delete r.country
+      //   delete r.class
+      //   return r
+      // })
       this.setState({
         results: results
         })
@@ -275,7 +274,7 @@ handleEventidChange = (event) => {
     // csv result parser assuming csv file
     const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
      // VERY BAD WAY OF INDEXING FOR REQUIRED EVENT DATA
-    const stageInfo = this.state.events[2].stages[stageno - 1]
+    const stageInfo = this.state.events[3].stages[stageno - 1]
     console.log("Processing results for stage " + stageno)
     console.log(stageInfo)
     // read header row to find all required scoring columns
@@ -317,11 +316,13 @@ handleEventidChange = (event) => {
         if (stageInfo.scoring[j] === "time") {
           let time = result[stageInfo.scoring[j]]
           switch (stageid) {
-            case "s005":
+            case "s001":
+              result[stageInfo.scoring[j]] = time
+              break
+            case "s00x":
               result[stageInfo.scoring[j]] = time.slice(3)
               break
-            case "s008":
-            case "s001":
+            case "s00y":
               let bits = []
               bits = time.split(":")
               if (bits.length !== 2) {
@@ -333,8 +334,7 @@ handleEventidChange = (event) => {
               result[stageInfo.scoring[j]] = (secs + bigsecs).toFixed(2)
               console.log(runnerid, result[stageInfo.scoring[j]])
               break
-              case "s003":
-              case "s009": 
+              case "s00z":
             result[stageInfo.scoring[j]] = this.formatSecsAsMMSS(time)
               break
             default:
@@ -348,7 +348,7 @@ handleEventidChange = (event) => {
     }
     console.log("duplicated runners " , duplicatedRunners)
     console.log("Saving ", stageResult)
-    //FirestoreService.writeStageResultsForEvent(eventid, stageid, stageResult) 
+    FirestoreService.writeStageResultsForEvent(eventid, stageid, stageResult) 
   }
 
 getStageId = (id) => {

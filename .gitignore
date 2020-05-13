@@ -2,6 +2,8 @@
 src/services/config*.js
 src/components/entries.js
 src/results
+src/data/*.csv
+src/data/*.xlsx
 
 # Windows image file caches
 Thumbs.db
