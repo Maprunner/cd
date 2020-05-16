@@ -48,7 +48,6 @@ class Admin extends React.Component {
         </Row>
         <Row className="m-5">
         <Col>
-        <CSVReader onFileLoaded={(data, fileInfo) => this.createEventRunners(this.state.eventid, data, fileInfo)} label="Write eventRunners"/>
         </Col>
         <Col>
         <Button
@@ -58,14 +57,15 @@ class Admin extends React.Component {
           Get runners for {this.state.eventid}
         </Button>
         </Col>
-        <Col></Col>
+        <Col>
+        <CSVReader onFileLoaded={(data, fileInfo) => this.createArrayEventRunners(this.state.eventid, data, fileInfo)} label="Create eventRunners"/>
+        </Col>
         </Row>
         <Row className="m-5">
           <Col>
         <Button
           onClick={() => this.createEvent(this.state.eventid)}
           variant="primary"
-          disabled={true}
         >
           Create event {this.state.eventid}
         </Button>
@@ -140,26 +140,30 @@ handleEventidChange = (event) => {
     console.log(id)
   }
 
-  createEventRunners = (eventid, data, fileinfo) => {
-    let runners = {}
+  strip = (field) => {
+    // make sure we don't have " or ; in fields to muck up csv handling"
+    return field.replace('"', "").replace(";", ",")
+  }
+
+  createArrayEventRunners = (eventid, data, fileinfo) => {
+    let runners = []
     for (let row = 0; row < data.length; row = row + 1) {
       let r = data[row]
       if (r.length < 5) {
         continue
       }
-      let runner = {}
-      runner.name = r[1]
-      runner.club = r[4]
-      runner.country = r[2]
-      runner.class = r[3] 
-      runners[r[0]] = runner
+      // 0: id, 1: name, 2: country, 3: class, 4: club
+      const sep = ';'
+      let runner = `${r[0]}${sep}${this.strip(r[1])}${sep}${this.strip(r[2])}${sep}${this.strip(r[3])}${sep}${this.strip(r[4])}`
+      runners.push(runner)
     }
-    console.log(runners)
-    FirestoreService.writeRunnersByEvent(eventid, runners)
+    //console.log(runners)
+    FirestoreService.writeArrayRunnersByEvent(eventid, {names: runners})
   }
 
   getRunnersForEvent = (eventid) => {
     FirestoreService.getRunnersByEvent(eventid).then((data) =>{
+      console.log("Got runners: ", JSON.stringify(data.data()).length)
       const raw = data.data()
       let runners = []
       for (const runnerid in raw) {
@@ -167,7 +171,6 @@ handleEventidChange = (event) => {
         runner.id = runnerid
         runners.push(runner)
        }
-      console.table(runners)
       this.setState({
         runners: runners
         })
@@ -362,8 +365,24 @@ getStageId = (id) => {
 }
 
 rewriteResults = (eventid) => {
-  console.log(this.state.results)
-  FirestoreService.saveResultsForEvent(eventid, this.state.results)
+  const idx = parseInt(eventid.slice(-1), 10)
+  const event = this.state.events[idx]
+
+  const newResults = this.state.results.map((result) => {
+    for (let i = 0; i < event.stages.length; i = i + 1) {
+      if (result.stageScore) {
+        result.stageResult[i].stageScore =  result.stageScore[i]
+      }
+      if (result.stagePos) {
+        result.stageResult[i].stagePos =  result.stagePos[i]
+      }
+    }
+    delete result.stageScore
+    delete result.stagePos
+    return result
+  })
+  console.log(newResults)
+  FirestoreService.saveResultsForEvent(eventid, newResults)
 }
 
 createDummyResults = (eventid, data, fileinfo) => {
