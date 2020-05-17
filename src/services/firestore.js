@@ -33,6 +33,11 @@ export const getLiveResultsByEvent = (event) => {
   return db.collection("results").doc(event).get()
 }
 
+export const getOldStageResultsForEvent = (eventid) => {
+  console.log("Get stage results for ", eventid, " from ", stageResultCollection)
+  return db.collection(stageResultCollection).doc(eventid).collection("runners").get()
+}
+
 export const getStageResultsForEvent = (eventid, stageid) => {
   console.log("Get stage results for ", eventid, " for ", stageid, " from ", stageResultCollection)
   return db.collection(stageResultCollection).doc(eventid).collection("stages").doc(stageid).get()

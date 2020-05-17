@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e004",
+      eventid: "e001",
       events: [],
       runners: [],
       results: {},
@@ -48,6 +48,12 @@ class Admin extends React.Component {
         </Row>
         <Row className="m-5">
         <Col>
+        <Button
+          onClick={() => this.reformatStageResults(this.state.eventid)}
+          variant="primary"
+        >
+          Rewrite stage results for {this.state.eventid}
+        </Button>
         </Col>
         <Col>
         <Button
@@ -98,16 +104,6 @@ handleEventidChange = (event) => {
     eventid: event.target.value
   })
 }
-
-// {/* <Col>
-// <Button
-//   onClick={() => this.calculateOverallResults(this.state.eventid)}
-//   variant="primary"
-// >
-//   Calculate results for {this.state.eventid}
-// </Button>
-// </Col> */}
-
 
   componentDidMount() {
     FirestoreService.authenticateAnonymously().then(() => {
@@ -185,15 +181,6 @@ handleEventidChange = (event) => {
       const r = rawResults.data()
       const results = JSON.parse(r.data)
       console.log("Got results")
-
-      // results.map((r) => {
-      //   delete r.club
-      //   delete r.ageclass
-      //   delete r.name
-      //   delete r.country
-      //   delete r.class
-      //   return r
-      // })
       this.setState({
         results: results
         })
@@ -219,47 +206,48 @@ handleEventidChange = (event) => {
     })         
   }
 
-  // reformatStageResults = () => {
-  //   //change from by runner to by staege
-  //   FirestoreService.getStageResultsForEvent002().then((snapshot) => {
-  //     let results = []
-  //      snapshot.forEach((doc) => {
-  //       let result = doc.data()
-  //       result.id = parseInt(doc.id, 10) 
-  //       results.push(result)
-  //     })
-  //     console.log("Got stage results: " + results.length)
-  //     // change from by runner to by stage
-  //     const stages = []
-  //     for (let i = 0; i < 10; i = i + 1) {
-  //       stages[i] = {}
-  //     }
-  //     results.forEach((res)  => {
-  //       const keys = Object.keys(res)
-  //         for (const key of keys) {
-  //           if (key !== "id") {
-  //             const stage = parseInt(key.slice(1), 10) - 1
-  //             if ((stage < 0) || (stage > 9)) {
-  //               console.log("Error for ", res)
-  //             } else {
-  //               stages[stage][res.id.toString()] = res[key]
-  //             }
-  //         }
-  //         } 
-  //     })
-  //     console.log(stages)
-  //     for (let i = 0; i < 10; i = i + 1) {
-  //       let stage = "s0"
-  //       if (i === 9) {
-  //         stage = stage + "10"
-  //       } else {
-  //         stage = stage + "0" + i
-  //       }
-  //       FirestoreService.writeStageResultsForEvent003(stage, stages[i])
-  //     }
+  reformatStageResults = (eventid) => {
+    //change from by runner to by stage
+    FirestoreService.getOldStageResultsForEvent(eventid).then((snapshot) => {
+      let results = []
+       snapshot.forEach((doc) => {
+        let result = doc.data()
+        result.id = parseInt(doc.id, 10) 
+        results.push(result)
+      })
+      console.log("Got stage results: " + results.length)
+      // change from by runner to by stage
+      const stages = []
+      for (let i = 0; i < 10; i = i + 1) {
+        stages[i] = {}
+      }
+      results.forEach((res)  => {
+        const keys = Object.keys(res)
+          for (const key of keys) {
+            if (key !== "id") {
+              const stage = parseInt(key.slice(-2), 10) - 1
+              if ((stage < 0) || (stage > 11)) {
+                console.log("Error for ", res)
+              } else {
+                stages[stage][res.id.toString()] = res[key]
+              }
+          }
+          } 
+      })
+      console.log(stages)
+      for (let i = 0; i < 10; i = i + 1) {
+        let stage = "s0"
+        if (i === 9) {
+          stage = stage + "10"
+        } else {
+          stage = stage + "0" + i
+        }
+        console.log(stages[i])
+        //FirestoreService.writeStageResultsForEvent003(stage, stages[i])
+      }
 
-  //   })     
-  // }
+    })     
+  }
 
   formatSecsAsMMSS = (secs) => {
     const minutes = Math.floor(secs / 60);
@@ -370,16 +358,14 @@ rewriteResults = (eventid) => {
 
   const newResults = this.state.results.map((result) => {
     for (let i = 0; i < event.stages.length; i = i + 1) {
-      if (result.stageScore) {
-        result.stageResult[i].stageScore =  result.stageScore[i]
-      }
-      if (result.stagePos) {
-        result.stageResult[i].stagePos =  result.stagePos[i]
-      }
+      delete result.name
+      delete result.class
+      delete result.ageclass
+      delete result.club
+      delete result.country
+      delete result.stageResult
+      return result
     }
-    delete result.stageScore
-    delete result.stagePos
-    return result
   })
   console.log(newResults)
   FirestoreService.saveResultsForEvent(eventid, newResults)
@@ -458,238 +444,6 @@ event.categories = cats
 console.log(event)
 
 FirestoreService.addEvent(eventid, event)
-}
-
-calculateOverallResults = (eventid) =>  {
-  // const eventidx = 2
-  // const event = this.state.events[eventidx]
-  // FirestoreService.getResultsByEvent(eventid).then((results) => {
-  //   console.log("Got results")
-  //   const stageResults = []
-  //   for (let i = 0; i < event.stages.length; i = i + 1) {
-  //     FirestoreService.getStageResultsForEvent(eventid, this.getStageId( i + 1)).then((stageResult) => {
-  //       stageResults[i] = stageResult
-  //     })
-  //   }
-  // }).then((results, stageResults) => {
-  //   // this.doCalcs(eventid, results, stageResults)
-  //   console.log(stageResults)
-  // })
-}
-
-doCalcs = (eventid, event, results, stageResults) => {
-  console.log("Generating results for event " + eventid)
-  let newResults = JSON.parse(JSON.stringify(results))
-  const stages = event.stages
-  const categories = event.categories
-  const winnerPoints = event.winnerPoints
-  //console.table(stages)
-  //console.table(categories)
-  newResults.forEach((res) => {
-    res.catScore = []
-    res.catPos = []
-    res.catResults = []
-  })
-  for (let i = 0; i < stages.length; i = i + 1) {
-    let extract = []
-    const stage = stages[i]
-    const stageId = this.getStageId(stage.id)
-    // need to determine sort order from stage record
-    // scoring is an array of fields used for scoring
-    const scoring = stage.scoring ? stage.scoring: []
-    //scoreOrder shows how to sort each field
-    const scoreOrder = stage.scoreOrder ? stage.scoreOrder: []
-    console.log("Stage " + stageId + " scoring [" + scoring + "] by [" + scoreOrder + "]")
-    let result = this.state.stageResults[i]
-    const keys = Object.keys(result)
-    for (const key of keys) {
-      if (key !== "id") {
-        let res = {}
-        res.id = key.toString()
-        // extract required fields for each scoring method e.g. ["score", "time"]
-        scoring.forEach((method) => {
-          if (method in result[key]) {
-            // force certain fields to numbers for sorting purposes
-            // decimal-separated mm.ss works Ok as a string so leave these as they are
-            switch (method) {
-              case "score":
-              case "wrong":
-                res[method] = parseFloat(result[key][method])
-                break;
-              case "time":
-              // force separator to be a decimal point since this is needed to make sorting work as expected
-              // remove leading zero where time forced to be hh.mm
-              // e.g 06:23 becomes 6.23
-                res[method] = result[key][method].replace(":", ".").replace(/^0([^0]*)\1/, "")
-                break;
-              default:
-                res[method] = result[key][method]
-            }
-          }
-        })
-        extract.push(res)
-      }
-    }
-    // sort extracted results for this stage
-    for (let i = scoring.length - 1; i >= 0; i = i - 1) {
-      // depending on what is to be sorted...
-      switch (scoring[i]) {
-        case "score":
-        case "time":
-        case "wrong":
-          // scoreOrder tells you how to sort each method e.g. ["asc", "desc"]
-          // sorting numerically; this works even though time can be a string
-          if (scoreOrder[i] === "desc") {
-            extract.sort((a, b) => b[scoring[i]] - a[scoring[i]])
-          } else {
-            extract.sort((a, b) => a[scoring[i]] - b[scoring[i]])
-          }          
-          break
-        case "course":
-          // sorting alphabetically
-          if (scoreOrder[i] === "desc") {
-            extract.sort((a, b) => {
-              return a[scoring[i]] > b[scoring[i]] ? -1 : a[scoring[i]] < b[scoring[i]] ? 1 : 0
-            })
-          } else {
-            extract.sort((a, b) => {
-              return a[scoring[i]] < b[scoring[i]] ? -1 : a[scoring[i]] > b[scoring[i]] ? 1 : 0
-            })
-          }          
-          break
-        default: console.log("Unknown sort method " + scoring[i])
-      }
-    }
-
-    // add positions
-    // need to allow for ties...
-    let pos = 0
-    let ties = 0
-    extract.forEach((res, idx, data) => {
-      let tied = true
-      for (let i = scoring.length - 1; i >= 0; i = i - 1) {
-        if (idx === 0) {
-          tied = false
-          break
-        }
-        if (res[scoring[i]] !== data[idx -1][scoring[i]]) {
-          tied = false
-          break
-        }
-      }
-      if (tied) {
-        ties = ties + 1
-      } else {
-        pos = pos + ties + 1
-        ties = 0
-      }
-      res.pos = pos
-      res.stageScore = (winnerPoints === 1) ? res.pos: winnerPoints + 1 - res.pos
-    })
-    
-    console.log(extract)
-    // add to overall results
-    extract.forEach((res) => {
-      const idx = newResults.findIndex((result) => result.id === res.id)
-      if (idx !== -1) {
-        newResults[idx]["stagePos"][i] = res.pos
-        newResults[idx]["stageScore"][i] = res.stageScore
-        // delete unneeded fields and then save stage results to runner record
-        // delete res.pos
-        // delete res.id
-        // if ("time" in res) {
-        //   res.time = ""
-        // }
-        // if ("score" in res) {
-        //   res.score = ""
-        // }
-        newResults[idx]["stageResult"][i] = res
-      } else {
-        console.log("Cannot find id " + res.id)
-      }
-    })
-    console.log("Found " + extract.length + " results for this stage")
-  }
-  categories.forEach((cat, catIdx) => {
-    // update overall results
-    newResults.forEach((result) => {
-        // create copy of stageScores for this runner
-        const a = result.stageScore.slice()
-        // filter out scores for this category
-        let x = cat.stages.map(stageIdx => a[stageIdx])
-        // sort in ascending order
-        let b = x.sort((a, b) => {
-          if (winnerPoints === 1) {
-            // low to high
-            return a - b
-          } else {
-            // high to low
-            return b - a
-          }
-        })
-        // remove all 0 entries
-        let c = b.filter((score) => score > 0)
-        // limit to number of counting scores
-        let d = c.slice(0, cat.countingStages)
-        // add up scores
-        result.catScore[catIdx] = d.reduce((acc, cur) => acc + cur, 0)
-        result.catResults[catIdx] = d.length
-    })
-
-    if (winnerPoints === 1) {
-      // sort is by increasing score of 1 or over, but 0 comes last
-      // people with not enough scores go at the end in ascending order
-      newResults.sort((a, b) => {
-        if ((a.catResults[catIdx] < cat.countingStages) && (b.catResults[catIdx] < cat.countingStages)) {
-          return (a.catScore[catIdx] === 0) ? 1: (b.catScore[catIdx] === 0) ? -1: a.catScore[catIdx] - b.catScore[catIdx]
-        }
-        if (a.catResults[catIdx] < cat.countingStages) {
-          return 1
-        }
-        if (b.catResults[catIdx] < cat.countingStages) {
-          return -1
-        }
-        // sort is by increasing score of 1 or over, but 0 comes last
-        return (a.catScore[catIdx] === 0) ? 1: (b.catScore[catIdx] === 0) ? -1: a.catScore[catIdx] - b.catScore[catIdx]
-      })
-    } else {
-      // sort is by decreasing score
-      // people with not enough scores go at the end in descending order
-      newResults.sort((a, b) => {
-        if ((a.catResults[catIdx] < cat.countingStages) && (b.catResults[catIdx] < cat.countingStages)) {
-          return b.catScore[catIdx] - a.catScore[catIdx]
-        }
-        if (a.catResults[catIdx] < cat.countingStages) {
-          return 1
-        }
-        if (b.catResults[catIdx] < cat.countingStages) {
-          return -1
-        }
-        // sort is by decreasing score
-        return b.catScore[catIdx] - a.catScore[catIdx]
-      })  
-    }
-    let pos = 0
-    let ties = 0
-    let oldScore = -1
-    newResults.forEach((res) => {
-      if (oldScore === res.catScore[catIdx]) {
-        ties = ties + 1
-      } else {
-        pos = pos + ties + 1
-        ties = 0
-        oldScore = res.catScore[catIdx]
-      }
-      res.catPos[catIdx] = pos
-    })
-
-  })
-  newResults.sort((a, b) => {
-    return a.id - b.id
-  })
-  console.log("Results created: " + newResults.length)
-  this.setState({results: newResults})
-  //FirestoreService.saveResultsForEvent(eventid, newResults)
 }
 
 }
