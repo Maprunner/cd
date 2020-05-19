@@ -3,10 +3,10 @@ import {firebaseLockdownConfig, firebaseCDConfig} from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
-const eventCollection = "events"
-const runnerCollection = "eventRunners"
-const stageResultCollection = "stageResults"
-const resultCollection = "results"
+const eventCollection = "testevents"
+const runnerCollection = "testeventRunners"
+const stageResultCollection = "teststageResults"
+const resultCollection = "testresults"
 const config = firebaseLockdownConfig
 
 firebase.initializeApp(config);

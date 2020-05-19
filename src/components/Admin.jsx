@@ -4,7 +4,7 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e004stages from '../data/e004stages.js'
+import e005stages from '../data/e005stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e001",
+      eventid: "e005",
       events: [],
       runners: [],
       results: {},
@@ -145,12 +145,12 @@ handleEventidChange = (event) => {
     let runners = []
     for (let row = 0; row < data.length; row = row + 1) {
       let r = data[row]
-      if (r.length < 5) {
+      if (r.length < 6) {
         continue
       }
       // 0: id, 1: name, 2: country, 3: class, 4: club
       const sep = ';'
-      let runner = `${r[0]}${sep}${this.strip(r[1])}${sep}${this.strip(r[2])}${sep}${this.strip(r[3])}${sep}${this.strip(r[4])}`
+      let runner = `${r[0]}${sep}${this.strip(r[1])}${sep}${this.strip(r[2])}${sep}${this.strip(r[3])}${sep}${this.strip(r[4])}${sep}${this.strip(r[5])}`
       runners.push(runner)
     }
     //console.log(runners)
@@ -418,24 +418,25 @@ saveStageDetails = () => {
 
 createEvent = (eventid) => {
 let event = {
-  description: "Five virtual orienteering stages for World Orienteering Day",
-  name: "World Orienteering Day",
-  dateFrom: Date.parse('13 May 2020 00:01:00 GMT'), 
-  dateTo: Date.parse('16 May 2020 00:01:00 GMT'),
-  winnerPoints: 2000,
+  description: "Teams of seven (senior) or five (junior) take on seven virtual stages in four days.",
+  name: "Team Competition",
+  dateFrom: Date.parse('21 May 2020 00:01:00 GMT'), 
+  dateTo: Date.parse('24 May 2020 00:01:00 GMT'),
+  winnerPoints: 1000,
+  isTeamEvent: true,
   messageTitle: "",
   message: ""
 }
 let stages = []
-e004stages.forEach((stage) => {
+e005stages.forEach((stage) => {
   stages.push(stage)
 })
 event.stages = stages
 let cats = []
 const cat0 = {
-  countingStages: 4,
-  name: "5-stage",
-  stages: [0, 1, 2, 3, 4]
+  countingStages: 6,
+  name: "7-stage",
+  stages: [0, 1, 2, 3, 4, 5, 6]
 }
 cats.push(cat0)
 
