@@ -16,6 +16,7 @@ class Admin extends React.Component {
     super(props);
     this.state = {
       eventid: "e005",
+      event: {},
       events: [],
       runners: [],
       results: {},
@@ -49,7 +50,7 @@ class Admin extends React.Component {
         <Row className="m-5">
         <Col>
         <Button
-          onClick={() => this.reformatStageResults(this.state.eventid)}
+          onClick={() => this.reformatStageResults(this.state.eventid, this.state.event)}
           variant="primary"
         >
           Rewrite stage results for {this.state.eventid}
@@ -101,7 +102,8 @@ class Admin extends React.Component {
 
 handleEventidChange = (event) => {
   this.setState({
-    eventid: event.target.value
+    eventid: event.target.value,
+    event: this.state.events[parseInt(event.target.value.slice(-2), 10) - 1]
   })
 }
 
@@ -120,7 +122,8 @@ handleEventidChange = (event) => {
         console.log("Events: " + events.length)
         this.setState({
           stages: stages,
-          events: events
+          events: events,
+          event: events[parseInt(this.state.eventid.slice(-2), 10) - 1]
         })
       })
       .catch((error) => {
@@ -206,7 +209,7 @@ handleEventidChange = (event) => {
     })         
   }
 
-  reformatStageResults = (eventid) => {
+  reformatStageResults = (eventid, event) => {
     //change from by runner to by stage
     FirestoreService.getOldStageResultsForEvent(eventid).then((snapshot) => {
       let results = []
@@ -218,7 +221,7 @@ handleEventidChange = (event) => {
       console.log("Got stage results: " + results.length)
       // change from by runner to by stage
       const stages = []
-      for (let i = 0; i < 10; i = i + 1) {
+      for (let i = 0; i < event.stages.length; i = i + 1) {
         stages[i] = {}
       }
       results.forEach((res)  => {
@@ -226,7 +229,7 @@ handleEventidChange = (event) => {
           for (const key of keys) {
             if (key !== "id") {
               const stage = parseInt(key.slice(-2), 10) - 1
-              if ((stage < 0) || (stage > 11)) {
+              if ((stage < 0) || (stage > event.stages.length)) {
                 console.log("Error for ", res)
               } else {
                 stages[stage][res.id.toString()] = res[key]
@@ -235,12 +238,11 @@ handleEventidChange = (event) => {
           } 
       })
       console.log(stages)
-      for (let i = 0; i < 10; i = i + 1) {
+      for (let i = 0; i < event.stages.length; i = i + 1) {
         let stage = "s0"
-        if (i === 9) {
-          stage = stage + "10"
-        } else {
-          stage = stage + "0" + i
+        const number = i + 1
+        if (number <10) {
+          stage = stage + "0"
         }
         console.log(stages[i])
         //FirestoreService.writeStageResultsForEvent003(stage, stages[i])
