@@ -3,10 +3,10 @@ import {firebaseLockdownConfig, firebaseCDConfig} from "./config.js";
 import "firebase/firestore";
 import "firebase/auth";
 
-const eventCollection = "testevents"
-const runnerCollection = "testeventRunners"
-const stageResultCollection = "teststageResults"
-const resultCollection = "testresults"
+const eventCollection = "events"
+const runnerCollection = "eventRunners"
+const stageResultCollection = "stageResults"
+const resultCollection = "results"
 const config = firebaseLockdownConfig
 
 firebase.initializeApp(config);
@@ -23,6 +23,10 @@ export const saveResultsForEvent = (eventid, results) => {
 export const getEvents = () => {
   return db.collection(eventCollection)
   .get()
+}
+
+export const updateEventList = (eventid, eventListInfo) => {
+  return db.collection(eventCollection).doc("eventList").set(eventListInfo, {merge: true})
 }
 
 export const addEvent = (id, event) => {

@@ -4,7 +4,7 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e005stages from '../data/e005stages.js'
+import e007stages from '../data/e007stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e005",
+      eventid: "e007",
       event: {},
       events: [],
       runners: [],
@@ -38,7 +38,7 @@ class Admin extends React.Component {
       />
         <Row className="m-5">
           <Col>
-          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, this.state.eventid, "s001")} label="Stage 1 Streetview"/>
+          <CSVReader onFileLoaded={(data, fileInfo) => this.createStageResults(data, fileInfo, this.state.eventid, "s009")} label="Stage 3 Contours"/>
           </Col>
           <Col>
          </Col>
@@ -148,12 +148,12 @@ handleEventidChange = (event) => {
     let runners = []
     for (let row = 0; row < data.length; row = row + 1) {
       let r = data[row]
-      if (r.length < 6) {
+      if (r.length < 7) {
         continue
       }
-      // 0: id, 1: name, 2: country, 3: class, 4: club
+      // 0: id, 1: name, 2: country, 3: class, 4: club, 5: team, 6: teamid
       const sep = ';'
-      let runner = `${r[0]}${sep}${this.strip(r[1])}${sep}${this.strip(r[2])}${sep}${this.strip(r[3])}${sep}${this.strip(r[4])}${sep}${this.strip(r[5])}`
+      let runner = `${r[0]}${sep}${this.strip(r[1])}${sep}${this.strip(r[2])}${sep}${this.strip(r[3])}${sep}${this.strip(r[4])}${sep}${this.strip(r[5])}${sep}${this.strip(r[6])}`
       runners.push(runner)
     }
     //console.log(runners)
@@ -267,7 +267,7 @@ handleEventidChange = (event) => {
     // csv result parser assuming csv file
     const stageno = parseInt(stageid.substring(stageid.length - 1), 10)
      // VERY BAD WAY OF INDEXING FOR REQUIRED EVENT DATA
-    const stageInfo = this.state.events[3].stages[stageno - 1]
+    const stageInfo = this.state.events[5].stages[stageno - 1]
     console.log("Processing results for stage " + stageno)
     console.log(stageInfo)
     // read header row to find all required scoring columns
@@ -335,10 +335,10 @@ handleEventidChange = (event) => {
           }
         }
       }
-      console.log(runnerid, result)
       stageResult[runnerid] = result
       // console.log(runnerid, newResult) 
     }
+    console.table(stageResult)
     console.log("duplicated runners " , duplicatedRunners)
     console.log("Saving ", stageResult)
     FirestoreService.writeStageResultsForEvent(eventid, stageid, stageResult) 
@@ -396,7 +396,6 @@ createDummyResults = (eventid, data, fileinfo) => {
     for (let i = 0; i < 10; i = i + 1) {
       result.stageScore.push(0)
       result.stagePos.push(0)
-      result.stageResult.push({})
       result.catPos.push(0)
       result.catResults.push(0)
       result.catScore.push(0)
@@ -408,45 +407,50 @@ createDummyResults = (eventid, data, fileinfo) => {
  FirestoreService.saveResultsForEvent(eventid, newResults)
 }
 
-saveStageDetails = () => {
-// const stages = []
-// e002stages.forEach((stage) => {
-//   stages.push(stage)
-// })
-// console.log(stages)
-//FirestoreService.updateStagesForEvent("e002", stages)
-//FirestoreService.updateStagesForEvent("e003", stages)
-}
-
 createEvent = (eventid) => {
 let event = {
-  description: "Teams of seven (senior) or five (junior) take on seven virtual stages in four days.",
-  name: "Team Competition",
-  dateFrom: Date.parse('21 May 2020 00:01:00 GMT'), 
-  dateTo: Date.parse('24 May 2020 00:01:00 GMT'),
+  description: "10 stages for the British Virtual Orienteering Championships",
+  name: "British Open",
+  dateFrom: Date.parse('26 Jun 2020 00:01:00 GMT'), 
+  dateTo: Date.parse('28 Jun 2020 00:01:00 GMT'),
   winnerPoints: 1000,
-  isTeamEvent: true,
+  isTeamEvent: false,
   messageTitle: "",
   message: ""
 }
 let stages = []
-e005stages.forEach((stage) => {
+e007stages.forEach((stage) => {
+  stage.isOpen = false;
   stages.push(stage)
 })
 event.stages = stages
 let cats = []
 const cat0 = {
-  countingStages: 6,
-  name: "7-stage",
-  stages: [0, 1, 2, 3, 4, 5, 6]
+  countingStages: 7,
+  name: "10-stage",
+  stages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 }
 cats.push(cat0)
+const cat1 = {
+  countingStages: 6,
+  name: "7-stage",
+  stages: [0, 1, 2, 3, 6, 7, 8]
+}
+cats.push(cat1)
 
 event.categories = cats
+
+const eventListInfo = {}
+eventListInfo[eventid] = {}
+eventListInfo[eventid].description = event.description
+eventListInfo[eventid].name = event.name
+
 
 console.log(event)
 
 FirestoreService.addEvent(eventid, event)
+//FirestoreService.updateEventList(eventid, {eventListInfo})
+
 }
 
 }
