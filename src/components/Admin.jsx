@@ -4,7 +4,7 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e007stages from '../data/e007stages.js'
+import e008stages from '../data/e008stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e007",
+      eventid: "e008",
       event: {},
       events: [],
       runners: [],
@@ -409,17 +409,17 @@ createDummyResults = (eventid, data, fileinfo) => {
 
 createEvent = (eventid) => {
 let event = {
-  description: "10 stages for the British Virtual Orienteering Championships",
-  name: "British Open",
-  dateFrom: Date.parse('26 Jun 2020 00:01:00 GMT'), 
-  dateTo: Date.parse('28 Jun 2020 00:01:00 GMT'),
+  description: "A junior focus with maps relevant for JWOC in Turkey",
+  name: "Junior Weekend",
+  dateFrom: Date.parse('17 Jul 2020 00:01:00 GMT'), 
+  dateTo: Date.parse('19 Jul 2020 00:01:00 GMT'),
   winnerPoints: 1000,
   isTeamEvent: false,
   messageTitle: "",
   message: ""
 }
 let stages = []
-e007stages.forEach((stage) => {
+e008stages.forEach((stage) => {
   stage.isOpen = false;
   stages.push(stage)
 })
@@ -441,9 +441,9 @@ cats.push(cat1)
 event.categories = cats
 
 const eventListInfo = {}
-eventListInfo[eventid] = {}
-eventListInfo[eventid].description = event.description
-eventListInfo[eventid].name = event.name
+eventListInfo.id = eventid
+eventListInfo.description = event.description
+eventListInfo.name = event.name
 
 
 console.log(event)

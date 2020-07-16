@@ -6,7 +6,7 @@ const EventSelect = (props) => {
   return (
 <Form>
 <div className="mb-3">
-  {["e001", "e002", "e003", "e004", "e005", "e006"].map((event) => (
+  {["e001", "e002", "e003", "e004", "e005", "e006", "e007", "e008"].map((event) => (
       <Form.Check 
       key={event}
       inline
