@@ -4,7 +4,7 @@ import * as FirestoreService from '../services/firestore';
 import CSVReader from 'react-csv-reader'
 import Header from './Header.jsx'
 import Footer from './Footer.jsx'
-import e008stages from '../data/e008stages.js'
+import e009stages from '../data/e009stages.js'
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -15,7 +15,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventid: "e008",
+      eventid: "e009",
       event: {},
       events: [],
       runners: [],
@@ -409,17 +409,17 @@ createDummyResults = (eventid, data, fileinfo) => {
 
 createEvent = (eventid) => {
 let event = {
-  description: "A junior focus with maps relevant for JWOC in Turkey",
-  name: "Junior Weekend",
-  dateFrom: Date.parse('17 Jul 2020 00:01:00 GMT'), 
-  dateTo: Date.parse('19 Jul 2020 00:01:00 GMT'),
+  description: "Relive the World Champs in Scotland in 1999",
+  name: "WOC99 Weekend",
+  dateFrom: Date.parse('11 Nov 2020 00:01:00 GMT'), 
+  dateTo: Date.parse('15 Nov 2020 00:01:00 GMT'),
   winnerPoints: 1000,
   isTeamEvent: false,
   messageTitle: "",
   message: ""
 }
 let stages = []
-e008stages.forEach((stage) => {
+e009stages.forEach((stage) => {
   stage.isOpen = false;
   stages.push(stage)
 })
@@ -434,7 +434,7 @@ cats.push(cat0)
 const cat1 = {
   countingStages: 6,
   name: "7-stage",
-  stages: [0, 1, 2, 3, 6, 7, 8]
+  stages: [0, 1, 2, 3, 4, 5, 6]
 }
 cats.push(cat1)
 
