@@ -1,59 +1,88 @@
-import React from 'react' 
-import _ from 'underscore' 
-import update from 'immutability-helper' 
-import StartPage from './StartPage.jsx'
-import QuestionPage from './QuestionPage.jsx'
-import Header from './Header.jsx'
-import Footer from './Footer.jsx'
-import {loadAllTimeResults, saveAllTimeResults, loadSettings, saveSettings} from './Persist.js'
-import Results from './Results.jsx'
-import ResultMessage from './ResultMessage.jsx'
-import { TYPE_MATCH, TYPE_NONE, quizDefs } from '../data/data.js'
-import cz from '../lang/cz.js' 
-import de from '../lang/de.js' 
-import es from '../lang/es.js' 
-import fi from '../lang/fi.js' 
-import fr from '../lang/fr.js' 
-import hu from '../lang/hu.js' 
-import ja from '../lang/ja.js' 
-import no from '../lang/no.js' 
-import pl from '../lang/pl.js' 
+import React from "react"
+import _ from "underscore"
+import update from "immutability-helper"
+import StartPage from "./StartPage.jsx"
+import QuestionPage from "./QuestionPage.jsx"
+import Header from "./Header.jsx"
+import Footer from "./Footer.jsx"
+import {
+  loadAllTimeResults,
+  saveAllTimeResults,
+  loadSettings,
+  saveSettings,
+} from "./Persist.js"
+import Results from "./Results.jsx"
+import ResultMessage from "./ResultMessage.jsx"
+import { TYPE_MATCH, TYPE_NONE, quizDefs } from "../data/data.js"
+import cz from "../lang/cz.js"
+import de from "../lang/de.js"
+import es from "../lang/es.js"
+import fi from "../lang/fi.js"
+import fr from "../lang/fr.js"
+import hu from "../lang/hu.js"
+import lt from "../lang/lt.js"
+import ja from "../lang/ja.js"
+import no from "../lang/no.js"
+import pl from "../lang/pl.js"
 
-export const NEW_RESULTS_COUNT = 10 
-export const ALL_TIME_RESULTS_COUNT = 10 
+export const NEW_RESULTS_COUNT = 10
+export const ALL_TIME_RESULTS_COUNT = 10
 
-export const availableLanguages = ['en', 'cz', 'de', 'es', 'fi', 'fr', 'hu', 'ja', 'no','pl'] 
+export const availableLanguages = [
+  "en",
+  "cz",
+  "de",
+  "es",
+  "fi",
+  "fr",
+  "hu",
+  "lt",
+  "ja",
+  "no",
+  "pl",
+]
 const dictionaries = {
-  'cz': cz,
-  'de': de,
-  'es': es,
-  'fi': fi,
-  'fr': fr,
-  'hu': hu,
-  'ja': ja,
-  'no': no,
-  'pl': pl
-} 
+  cz: cz,
+  de: de,
+  es: es,
+  fi: fi,
+  fr: fr,
+  hu: hu,
+  lt: lt,
+  ja: ja,
+  no: no,
+  pl: pl,
+}
 
-let dictionary = {} 
+let dictionary = {}
 
 // translation function
 export function t(str) {
   if (dictionary.hasOwnProperty(str)) {
-    return dictionary[str] 
+    return dictionary[str]
   }
   // default to hard-coded English
-  return str 
+  return str
+}
+
+export function translateTitle(oldTitle) {
+  let title = oldTitle.replace(" to ", " > ")
+  title = title.replace(" and ", " + ")
+  title = title.replace("Match", t("Match") + ":")
+  title = title.replace("Symbols", t("Symbols"))
+  title = title.replace("Text", t("Text"))
+  title = title.replace("Map", t("Map"))
+  return title
 }
 
 function setDictionary(dict) {
-  dictionary = dict 
+  dictionary = dict
 }
 
 class Quiz extends React.Component {
   constructor(props) {
-    super(props) 
-    const settings = loadSettings() 
+    super(props)
+    const settings = loadSettings()
     this.state = {
       questions: {},
       currentQuestionIdx: 0,
@@ -74,87 +103,87 @@ class Quiz extends React.Component {
       name: settings.name,
       allTimeResults: loadAllTimeResults(),
       language: settings.language,
-      answersPerQuestion: settings.answersPerQuestion
+      answersPerQuestion: settings.answersPerQuestion,
     }
   }
   componentDidMount() {
-    this.onSelectLanguage(this.state.language) 
+    this.onSelectLanguage(this.state.language)
   }
 
   componentWillUnmount() {
     // shouldn't need this...
-    clearInterval(this.timer) 
-    clearInterval(this.questionTimer) 
+    clearInterval(this.timer)
+    clearInterval(this.questionTimer)
   }
 
   onTick = () => {
     if (this.state.quizRunning) {
-      this.setState({ 
+      this.setState({
         elapsed: new Date() - this.state.start,
-      }) 
+      })
     }
   }
 
   onQuestionTimer = () => {
     if (this.state.quizRunning) {
-      let secsForThisQuestion = this.state.secsForThisQuestion + 1 
+      let secsForThisQuestion = this.state.secsForThisQuestion + 1
       if (secsForThisQuestion >= this.state.timerOption) {
         // simulate an incorrect answer
-        this.onCheckAnswer("") 
-        secsForThisQuestion = 0 
+        this.onCheckAnswer("")
+        secsForThisQuestion = 0
       }
-      this.setState({ 
-        secsForThisQuestion: secsForThisQuestion
-      }) 
+      this.setState({
+        secsForThisQuestion: secsForThisQuestion,
+      })
     }
   }
 
   onCloseNewResult = () => {
     this.setState({
-      displayNewResult: false
-    }) 
+      displayNewResult: false,
+    })
   }
 
   onShowResultsTable = () => {
     this.setState({
-      displayResultsTable: true
-    }) 
+      displayResultsTable: true,
+    })
   }
 
   onCloseResultsTable = () => {
     this.setState({
-      displayResultsTable: false
-    }) 
+      displayResultsTable: false,
+    })
   }
 
   onSelectLanguage = (lang) => {
     if (dictionaries.hasOwnProperty(lang)) {
-      setDictionary(dictionaries[lang][lang]) 
+      setDictionary(dictionaries[lang][lang])
     } else {
-      setDictionary({}) 
-      lang = 'en'
+      setDictionary({})
+      lang = "en"
     }
-    saveSettings("language", lang) 
+    saveSettings("language", lang)
     this.setState({
-      language: lang
-    }) 
+      language: lang,
+    })
   }
 
   onTimerClick = (value) => {
-    saveSettings("timerOption", parseInt(value, 10))     
-    this.setState({ timerOption: parseInt(value, 10) }) 
+    saveSettings("timerOption", parseInt(value, 10))
+    this.setState({ timerOption: parseInt(value, 10) })
   }
 
   onSetName = (name) => {
-    saveSettings("name", name) 
+    saveSettings("name", name)
     this.setState({
-      name: name
-    }) 
+      name: name,
+    })
   }
 
   onSetAnswersPerQuestion = (value) => {
-    saveSettings("answersPerQuestion", parseInt(value, 10)) 
-    this.setState({ answersPerQuestion: parseInt(value, 10) }) 
+    saveSettings("answersPerQuestion", parseInt(value, 10))
+    this.setState({ answersPerQuestion: parseInt(value, 10) })
   }
 
   onStartNewQuiz = (questions, id) => {
@@ -169,12 +198,12 @@ class Quiz extends React.Component {
         elapsed: 0,
         answered: 0,
         score: 0,
-        secsForThisQuestion: 0
-      }) 
+        secsForThisQuestion: 0,
+      })
     }
-    this.timer = setInterval(this.onTick, 1000) 
-    if ((this.state.timerOption > 0) && (quizDef.type !== TYPE_MATCH)) {
-      this.questionTimer = setInterval(this.onQuestionTimer, 1000) 
+    this.timer = setInterval(this.onTick, 1000)
+    if (this.state.timerOption > 0 && quizDef.type !== TYPE_MATCH) {
+      this.questionTimer = setInterval(this.onQuestionTimer, 1000)
     }
   }
 
@@ -182,46 +211,46 @@ class Quiz extends React.Component {
     if (validFinish) {
       this.setState({
         answered: attempts,
-        score: score
+        score: score,
       })
-      this.saveResult(score, attempts) 
+      this.saveResult(score, attempts)
     } else {
       this.setState({
         quizRunning: false,
-        quizDef: {}
-      }) 
+        quizDef: {},
+      })
     }
   }
 
   onCheckAnswer = (answer) => {
     if (!this.state.quizRunning) {
-      return 
+      return
     }
-    const idx = this.state.currentQuestionIdx 
-    let score = this.state.score 
-    let gotIt = false 
+    const idx = this.state.currentQuestionIdx
+    let score = this.state.score
+    let gotIt = false
     if (answer === this.state.questions[idx].question.desc) {
-      score = score + 1 
-      gotIt = true 
+      score = score + 1
+      gotIt = true
     }
-    let q = this.state.questions[idx] 
-    q.gotIt = gotIt 
-    const answered = this.state.answered + 1 
+    let q = this.state.questions[idx]
+    q.gotIt = gotIt
+    const answered = this.state.answered + 1
     this.setState({
       questions: update(this.state.questions, { [idx]: { $set: q } }),
       answered: answered,
       score: score,
-      secsForThisQuestion: 0
+      secsForThisQuestion: 0,
     })
-    if ((this.state.currentQuestionIdx + 1) === this.state.questions.length) {
-      clearInterval(this.timer) 
-      clearInterval(this.questionTimer) 
-      this.saveResult(score, answered) 
+    if (this.state.currentQuestionIdx + 1 === this.state.questions.length) {
+      clearInterval(this.timer)
+      clearInterval(this.questionTimer)
+      this.saveResult(score, answered)
     } else {
-      this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 }) 
-      if ((this.state.timerOption > 0) && (this.state.id !== TYPE_MATCH)) {
-        clearInterval(this.questionTimer) 
-        this.questionTimer = setInterval(this.onQuestionTimer, 1000) 
+      this.setState({ currentQuestionIdx: this.state.currentQuestionIdx + 1 })
+      if (this.state.timerOption > 0 && this.state.id !== TYPE_MATCH) {
+        clearInterval(this.questionTimer)
+        this.questionTimer = setInterval(this.onQuestionTimer, 1000)
       }
     }
   }
@@ -232,16 +261,16 @@ class Quiz extends React.Component {
       name: this.state.name,
       score: score,
       from: from,
-      percent: (score * 100 / from).toFixed(1),
-      time: parseInt((this.state.elapsed / 1000), 10)
-    }) 
+      percent: ((score * 100) / from).toFixed(1),
+      time: parseInt(this.state.elapsed / 1000, 10),
+    })
     this.setState({
       results: newResults.new,
       allTimeResults: newResults.allTime,
       quizRunning: false,
       displayNewResult: true,
-      type: TYPE_NONE
-    }) 
+      type: TYPE_NONE,
+    })
   }
 
   adjustResultArray(array, result, length) {
@@ -249,15 +278,17 @@ class Quiz extends React.Component {
       // add new result to array
       .push(result)
       // sort by score DESC percent DESC time ASC
-      .sortBy('time')
+      .sortBy("time")
       .reverse()
-      .sortBy(function (r) { return parseFloat(r.percent)  })
-      .sortBy('score')
+      .sortBy(function (r) {
+        return parseFloat(r.percent)
+      })
+      .sortBy("score")
       .reverse()
       // truncate
       .first(length)
-      .value() 
-    return newResults 
+      .value()
+    return newResults
   }
 
   addNewResult(result) {
@@ -265,17 +296,17 @@ class Quiz extends React.Component {
       this.state.results,
       result,
       NEW_RESULTS_COUNT
-    ) 
+    )
     const newAllTimeResults = this.adjustResultArray(
       this.state.allTimeResults,
       result,
       ALL_TIME_RESULTS_COUNT
-    ) 
-    saveAllTimeResults(newAllTimeResults) 
-    return ({
+    )
+    saveAllTimeResults(newAllTimeResults)
+    return {
       new: newResults,
-      allTime: newAllTimeResults
-    }) 
+      allTime: newAllTimeResults,
+    }
   }
 
   renderBody() {
@@ -287,7 +318,7 @@ class Quiz extends React.Component {
           handleClose={this.onCloseResultsTable}
           open={true}
         />
-      ) 
+      )
     }
     if (!this.state.quizRunning) {
       return (
@@ -302,7 +333,7 @@ class Quiz extends React.Component {
           answersPerQuestion={this.state.answersPerQuestion}
           name={this.state.name}
         />
-      ) 
+      )
     }
     return (
       <QuestionPage
@@ -311,26 +342,26 @@ class Quiz extends React.Component {
         questions={this.state.questions}
         score={this.state.score}
         answered={this.state.answered}
-        elapsed={parseInt((this.state.elapsed / 1000), 10)}
+        elapsed={parseInt(this.state.elapsed / 1000, 10)}
         timerOption={this.state.timerOption}
         countdown={this.state.timerOption - this.state.secsForThisQuestion}
-        onCheckAnswer={this.state.quizDef.type === TYPE_MATCH ?
-          this.onMatchFinished
-          :
-          this.onCheckAnswer
+        onCheckAnswer={
+          this.state.quizDef.type === TYPE_MATCH
+            ? this.onMatchFinished
+            : this.onCheckAnswer
         }
       />
-    ) 
+    )
   }
 
   renderNewResult() {
-    let message = t('You scored #1 out of #2 in #3 seconds') 
+    let message = t("You scored #1 out of #2 in #3 seconds")
     // eslint-disable-next-line
-    message = message.replace(/\#1/, this.state.score) 
+    message = message.replace(/\#1/, this.state.score)
     // eslint-disable-next-line
-    message = message.replace(/\#2/, this.state.answered) 
+    message = message.replace(/\#2/, this.state.answered)
     // eslint-disable-next-line
-    message = message.replace(/\#3/, parseInt((this.state.elapsed / 1000), 10)) 
+    message = message.replace(/\#3/, parseInt(this.state.elapsed / 1000, 10))
     return (
       <ResultMessage
         handleClose={this.onCloseNewResult}
@@ -341,23 +372,21 @@ class Quiz extends React.Component {
       >
         {message}
       </ResultMessage>
-    ) 
+    )
   }
 
   render() {
     return (
       <div>
-        <Header
-          onShowResultsTable={this.onShowResultsTable}
-        />
-        <div className='container'>
-          {this.renderBody() }
-          {this.state.displayNewResult ? this.renderNewResult() : null }
+        <Header onShowResultsTable={this.onShowResultsTable} />
+        <div className="container">
+          {this.renderBody()}
+          {this.state.displayNewResult ? this.renderNewResult() : null}
         </div>
         <Footer />
       </div>
-    ) 
+    )
   }
 }
 
-export default Quiz 
+export default Quiz
