@@ -65,6 +65,16 @@ export function t(str) {
   return str
 }
 
+export function translateTitle(oldTitle) {
+  let title = oldTitle.replace(" to ", " > ")
+  title = title.replace(" and ", " + ")
+  title = title.replace("Match", t("Match") + ":")
+  title = title.replace("Symbols", t("Symbols"))
+  title = title.replace("Text", t("Text"))
+  title = title.replace("Map", t("Map"))
+  return title
+}
+
 function setDictionary(dict) {
   dictionary = dict
 }
