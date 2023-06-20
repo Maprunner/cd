@@ -20,6 +20,7 @@ import es from "../lang/es.js"
 import fi from "../lang/fi.js"
 import fr from "../lang/fr.js"
 import hu from "../lang/hu.js"
+import id from "../lang/id.js"
 import lt from "../lang/lt.js"
 import ja from "../lang/ja.js"
 import no from "../lang/no.js"
@@ -36,6 +37,7 @@ export const availableLanguages = [
   "fi",
   "fr",
   "hu",
+  "id",
   "lt",
   "ja",
   "no",
@@ -48,6 +50,7 @@ const dictionaries = {
   fi: fi,
   fr: fr,
   hu: hu,
+  id: id,
   lt: lt,
   ja: ja,
   no: no,
