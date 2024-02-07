@@ -16,6 +16,7 @@ import ResultMessage from "./ResultMessage.jsx"
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from "../data/data.js"
 import cz from "../lang/cz.js"
 import de from "../lang/de.js"
+import dk from "../lang/dk.js"
 import es from "../lang/es.js"
 import fi from "../lang/fi.js"
 import fr from "../lang/fr.js"
@@ -33,6 +34,7 @@ export const availableLanguages = [
   "en",
   "cz",
   "de",
+  "dk",
   "es",
   "fi",
   "fr",
@@ -46,6 +48,7 @@ export const availableLanguages = [
 const dictionaries = {
   cz: cz,
   de: de,
+  dk: dk,
   es: es,
   fi: fi,
   fr: fr,

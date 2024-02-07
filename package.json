@@ -1,6 +1,6 @@
 {
   "name": "cd",
-  "version": "2.3.3",
+  "version": "2.4.3",
   "private": true,
   "homepage": "https://www.maprunner.co.uk/cd",
   "dependencies": {
@@ -10,8 +10,8 @@
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^3.3.2",
-    "underscore": "^1.13.6"
+    "underscore": "^1.13.6",
+    "web-vitals": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -20,8 +20,8 @@
     "eject": "react-scripts eject"
   },
   "browserslist": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
   ]
 }
