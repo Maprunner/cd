@@ -1,16 +1,15 @@
-import React from 'react'
-import Button from 'react-bootstrap/Button'
-import Col from 'react-bootstrap/Col'
-import { t } from './Quiz.jsx'
+import React from "react"
+import Button from "react-bootstrap/Button"
+import Col from "react-bootstrap/Col"
+import { t } from "./Quiz.jsx"
 
 export const AnswerAsText = (props) => {
-  const {onClick, answer} = props
+  const { onClick, answer } = props
   return (
-    <Col>
+    <Col className="text-center">
       <Button
-        variant='outline-primary'
-        size='lg'
-        block
+        variant="outline-primary"
+        size="lg"
         onClick={() => onClick(answer)}
       >
         {t(answer)}
@@ -20,7 +19,7 @@ export const AnswerAsText = (props) => {
 }
 
 const AnswerListAsText = (props) => {
-  const {answers, onClick} = props
+  const { answers, onClick } = props
   if (!answers) {
     return null
   }
@@ -37,11 +36,7 @@ const AnswerListAsText = (props) => {
   if (!formattedAnswers.length) {
     return null
   }
-  return (
-    <>
-      {formattedAnswers}
-    </>
-  )
+  return <>{formattedAnswers}</>
 }
 
 export default AnswerListAsText
