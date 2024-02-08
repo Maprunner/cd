@@ -1,24 +1,15 @@
-import React from 'react'
-import Category from './Category.jsx'
-import Row from 'react-bootstrap/Row'
+import React from "react"
+import Category from "./Category.jsx"
+import Row from "react-bootstrap/Row"
 
 const CategoryList = (props) => {
-  const {onClick, categories} = props
+  const { onClick, categories } = props
   const cats = categories.map(function (cat, idx) {
     return (
-      <Category
-        key={idx}
-        category={cat.name}
-        use={cat.use}
-        onClick={onClick}
-      />
+      <Category key={idx} category={cat.name} use={cat.use} onClick={onClick} />
     )
   })
-  return (
-    <Row className="pb-1">
-      {cats}
-    </Row>
-  )
+  return <Row className="py-3">{cats}</Row>
 }
 
 export default CategoryList
