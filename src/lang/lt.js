@@ -32,7 +32,7 @@ const lt = {
   mistakes: "klaidingi bandymai",
   seconds: "sekundės",
   "IOF Control Description Quiz":
-    "Quizas - orientavimosi sporto trasų kontrolinių punktų legendos (IOF 2018)",
+    "Quizas - orientavimosi sporto trasų kontrolinių punktų legendos",
   "Land forms": "Reljefo formos",
   Rock: "Uolos/ akmenys",
   Water: "Vanduo/ pelkės",

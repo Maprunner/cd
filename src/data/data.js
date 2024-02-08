@@ -68,6 +68,7 @@ import c520 from "../img/520.png"
 import c521 from "../img/521.png"
 import c522 from "../img/522.png"
 import c523 from "../img/523.png"
+import c524 from "../img/524.png"
 import c598 from "../img/598.png"
 import c599 from "../img/599.png"
 import c900 from "../img/900.png"
@@ -167,8 +168,9 @@ export const baseData = [
   { id: 521, code: 59715, useIfMap: true, desc: "Canopy", diff: 2 },
   { id: 522, code: 59716, useIfMap: true, desc: "Stairway", diff: 1 },
   { id: 523, code: 59717, useIfMap: true, desc: "Out of bounds area", diff: 2 },
-  { id: 598, code: 59718, useIfMap: true, desc: "Special item", diff: 1 },
-  { id: 599, code: 59719, useIfMap: true, desc: "Special item", diff: 1 },
+  { id: 524, code: 59718, useIfMap: true, desc: "Railway", diff: 2 },
+  { id: 598, code: 59719, useIfMap: true, desc: "Special item", diff: 1 },
+  { id: 599, code: 59720, useIfMap: true, desc: "Special item", diff: 1 },
 ]
 
 export const baseCategories = [
@@ -329,6 +331,7 @@ mapImg.c520 = c520
 mapImg.c521 = c521
 mapImg.c522 = c522
 mapImg.c523 = c523
+mapImg.c524 = c524
 mapImg.c598 = c598
 mapImg.c599 = c599
 mapImg.c900 = c900
