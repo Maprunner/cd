@@ -17,6 +17,7 @@
   OK: "OK",
   Symbols: "Symbole",
   Text: "Beschreibung",
+  Map: "Karte",
   Match: "Zuordnung",
   Results: "Ergebnisse",
   Start: "Start",

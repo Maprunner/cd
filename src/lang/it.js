@@ -2,7 +2,8 @@ const it = {
   abbrev: "it",
   lang: "Italiano",
   Language: "Lingua",
-  "You scored #1 out of #2 in #3 seconds": "Hai ottenuto #1 su #2 in #3 secondi",
+  "You scored #1 out of #2 in #3 seconds":
+    "Hai ottenuto #1 su #2 in #3 secondi",
   Congratulations: "Congratulazioni",
   "No results yet": "Nessun risultato ancora",
   "This session": "Questa sessione",
@@ -18,11 +19,14 @@ const it = {
   OK: "OK",
   Symbols: "Simboli",
   Text: "Testo",
+  Map: "Carta",
   Match: "Abbina",
   Results: "Risultati",
   Start: "Inizia",
-  "Identify the text description for a given symbol": "Identifica la descrizione testuale per un simbolo dato",
-  "Identify the symbol for a given text description": "Identifica il simbolo per la descrizione testuale data",
+  "Identify the text description for a given symbol":
+    "Identifica la descrizione testuale per un simbolo dato",
+  "Identify the symbol for a given text description":
+    "Identifica il simbolo per la descrizione testuale data",
   "Match symbols and text": "Abbina simboli e testo",
   "View results": "Visualizza risultati",
   matched: "abbinate",

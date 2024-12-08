@@ -18,6 +18,7 @@ const fr = {
   OK: "OK",
   Symbols: "Symboles",
   Text: "Texte",
+  Map: "Carte",
   Match: "Match",
   Results: "Résultats",
   "Identify the text description for a given symbol":

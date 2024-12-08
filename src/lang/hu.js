@@ -18,6 +18,7 @@
   OK: "OK",
   Symbols: "Jelek",
   Text: "Megnevezések",
+  Map: "Térkép",
   Match: "Párosítás",
   Results: "Eredmények",
   Start: "Indít",

@@ -19,6 +19,7 @@
   OK: "OK",
   Symbols: "Symboler",
   Text: "Tekst",
+  Map: "Kort",
   Match: "Match",
   Results: "Resultater",
   Start: "Start",
