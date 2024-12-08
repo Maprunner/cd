@@ -18,6 +18,7 @@ const xx = {
   OK: "",
   Symbols: "",
   Text: "",
+  Map: "",
   Match: "",
   Results: "",
   Start: "",

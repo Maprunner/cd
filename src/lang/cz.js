@@ -18,6 +18,7 @@ const cz = {
   OK: "OK",
   Symbols: "Piktogramy",
   Text: "Text",
+  Map: "Mapa",
   Match: "Přiřadit",
   Results: "Výsledky",
   Start: "Start",
