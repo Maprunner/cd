@@ -1,8 +1,8 @@
 import "./css/cd.css"
 import React from "react"
 import ReactDOM from "react-dom/client"
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration"
-import reportWebVitals from "./reportWebVitals"
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration.js"
+import reportWebVitals from "./reportWebVitals.js"
 import Quiz from "./components/Quiz.jsx"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
