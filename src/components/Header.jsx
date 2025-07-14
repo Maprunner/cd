@@ -16,16 +16,16 @@ function Header(props) {
       >
         <div className="container">
           <img src={logo} alt="logo" className="pr-2"></img>
-          <Navbar.Brand className="p-0" href="https://www.maprunner.co.uk">
-            Maprunner
-          </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse>
             <Navbar.Text className="p-0 mr-auto">
-              {t("IOF Control Description Quiz") + " 2024"}
+              Maprunner {t("IOF Control Description Quiz")}
             </Navbar.Text>
             <Nav>
-              <Nav.Link onClick={props.onShowResultsTable} className="p-0">
+              <Nav.Link onClick={props.onShowSymbolTable}>
+                {t("Symbols")}
+              </Nav.Link>
+              <Nav.Link onClick={props.onShowResultsTable}>
                 {t("Results")}
               </Nav.Link>
             </Nav>

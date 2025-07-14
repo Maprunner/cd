@@ -12,6 +12,7 @@ import {
   saveSettings,
 } from "./Persist.js"
 import Results from "./Results.jsx"
+import SymbolTable from "./SymbolTable.jsx"
 import ResultMessage from "./ResultMessage.jsx"
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from "../data/data.js"
 import cz from "../lang/cz.js"
@@ -31,22 +32,6 @@ import pl from "../lang/pl.js"
 export const NEW_RESULTS_COUNT = 10
 export const ALL_TIME_RESULTS_COUNT = 10
 
-export const availableLanguages = [
-  "en",
-  "cz",
-  "de",
-  "dk",
-  "es",
-  "fi",
-  "fr",
-  "hu",
-  "id",
-  "it",
-  "lt",
-  "ja",
-  "no",
-  "pl",
-]
 const dictionaries = {
   cz: cz,
   de: de,
@@ -74,16 +59,6 @@ export function t(str) {
   return str
 }
 
-export function translateTitle(oldTitle) {
-  let title = oldTitle.replace(" to ", " > ")
-  title = title.replace(" and ", " + ")
-  title = title.replace("Match", t("Match") + ":")
-  title = title.replace("Symbols", t("Symbols"))
-  title = title.replace("Text", t("Text"))
-  title = title.replace("Map", t("Map"))
-  return title
-}
-
 function setDictionary(dict) {
   dictionary = dict
 }
@@ -105,6 +80,7 @@ class Quiz extends React.Component {
       elapsed: 1,
       quizRunning: false,
       displayResultsTable: false,
+      displaySymbolTable: false,
       displayNewResult: false,
       // definition for active quiz
       quizDef: {},
@@ -159,9 +135,21 @@ class Quiz extends React.Component {
     })
   }
 
+  onShowSymbolTable = () => {
+    this.setState({
+      displaySymbolTable: true,
+    })
+  }
+
   onCloseResultsTable = () => {
     this.setState({
       displayResultsTable: false,
+    })
+  }
+
+  onCloseSymbolTable = () => {
+    this.setState({
+      displaySymbolTable: false,
     })
   }
 
@@ -286,13 +274,13 @@ class Quiz extends React.Component {
     const newResults = _.chain(array)
       // add new result to array
       .push(result)
-      // sort by score DESC percent DESC time ASC
-      .sortBy("time")
+      // sort by percent DESC time ASC score DESC
+      .sortBy("score")
       .reverse()
+      .sortBy("time")
       .sortBy(function (r) {
         return parseFloat(r.percent)
       })
-      .sortBy("score")
       .reverse()
       // truncate
       .first(length)
@@ -330,6 +318,9 @@ class Quiz extends React.Component {
       )
     }
     if (!this.state.quizRunning) {
+      if (this.state.displaySymbolTable) {
+        return <SymbolTable handleClose={this.onCloseSymbolTable} open={true} />
+      }
       return (
         <StartPage
           onStart={this.onStartNewQuiz}
@@ -387,7 +378,10 @@ class Quiz extends React.Component {
   render() {
     return (
       <div>
-        <Header onShowResultsTable={this.onShowResultsTable} />
+        <Header
+          onShowSymbolTable={this.onShowSymbolTable}
+          onShowResultsTable={this.onShowResultsTable}
+        />
         <div className="container">
           {this.renderBody()}
           {this.state.displayNewResult ? this.renderNewResult() : null}

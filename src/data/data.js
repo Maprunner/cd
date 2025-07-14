@@ -170,7 +170,7 @@ export const baseData = [
   { id: 523, code: 59717, useIfMap: true, desc: "Out of bounds area", diff: 2 },
   { id: 524, code: 59718, useIfMap: true, desc: "Railway", diff: 2 },
   { id: 598, code: 59719, useIfMap: true, desc: "Special item", diff: 1 },
-  { id: 599, code: 59720, useIfMap: true, desc: "Special item", diff: 1 },
+  { id: 599, code: 59720, useIfMap: false, desc: "Special item", diff: 1 },
 ]
 
 export const baseCategories = [
