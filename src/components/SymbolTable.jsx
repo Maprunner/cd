@@ -1,9 +1,8 @@
 import React from "react"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
 import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import { baseData } from "../data/data.js"
 import { getImage } from "./Utils.jsx"
@@ -22,7 +21,7 @@ const SymbolTable = (props) => {
           {baseData.map((item, i) => {
             return (
               <Card className="symbol-card" key={i} border="primary">
-                <Card.Title className="text-center">{item.desc}</Card.Title>
+                <Card.Title className="text-center">{t(item.desc)}</Card.Title>
                 <Container>
                   <Row className="justify-content-between">
                     <div className="symbol-card-pictogram cd">

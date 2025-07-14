@@ -1,5 +1,5 @@
 import React from "react"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import Form from "react-bootstrap/Form"
 
 const NameInput = (props) => {
@@ -7,7 +7,7 @@ const NameInput = (props) => {
   const onNameChange = (event) => {
     let newName = event.target.value
     // limit valid characters to 1 to 25 of quite a wide range
-    // eslint-disable-next-line
+    /* eslint no-useless-escape: "off" */
     const validChars =
       /^[ A-Za-z0-9!£\$%\^&\*()\-\+=:;@#\?\.,\[\]\{\}\/]{1,25}$/
     if (newName.match(validChars) === null) {

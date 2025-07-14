@@ -1,5 +1,5 @@
 import React from "react"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import { availableLanguages } from "./Utils.jsx"
 import Form from "react-bootstrap/Form"
 

@@ -2,7 +2,7 @@ import React from "react"
 import Navbar from "react-bootstrap/Navbar"
 import Nav from "react-bootstrap/Nav"
 import logo from "./img/cdquizlogo.gif"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 
 function Header(props) {
   return (

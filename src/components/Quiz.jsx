@@ -15,53 +15,10 @@ import Results from "./Results.jsx"
 import SymbolTable from "./SymbolTable.jsx"
 import ResultMessage from "./ResultMessage.jsx"
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from "../data/data.js"
-import cz from "../lang/cz.js"
-import de from "../lang/de.js"
-import dk from "../lang/dk.js"
-import es from "../lang/es.js"
-import fi from "../lang/fi.js"
-import fr from "../lang/fr.js"
-import hu from "../lang/hu.js"
-import id from "../lang/id.js"
-import it from "../lang/it.js"
-import lt from "../lang/lt.js"
-import ja from "../lang/ja.js"
-import no from "../lang/no.js"
-import pl from "../lang/pl.js"
+import { t, setLanguage } from "./Utils.jsx"
 
 export const NEW_RESULTS_COUNT = 10
 export const ALL_TIME_RESULTS_COUNT = 10
-
-const dictionaries = {
-  cz: cz,
-  de: de,
-  dk: dk,
-  es: es,
-  fi: fi,
-  fr: fr,
-  hu: hu,
-  id: id,
-  it: it,
-  lt: lt,
-  ja: ja,
-  no: no,
-  pl: pl,
-}
-
-let dictionary = {}
-
-// translation function
-export function t(str) {
-  if (dictionary.hasOwnProperty(str)) {
-    return dictionary[str]
-  }
-  // default to hard-coded English
-  return str
-}
-
-function setDictionary(dict) {
-  dictionary = dict
-}
 
 class Quiz extends React.Component {
   constructor(props) {
@@ -154,15 +111,10 @@ class Quiz extends React.Component {
   }
 
   onSelectLanguage = (lang) => {
-    if (dictionaries.hasOwnProperty(lang)) {
-      setDictionary(dictionaries[lang][lang])
-    } else {
-      setDictionary({})
-      lang = "en"
-    }
-    saveSettings("language", lang)
+    const newLang = setLanguage(lang)
+    saveSettings("language", newLang)
     this.setState({
-      language: lang,
+      language: newLang,
     })
   }
 

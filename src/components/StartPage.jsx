@@ -11,7 +11,7 @@ import TimerOptionList from "./TimerOptionList.jsx"
 import Types from "./Types.jsx"
 import Card from "react-bootstrap/Card"
 import Row from "react-bootstrap/Row"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import _ from "underscore"
 
 class StartPage extends React.Component {
@@ -20,7 +20,7 @@ class StartPage extends React.Component {
     // use saved settings if available
     let settings = loadSettings()
     baseCategories.forEach(function (item) {
-      if (settings.hasOwnProperty(item.name)) {
+      if (Object.prototype.hasOwnProperty.call(settings, item.name)) {
         item.use = settings[item.name]
       }
     })

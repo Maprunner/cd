@@ -1,6 +1,6 @@
 import React from "react"
 import Form from "react-bootstrap/Form"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 
 const QuestionsOptionList = (props) => {
   const { max, setting, onSetNumberOfQuestions } = props

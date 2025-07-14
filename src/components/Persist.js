@@ -18,8 +18,12 @@ const defaultSettings = {
 
 function loadItem(item) {
   let data = {}
+  /* eslint-disable no-unused-vars */
   try {
-    if (window.hasOwnProperty("localStorage") && window.localStorage !== null) {
+    if (
+      Object.prototype.hasOwnProperty.call(window, "localStorage") &&
+      window.localStorage !== null
+    ) {
       if (localStorage.getItem(item) !== null) {
         data = JSON.parse(localStorage.getItem(item))
       }
@@ -28,16 +32,22 @@ function loadItem(item) {
   } catch (e) {
     return data
   }
+  /* eslint-enable no-unused-vars */
 }
 
 function saveItem(item, value) {
+  /* eslint-disable no-unused-vars */
   try {
-    if (window.hasOwnProperty("localStorage") && window.localStorage !== null) {
+    if (
+      Object.prototype.hasOwnProperty.call(window, "localStorage") &&
+      window.localStorage !== null
+    ) {
       localStorage.setItem(item, JSON.stringify(value))
     }
   } catch (e) {
     return null
   }
+  /* eslint-enable no-unused-vars */
 }
 
 export function loadAllTimeResults() {
@@ -49,7 +59,7 @@ export function loadSettings() {
   let settings = loadItem(CD_QUIZ_SETTINGS)
   let setting
   for (setting in defaultSettings) {
-    if (!settings.hasOwnProperty(setting)) {
+    if (!Object.prototype.hasOwnProperty.call(settings, setting)) {
       settings[setting] = defaultSettings[setting]
     }
   }

@@ -1,8 +1,8 @@
-import React from 'react'
-import SmallCDIcon from './SmallCDIcon.jsx'
+import React from "react"
+import SmallCDIcon from "./SmallCDIcon.jsx"
 
 const AnswerIconGrid = (props) => {
-  const {answers, questions} = props
+  const { answers, questions } = props
   let answered = answers.map(function (q, i) {
     return (
       <SmallCDIcon
@@ -15,20 +15,9 @@ const AnswerIconGrid = (props) => {
   })
   let unanswered = []
   for (let j = answers.length; j < questions; j = j + 1) {
-    unanswered.push(
-      <SmallCDIcon
-        key={j}
-        code={0}
-        gotIt={false}
-        desc={''}
-      />
-    )
+    unanswered.push(<SmallCDIcon key={j} code={0} gotIt={false} desc={""} />)
   }
-  return (
-    <>
-      {answered.concat(unanswered)}
-    </>
-  )
+  return <>{answered.concat(unanswered)}</>
 }
 
 export default AnswerIconGrid

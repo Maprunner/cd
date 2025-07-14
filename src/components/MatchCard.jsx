@@ -1,5 +1,5 @@
 import React from "react"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import { getImage } from "./Utils.jsx"
 
 const CardFace = (props) => {
