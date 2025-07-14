@@ -1,67 +1,78 @@
-import _ from 'underscore';
+import _ from "underscore"
 
-const CD_QUIZ_RESULTS_ITEM = 'cdquiz-results';
-const CD_QUIZ_SETTINGS = 'cdquiz-settings';
+const CD_QUIZ_RESULTS_ITEM = "cdquiz-results"
+const CD_QUIZ_SETTINGS = "cdquiz-settings"
 
 const defaultSettings = {
   name: "Player 1",
   language: "en",
+  questionsToSet: 73,
   answersPerQuestion: 3,
   timerOption: 0,
   "Land forms": true,
-  "Rock": true,
-  "Water": true,
-  "Vegetation": true,
-  "Man-made": true
-};
+  Rock: true,
+  Water: true,
+  Vegetation: true,
+  "Man-made": true,
+}
 
 function loadItem(item) {
-  let data = {};
+  let data = {}
+  /* eslint-disable no-unused-vars */
   try {
-    if ((window.hasOwnProperty('localStorage')) && (window.localStorage !== null)) {
+    if (
+      Object.prototype.hasOwnProperty.call(window, "localStorage") &&
+      window.localStorage !== null
+    ) {
       if (localStorage.getItem(item) !== null) {
-        data = JSON.parse(localStorage.getItem(item));
+        data = JSON.parse(localStorage.getItem(item))
       }
     }
-    return data;
+    return data
   } catch (e) {
-    return data;
+    return data
   }
+  /* eslint-enable no-unused-vars */
 }
 
 function saveItem(item, value) {
+  /* eslint-disable no-unused-vars */
   try {
-    if ((window.hasOwnProperty('localStorage')) && (window.localStorage !== null)) {
-      localStorage.setItem(item, JSON.stringify(value));
+    if (
+      Object.prototype.hasOwnProperty.call(window, "localStorage") &&
+      window.localStorage !== null
+    ) {
+      localStorage.setItem(item, JSON.stringify(value))
     }
   } catch (e) {
-    return null;
+    return null
   }
+  /* eslint-enable no-unused-vars */
 }
 
 export function loadAllTimeResults() {
-  const results = loadItem(CD_QUIZ_RESULTS_ITEM);
-  return (_.isEmpty(results) ? []: results);
+  const results = loadItem(CD_QUIZ_RESULTS_ITEM)
+  return _.isEmpty(results) ? [] : results
 }
 
 export function loadSettings() {
-  let settings = loadItem(CD_QUIZ_SETTINGS);
-  let setting;
+  let settings = loadItem(CD_QUIZ_SETTINGS)
+  let setting
   for (setting in defaultSettings) {
-    if (!settings.hasOwnProperty(setting)) {
-      settings[setting] = defaultSettings[setting];
+    if (!Object.prototype.hasOwnProperty.call(settings, setting)) {
+      settings[setting] = defaultSettings[setting]
     }
   }
-  return settings;
+  return settings
 }
 
 export function saveSettings(key, value) {
   // easiest way is just to load existing values and overwrite new setting
-  let settings = loadSettings();
-  settings[key] = value;
-  saveItem(CD_QUIZ_SETTINGS, settings);
+  let settings = loadSettings()
+  settings[key] = value
+  saveItem(CD_QUIZ_SETTINGS, settings)
 }
 
 export function saveAllTimeResults(results) {
-  saveItem(CD_QUIZ_RESULTS_ITEM, results);
+  saveItem(CD_QUIZ_RESULTS_ITEM, results)
 }

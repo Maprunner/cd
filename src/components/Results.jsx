@@ -1,10 +1,11 @@
 import React from "react"
-import { t, translateTitle } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
 import Table from "react-bootstrap/Table"
 import Row from "react-bootstrap/Row"
 import Container from "react-bootstrap/Container"
+import { translateTitle } from "./Utils.jsx"
 
 const Results = (props) => {
   const { handleClose, allTimeResults, results, open } = props

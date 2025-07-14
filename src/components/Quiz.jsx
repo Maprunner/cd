@@ -12,81 +12,13 @@ import {
   saveSettings,
 } from "./Persist.js"
 import Results from "./Results.jsx"
+import SymbolTable from "./SymbolTable.jsx"
 import ResultMessage from "./ResultMessage.jsx"
 import { TYPE_MATCH, TYPE_NONE, quizDefs } from "../data/data.js"
-import cz from "../lang/cz.js"
-import de from "../lang/de.js"
-import dk from "../lang/dk.js"
-import es from "../lang/es.js"
-import fi from "../lang/fi.js"
-import fr from "../lang/fr.js"
-import hu from "../lang/hu.js"
-import id from "../lang/id.js"
-import it from "../lang/it.js"
-import lt from "../lang/lt.js"
-import ja from "../lang/ja.js"
-import no from "../lang/no.js"
-import pl from "../lang/pl.js"
+import { t, setLanguage } from "./Utils.jsx"
 
 export const NEW_RESULTS_COUNT = 10
 export const ALL_TIME_RESULTS_COUNT = 10
-
-export const availableLanguages = [
-  "en",
-  "cz",
-  "de",
-  "dk",
-  "es",
-  "fi",
-  "fr",
-  "hu",
-  "id",
-  "it",
-  "lt",
-  "ja",
-  "no",
-  "pl",
-]
-const dictionaries = {
-  cz: cz,
-  de: de,
-  dk: dk,
-  es: es,
-  fi: fi,
-  fr: fr,
-  hu: hu,
-  id: id,
-  it: it,
-  lt: lt,
-  ja: ja,
-  no: no,
-  pl: pl,
-}
-
-let dictionary = {}
-
-// translation function
-export function t(str) {
-  if (dictionary.hasOwnProperty(str)) {
-    return dictionary[str]
-  }
-  // default to hard-coded English
-  return str
-}
-
-export function translateTitle(oldTitle) {
-  let title = oldTitle.replace(" to ", " > ")
-  title = title.replace(" and ", " + ")
-  title = title.replace("Match", t("Match") + ":")
-  title = title.replace("Symbols", t("Symbols"))
-  title = title.replace("Text", t("Text"))
-  title = title.replace("Map", t("Map"))
-  return title
-}
-
-function setDictionary(dict) {
-  dictionary = dict
-}
 
 class Quiz extends React.Component {
   constructor(props) {
@@ -105,6 +37,7 @@ class Quiz extends React.Component {
       elapsed: 1,
       quizRunning: false,
       displayResultsTable: false,
+      displaySymbolTable: false,
       displayNewResult: false,
       // definition for active quiz
       quizDef: {},
@@ -159,22 +92,29 @@ class Quiz extends React.Component {
     })
   }
 
+  onShowSymbolTable = () => {
+    this.setState({
+      displaySymbolTable: true,
+    })
+  }
+
   onCloseResultsTable = () => {
     this.setState({
       displayResultsTable: false,
     })
   }
 
-  onSelectLanguage = (lang) => {
-    if (dictionaries.hasOwnProperty(lang)) {
-      setDictionary(dictionaries[lang][lang])
-    } else {
-      setDictionary({})
-      lang = "en"
-    }
-    saveSettings("language", lang)
+  onCloseSymbolTable = () => {
     this.setState({
-      language: lang,
+      displaySymbolTable: false,
+    })
+  }
+
+  onSelectLanguage = (lang) => {
+    const newLang = setLanguage(lang)
+    saveSettings("language", newLang)
+    this.setState({
+      language: newLang,
     })
   }
 
@@ -286,13 +226,13 @@ class Quiz extends React.Component {
     const newResults = _.chain(array)
       // add new result to array
       .push(result)
-      // sort by score DESC percent DESC time ASC
-      .sortBy("time")
+      // sort by percent DESC time ASC score DESC
+      .sortBy("score")
       .reverse()
+      .sortBy("time")
       .sortBy(function (r) {
         return parseFloat(r.percent)
       })
-      .sortBy("score")
       .reverse()
       // truncate
       .first(length)
@@ -330,6 +270,9 @@ class Quiz extends React.Component {
       )
     }
     if (!this.state.quizRunning) {
+      if (this.state.displaySymbolTable) {
+        return <SymbolTable handleClose={this.onCloseSymbolTable} open={true} />
+      }
       return (
         <StartPage
           onStart={this.onStartNewQuiz}
@@ -387,7 +330,10 @@ class Quiz extends React.Component {
   render() {
     return (
       <div>
-        <Header onShowResultsTable={this.onShowResultsTable} />
+        <Header
+          onShowSymbolTable={this.onShowSymbolTable}
+          onShowResultsTable={this.onShowResultsTable}
+        />
         <div className="container">
           {this.renderBody()}
           {this.state.displayNewResult ? this.renderNewResult() : null}

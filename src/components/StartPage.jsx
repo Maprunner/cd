@@ -6,11 +6,12 @@ import NameInput from "./NameInput.jsx"
 import CategoryList from "./CategoryList.jsx"
 import LanguageList from "./LanguageList.jsx"
 import AnswerOptionList from "./AnswerOptionList.jsx"
+import QuestionsOptionList from "./QuestionsOptionList.jsx"
 import TimerOptionList from "./TimerOptionList.jsx"
 import Types from "./Types.jsx"
 import Card from "react-bootstrap/Card"
 import Row from "react-bootstrap/Row"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 import _ from "underscore"
 
 class StartPage extends React.Component {
@@ -19,7 +20,7 @@ class StartPage extends React.Component {
     // use saved settings if available
     let settings = loadSettings()
     baseCategories.forEach(function (item) {
-      if (settings.hasOwnProperty(item.name)) {
+      if (Object.prototype.hasOwnProperty.call(settings, item.name)) {
         item.use = settings[item.name]
       }
     })
@@ -27,17 +28,27 @@ class StartPage extends React.Component {
     this.state = {
       questions: questions,
       categories: baseCategories,
+      questionsToSet: settings["questionsToSet"],
     }
   }
 
   onStart = (id) => {
     let questions
     if (quizDefs[id].type === TYPE_MATCH) {
-      questions = this.createMatch(quizDefs[id])
+      questions = this.createMatch(quizDefs[id], this.state.questionsToSet)
     } else {
-      questions = this.createQuiz(this.props.answersPerQuestion, quizDefs[id])
+      questions = this.createQuiz(
+        this.props.answersPerQuestion,
+        quizDefs[id],
+        this.state.questionsToSet
+      )
     }
     this.props.onStart(questions, id)
+  }
+
+  onSetNumberOfQuestions = (value) => {
+    saveSettings("questionsToSet", parseInt(value, 10))
+    this.setState({ questionsToSet: parseInt(value, 10) })
   }
 
   onSetCategory = (category) => {
@@ -48,9 +59,11 @@ class StartPage extends React.Component {
         saveSettings(item.name, item.use)
       }
     })
+    const questions = this.filterQuestions(categories)
     this.setState({
       categories: categories,
-      questions: this.filterQuestions(categories),
+      questions: questions,
+      questionsToSet: Math.min(questions.length, this.state.questionsToSet),
     })
   }
 
@@ -69,17 +82,17 @@ class StartPage extends React.Component {
   }
 
   filterOutMapQuestions = (questions, quizDef) => {
-    // removes dodgy map symbols posible list of questions
+    // removes dodgy map symbols from posible list of questions
     if (quizDef.from === "map" || quizDef.to === "map") {
       return questions.filter((q) => q.useIfMap === true)
     }
     return questions
   }
 
-  createMatch(quizDef) {
+  createMatch(quizDef, total) {
     const shuffled = _.shuffle(
       this.filterOutMapQuestions(this.state.questions, quizDef)
-    )
+    ).slice(0, total)
     let fromCards = []
     let toCards = []
     for (let i = 0; i < shuffled.length; i = i + 1) {
@@ -117,10 +130,10 @@ class StartPage extends React.Component {
     return questions
   }
 
-  createQuiz(answersPerQuestion, quizDef) {
+  createQuiz(answersPerQuestion, quizDef, total) {
     const shuffled = _.shuffle(
       this.filterOutMapQuestions(this.state.questions, quizDef)
-    )
+    ).slice(0, total)
     // extract list of possible answers
     let answers = []
     for (let i = 0; i < shuffled.length; i = i + 1) {
@@ -139,29 +152,31 @@ class StartPage extends React.Component {
         id: shuffled[i].id,
         desc: shuffled[i].desc,
       }
-      detail.answers = this.generateAnswers(
-        detail.question,
-        answers,
-        answersPerQuestion
-      )
+      detail.answers = this.generateAnswers(detail.question, answersPerQuestion)
       detail.gotIt = false
       questions.push(detail)
     }
     return questions
   }
 
-  generateAnswers(question, possible, answersPerQuestion) {
+  generateAnswers(question, answersPerQuestion) {
     // add correct answer
     let list = [question]
+    const itemType = parseInt(list[0].id / 100, 10)
     // shuffle possible answers
+    let possible = _.filter(baseData, function (item) {
+      return parseInt(item.id / 100) === itemType
+    })
     possible = _.shuffle(possible)
     // add as many incorrect answers as needed/available
     let i = 0
     while (list.length < answersPerQuestion && i < possible.length) {
-      // don't duplicate correct answer, and only use items in same group
+      // don't duplicate correct answer, and only use items in same group and withot dodgy symbols
       if (
         possible[i].desc !== question.desc &&
-        parseInt(question.id / 100, 10) === parseInt(possible[i].id / 100, 10)
+        parseInt(question.id / 100, 10) ===
+          parseInt(possible[i].id / 100, 10) &&
+        possible[i].useIfMap
       ) {
         list.push({
           desc: possible[i].desc,
@@ -182,6 +197,8 @@ class StartPage extends React.Component {
           <Card.Header className="font-weight-bold">
             {t("Select options") +
               ": " +
+              this.state.questionsToSet +
+              "/" +
               this.state.questions.length +
               " " +
               t("questions selected")}
@@ -191,6 +208,11 @@ class StartPage extends React.Component {
               <NameInput
                 name={this.props.name}
                 onSetName={this.props.onSetName}
+              />
+              <QuestionsOptionList
+                onSetNumberOfQuestions={this.onSetNumberOfQuestions}
+                setting={this.state.questionsToSet}
+                max={this.state.questions.length}
               />
               <AnswerOptionList
                 possibleAnswers={[1, 2, 3, 4, 5]}

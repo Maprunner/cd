@@ -1,7 +1,7 @@
 import React from "react"
 import Button from "react-bootstrap/Button"
 import Col from "react-bootstrap/Col"
-import { t } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
 
 export const AnswerAsText = (props) => {
   const { onClick, answer } = props

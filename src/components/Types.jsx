@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { t, translateTitle } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
+import { translateTitle } from "./Utils.jsx"
 import { quizDefs } from "../data/data.js"
 import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"

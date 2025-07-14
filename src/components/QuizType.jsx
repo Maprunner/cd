@@ -1,6 +1,7 @@
 import React, { memo } from "react"
 import Card from "react-bootstrap/Card"
-import { t, translateTitle } from "./Quiz.jsx"
+import { t } from "./Utils.jsx"
+import { translateTitle } from "./Utils.jsx"
 
 const QuizType = memo((props) => {
   return (
