@@ -48,3 +48,4 @@ Temporary Items
 .project
 node_modules
 build
+dist

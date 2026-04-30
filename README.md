@@ -17,9 +17,9 @@ To add a new language you need to create a translation file, based on the [xx.js
 
 ## Build notes
 
-To run on a local server: # npm start
+To run on a local server: # npm run dev
 
-The application is then at localhost:3000 and includes hot module replacement.
+The application is then at [http://localhost:5173/cd/](http://localhost:5173/cd/).
 
 To build for release to the internet: # npm run build
 
