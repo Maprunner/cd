@@ -14,6 +14,7 @@ import lt from "../lang/lt.js"
 import ja from "../lang/ja.js"
 import no from "../lang/no.js"
 import pl from "../lang/pl.js"
+import se from "../lang/se.js"
 
 export const getImage = (id) => {
   const key = "c" + id
@@ -35,6 +36,7 @@ export const availableLanguages = [
   "ja",
   "no",
   "pl",
+  "se",
 ]
 
 export function translateTitle(oldTitle) {
@@ -61,6 +63,7 @@ const dictionaries = {
   ja: ja,
   no: no,
   pl: pl,
+  se: se,
 }
 
 let dictionary = {}
